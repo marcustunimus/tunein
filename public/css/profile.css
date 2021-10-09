@@ -1,0 +1,61 @@
+/* Profile Related */
+
+.profile-background {
+    --height: 300px;
+    --margin-top: 5%;
+    --border-radius: 20px;
+
+    position: relative;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: var(--height);
+    max-height: var(--height);
+    margin-top: var(--margin-top);
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--border-radius);
+
+    z-index: 3;
+}
+
+.profile-info {
+    --profile-picture-radius: 75px;
+
+    position: relative;
+    bottom: var(--profile-picture-radius);
+}
+
+.profile-image {
+    --profile-picture-radius: 75px;
+    --margin: 15px;
+
+    position: relative;
+    width: calc(2 * var(--profile-picture-radius));
+    max-width: calc(2 * var(--profile-picture-radius));
+    height: calc(2 * var(--profile-picture-radius));
+    max-height: calc(2 * var(--profile-picture-radius));
+    margin-left: var(--margin);
+    border-radius: 50%;
+
+    z-index: 4;
+}
+
+.profile-name {
+    --profile-picture-radius: 75px;
+    --font-size: 2rem;
+    --font-weight: bold;
+
+    position: relative;
+    vertical-align: middle;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    /* top: calc(var(--profile-picture-radius) * -1); */
+}
+
+.profile-username {
+    --font-size: 1.25rem;
+
+    position: relative;
+    vertical-align: middle;
+    font-size: var(--font-size);
+}

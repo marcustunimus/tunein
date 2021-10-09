@@ -1,0 +1,58 @@
+/* Welcome Related */
+
+.welcome-container {
+    --width: 50%;
+    --height: 100%;
+
+    position: absolute;
+    display: flex;
+    left: calc(100% - var(--width));
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--height);
+    max-height: var(--height);
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-content {
+    --content-width: 80%;
+
+    width: var(--content-width);
+    max-width: var(--content-width);
+}
+
+/* Welcome Text */
+
+.welcome-heading-text {
+    --font-size: 2.5rem;
+    --font-weight: bold;
+    --margin-bottom: 7.5%;
+
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    margin-bottom: var(--margin-bottom);
+}
+
+.welcome-tune-in {
+    color: var(--site-theme-color-1);
+}
+
+.welcome-text {
+    --font-size: 1.5rem;
+    --margin: 2.5%;
+
+    font-size: var(--font-size);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+/* Welcome Links */
+
+.welcome-link {
+    color: var(--link-color);
+}
+
+.welcome-link:hover {
+    text-decoration: underline;
+}

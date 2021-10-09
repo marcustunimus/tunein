@@ -1,0 +1,151 @@
+:root {
+    --site-theme-color-1: hsl(268, 40%, 63%);
+    --site-theme-color-1-hover: hsl(268, 40%, 78%);
+    --site-theme-color-2: hsl(183, 72%, 79%);
+    --background-color: hsl(0, 0%, 10%);
+    --field-color: hsl(0, 0%, 20%);
+    --field-scrollbar-color: hsl(0, 0%, 35%);
+    --field-scrollbar-color-hover: hsl(0, 0%, 30%);
+    --letter-color: hsl(0, 0%, 95%);
+    --link-color: hsl(219, 100%, 50%);
+    --font-family: Tahoma, sans-serif; /* Verdana, Tahoma, Helvetica, sans-serif */
+    font-family: Tahoma, sans-serif; /* Verdana, Tahoma, Helvetica, sans-serif */
+    font-size: 16px;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--letter-color);
+}
+
+/* Main Content Related */
+
+.main-container {
+    --width: 35%;
+
+    left: calc((100% - var(--width)) / 2);
+    width: var(--width);
+    max-width: var(--width);
+    margin: auto;
+}
+
+/* Scrollbar */
+
+.scrollbar::-webkit-scrollbar {
+    --width: 15px;
+
+    display: block;
+    width: calc(var(--width) / 2);
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    --border-radius: 5px;
+
+    background-color: var(--field-scrollbar-color); 
+    border-radius: var(--border-radius);
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--field-scrollbar-color-hover);
+}
+
+.scrollbar::-webkit-scrollbar-track-piece:start {
+    --margin-top: 5px;
+
+    background: transparent;
+    margin-top: var(--margin-top);
+}
+
+.scrollbar::-webkit-scrollbar-track-piece:end {
+    --margin-bottom: 5px;
+
+    background: transparent;
+    margin-bottom: var(--margin-bottom); 
+}
+
+/* Univeral Classes */
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.block {
+    display: block;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+}
+
+.error {
+    --error-color: hsl(0, 100%, 40%);
+    --error-font-size: 0.75rem;
+
+    font-size: var(--error-font-size);
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 3%;
+    padding-right: 1%;
+    color: var(--error-color);
+}
+
+.preview-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.preview {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height : auto;
+    max-height: 100%;
+    max-width: 100%;
+    margin: auto;
+}
+
+.hide {
+    display: none;
+}
+
+/* Disable Chrome Autofill Style */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover, 
+textarea:-webkit-autofill:focus, 
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover, 
+select:-webkit-autofill:focus, 
+select:-webkit-autofill:active {
+    box-shadow: 0 0 0 1000px var(--field-color) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--field-color) inset !important;
+    background-color: transparent !important;
+    transition-property: background-color;
+    transition-delay: 2147483647s;
+    -webkit-text-fill-color: var(--letter-color) !important;
+    caret-color: white !important;
+}

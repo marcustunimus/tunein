@@ -1,0 +1,130 @@
+/* Register Related */
+
+.register-page {
+    --width: 100%;
+    --height: 100%;
+
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.register-form-container {
+    --width: 40%;
+    --height: 90%;
+
+    position: relative;
+    min-width: var(--width);
+    min-height: var(--height);
+}
+
+/* Register Elements */
+
+/* Register Heading */
+
+.register-heading-text {
+    --font-size: 3rem;
+    --font-weight: bold;
+    --margin-bottom: 5%;
+
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    margin-bottom: var(--margin);
+}
+
+/* Register Input */
+
+.register-input-container {
+    --width: 75%;
+    --height: 20%;
+    --margin-top: 5%;
+
+    position: relative;
+    margin: auto;
+    margin-top: var(--margin-top);
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--height);
+    max-height: var(--height);
+    border-radius: var(--border-radius);
+}
+
+.register-input-text {
+    --border-radius: 15px;
+    --font-size: 1rem;
+    
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: var(--border-radius);
+    background-color: var(--field-color);
+    font-size: var(--font-size);
+}
+
+input.register-input-text {
+    padding: var(--border-radius);
+}
+
+input.register-input-text:focus {
+    outline-width: 0;
+}
+
+/* Register Button */
+
+.register-submit-container {
+    --width: 30%;
+    --margin-top: 7.5%;
+
+    position: relative;
+    margin: auto;
+    margin-top: var(--margin-top);
+    width: var(--width);
+    max-width: var(--width);
+    border-radius: var(--border-radius);
+}
+
+.register-button {
+    --border-radius: 15px;
+    --font-size: 1.5rem;
+    --font-weight: bold;
+    --padding-top-bottom: 0.5rem;
+    --padding-left-right: 1.5rem;
+    
+    width: 100%;
+    max-width: 100%;
+    padding: var(--padding-top-bottom) var(--padding-left-right);
+    border-radius: var(--border-radius);
+    background-color: var(--site-theme-color-1);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+}
+
+.register-button:hover {
+    background-color: var(--site-theme-color-1-hover);
+}
+
+.register-button:focus {
+    outline-width: 0;
+}
+
+/* Register Normal Text */
+
+.register-text {
+    --font-size: 0.75rem;
+
+    font-size: var(--font-size);
+}
+
+/* Register Links */
+
+.register-link {
+    color: var(--link-color);
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
