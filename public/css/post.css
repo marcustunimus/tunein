@@ -366,6 +366,44 @@ input[type=file].post-file-upload {
     box-sizing: border-box;
 }
 
+.close-button-thumbnail-preview-container {
+    --width: 15px;
+
+    position: relative;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--width);
+    max-height: var(--width);
+    top: calc(var(--width) * 4.8 * -1);
+    right: calc(var(--width) / 6);
+    margin: auto;
+    margin-right: 0%;
+    background-color: var(--error-color);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.close-button-thumbnail-preview-container:hover {
+    --error-color-hover: hsl(0, 100%, 30%);
+
+    background-color: var(--error-color-hover);
+    cursor: pointer;
+}
+
+.close-thumbnail-preview-button {
+    --close-button-width: 0.75rem;
+    --color: var(--letter-color);
+
+    position: relative;
+    width: var(--close-button-width);
+    height: var(--close-button-width);
+    margin: auto;
+    top: calc((var(--width) - var(--close-button-width)) / 2);
+    background-image: url("/images/close_white_24dp.svg");
+    background-size: cover;
+    box-sizing: border-box;
+}
+
 /* Uploaded FIle Peview Window */
 
 .file-preview-window {

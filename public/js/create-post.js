@@ -2,27 +2,49 @@ const previewContainer = document.getElementById('preview');
 const filesContainer = document.getElementById('files-input-container');
 const uploadsContainer = document.getElementById('uploads');
 
+let removedAttachmentsElement = document.createElement("input");
+let removed = false;
+let removedAttachments = [];
 
 function showUploadedFilesPreview(name) {
     let inputFilesElement = document.getElementById(name);
-    var inputFilesOriginalElement = document.getElementById(name);
+
+    removedAttachmentsElement.type = "hidden";
+    removedAttachmentsElement.name = "removedAttachments";
+    removedAttachmentsElement.value = "";
+
+    filesContainer.appendChild(removedAttachmentsElement);
 
     var uploadedFiles = [];
+
+    inputFilesElement.onclick = function () {
+        inputFilesElement.value = null;
+    }
 
     inputFilesElement.onchange = function () {
         uploadsContainer.innerHTML = "";
         previewContainer.innerHTML = "";
 
-        let newInputFilesElement = inputFilesOriginalElement.cloneNode();
+        let newInputFilesElement = inputFilesElement.cloneNode();
+
+        newInputFilesElement.id = "uploadedFiles";
+        newInputFilesElement.name = "uploadedFiles[]";
 
         filesContainer.appendChild(newInputFilesElement);
+
+        for (let removedAttachment of removedAttachments) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== removedAttachment);
+        }
 
         for (let file of inputFilesElement.files) {
             let duplicate = false;
 
+            duplicate = false;
+
             for (let uploadedFile of uploadedFiles) {
                 if (uploadedFile.name === file.name && uploadedFile.type === file.type && uploadedFile.size === file.size) {
                     duplicate = true;
+
                     break;
                 }
             }
@@ -32,7 +54,14 @@ function showUploadedFilesPreview(name) {
             }
         }
 
+        for (let uploadedFile of uploadedFiles) {
+            removedAttachments = removedAttachments.filter(name => name !== uploadedFile.name);
+        }
+
+        removedAttachmentsElement.value = removedAttachments.join("/");
+
         console.log(uploadedFiles);
+        console.log(removedAttachments);
 
         showUploadedFiles(uploadedFiles);
     }
@@ -45,11 +74,27 @@ function showUploadedFiles(files) {
         let fileShowcase = document.createElement("figure");
         let fileCaption = document.createElement("figcaption");
         let imageContainer = document.createElement("img");
+        let closeButtonContainer = document.createElement("div");
+        let closeButton = document.createElement("div");
 
         fileCaption.innerText = file.name;
         fileCaption.setAttribute("class", "post-file-upload-caption");
         fileShowcase.setAttribute("class", "post-file-upload-image-thumbnail-container");
-        filePreview.setAttribute("title", file.name)
+        filePreview.setAttribute("title", file.name);
+        filePreview.setAttribute("style", "z-index: 1;");
+
+        closeButtonContainer.setAttribute("class", "close-button-thumbnail-preview-container block");
+        closeButtonContainer.onclick = function () {
+            removedAttachments.push(file.name);
+
+            removed = true;
+
+            removedAttachmentsElement.value = removedAttachments.join("/");
+
+            uploadsContainer.removeChild(filePreview);
+        }
+
+        closeButton.setAttribute("class", "close-thumbnail-preview-button");
 
         if (file.type.match('video.*')) {
             let videoContainer = document.createElement("div");
@@ -70,8 +115,10 @@ function showUploadedFiles(files) {
             fileShowcase.appendChild(fileCaption);
         }
 
+        closeButtonContainer.appendChild(closeButton);
         fileShowcase.appendChild(fileCaption);
         filePreview.appendChild(fileShowcase);
+        filePreview.appendChild(closeButtonContainer);
         uploadsContainer.appendChild(filePreview);
 
         reader.onload = function () {
@@ -90,6 +137,11 @@ function loadPreviewButton(file, reader, filePreview) {
     filePreview.setAttribute("class", "cursor-pointer");
 
     filePreview.onclick = function () {
+        if (removed) {
+            removed = false;
+            return;
+        }
+
         if (file.size <= 20 * 1024 * 1024) {
             previewContainer.innerHTML = "";
 

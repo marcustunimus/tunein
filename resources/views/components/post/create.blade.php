@@ -5,7 +5,7 @@
         @csrf
 
         <x-form.textarea name="body" type="text" class="post-input-text scrollbar center" containerClass="post-input-container" rows="5" required="true" placeholder="What's happening?" />
-        <x-form.file name="file" class="post-file-upload center-text" containerClass="post-file-upload-container" multiple="true" accept=".png,.jpeg,.jfif,.pjpeg,.pjp,.jpg,.svg,.ico,.cur,.gif,.apng,.ogg,.mp4,.mov,.wmv,.flv,.avi,.h264,.webm,.mkv">Attach files...</x-form.input>
+        <x-form.file name="file" class="post-file-upload center-text" containerClass="post-file-upload-container" multiple="true" accept=".png,.jpeg,.jpg,.gif,.mp4,.webm">Attach files...</x-form.input>
 
         <script type="text/javascript" src="{{ asset('/js/create-post.js') }}"></script>
 

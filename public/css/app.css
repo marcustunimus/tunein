@@ -8,6 +8,7 @@
     --field-scrollbar-color-hover: hsl(0, 0%, 30%);
     --letter-color: hsl(0, 0%, 95%);
     --link-color: hsl(219, 100%, 50%);
+    --error-color: hsl(0, 100%, 40%);
     --font-family: Tahoma, sans-serif; /* Verdana, Tahoma, Helvetica, sans-serif */
     font-family: Tahoma, sans-serif; /* Verdana, Tahoma, Helvetica, sans-serif */
     font-size: 16px;
@@ -91,7 +92,6 @@ body {
 }
 
 .error {
-    --error-color: hsl(0, 100%, 40%);
     --error-font-size: 0.75rem;
 
     font-size: var(--error-font-size);

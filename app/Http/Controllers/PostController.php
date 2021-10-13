@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\File;
 use App\Models\Post;
 use App\Models\PostFile;
-use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PostController extends Controller
 {
@@ -30,7 +30,7 @@ class PostController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        $files = request('file') ? $this->validateFiles(new Request($this->filterFiles(request('file')))) : [];
+        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
 
         ddd($files);
 
@@ -77,11 +77,15 @@ class PostController extends Controller
         ]);
     }
 
-    protected function filterFiles(array $files): array
+    protected function filterFiles(array $files, string $removedAttachments = ""): array
     {
+        $removedAttachments = collect(explode('/', $removedAttachments));
+
         $files = collect($files);
         $files = $files->unique(function (UploadedFile $file) {
             return $file->getClientOriginalName().$file->getMimeType().$file->getSize();
+        })->filter(function (UploadedFile $file) use ($removedAttachments) {
+            return ! $removedAttachments->contains($file->getClientOriginalName());
         })->values()->toArray();
 
         return ['file' => $files];
