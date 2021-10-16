@@ -60,9 +60,6 @@ function showUploadedFilesPreview(name) {
 
         removedAttachmentsElement.value = removedAttachments.join("/");
 
-        console.log(uploadedFiles);
-        console.log(removedAttachments);
-
         showUploadedFiles(uploadedFiles);
     }
 }
@@ -96,7 +93,7 @@ function showUploadedFiles(files) {
 
         closeButton.setAttribute("class", "close-thumbnail-preview-button");
 
-        if (file.type.match('video.*')) {
+        if (file.type.match('video.mp4') || file.type.match('video.webm')) {
             let videoContainer = document.createElement("div");
             let playButton = document.createElement("div");
 
@@ -107,11 +104,22 @@ function showUploadedFiles(files) {
             fileShowcase.appendChild(videoContainer);
             fileShowcase.appendChild(fileCaption);
         }
-        else if (file.type.match('image.*')) {
+        else if (file.type.match('image.png') || file.type.match('image.jpeg') || file.type.match('image.jpg') || file.type.match('image.gif')) {
             imageContainer.id = "peviewImage";
             imageContainer.setAttribute("src", "");
             imageContainer.setAttribute("class", "post-file-upload-image-thumbnail");
             fileShowcase.appendChild(imageContainer);
+            fileShowcase.appendChild(fileCaption);
+        }
+        else {
+            let fileContainer = document.createElement("div");
+            let unknownFile = document.createElement("div");
+
+            fileContainer.setAttribute("class", "post-file-upload-unknown-file-thumbnail");
+            unknownFile.setAttribute("class", "unknown-file");
+
+            fileContainer.appendChild(unknownFile);
+            fileShowcase.appendChild(fileContainer);
             fileShowcase.appendChild(fileCaption);
         }
 
@@ -122,7 +130,7 @@ function showUploadedFiles(files) {
         uploadsContainer.appendChild(filePreview);
 
         reader.onload = function () {
-            if (file.type.match('image.*')) {
+            if (file.type.match('image.png') || file.type.match('image.jpeg') || file.type.match('image.jpg') || file.type.match('image.gif')) {
                 imageContainer.setAttribute("src", reader.result);
             }
 
@@ -182,6 +190,19 @@ function loadPreviewButton(file, reader, filePreview) {
                 videoContainer.setAttribute("class", "preview center");
 
                 previewContainer.appendChild(videoContainer);
+            }
+            else {
+                let unknownFileContainer = document.createElement("span");
+
+                unknownFileContainer.style = "font-size: 3rem;";
+                unknownFileContainer.setAttribute("class", "preview center");
+                unknownFileContainer.innerText = "Unknown File Type";
+
+                unknownFileContainer.onclick = function () {
+                    hidePreview();
+                }
+
+                previewContainer.appendChild(unknownFileContainer);
             }
 
             previewContainer.appendChild(closeButtonContainer);

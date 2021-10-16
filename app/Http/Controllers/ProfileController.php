@@ -20,7 +20,8 @@ class ProfileController extends Controller
         }
         
         return view('profile.index', [
-            'posts' => $posts
+            'posts' => $posts,
+            'user' => $auth->guard()->user()
         ]);
     }
 }

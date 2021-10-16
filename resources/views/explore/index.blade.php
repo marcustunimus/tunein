@@ -5,7 +5,6 @@
             <x-sidebar.link-button href="/bookmarks">Bookmarks</x-sidebar.link-button>
             <x-sidebar.link-button href="/explore">Explore</x-sidebar.link-button>
             <x-sidebar.link-button href="/profile">Profile</x-sidebar.link-button>
-            <x-sidebar.link-button href="/post/create">Post</x-sidebar.link-button>
             <x-sidebar.form-button href="/logout">Log Out</x-sidebar.form-button>
         </div>
     </div>

@@ -83,11 +83,10 @@
 .edit-post-heading-text {
     --font-size: 3rem;
     --font-weight: bold;
-    --margin: 15%;
+    --margin: 10%;
 
     font-size: var(--font-size);
     font-weight: var(--font-weight);
-    margin-top: var(--margin);
     margin-bottom: var(--margin);
 }
 
@@ -145,11 +144,9 @@ input.post-input-text:focus {
 
 .post-submit-container {
     --width: 40%;
-    --margin-top: 7.5%;
 
     position: relative;
     margin: auto;
-    margin-top: var(--margin-top);
     width: var(--width);
     max-width: var(--width);
     border-radius: var(--border-radius);
@@ -215,6 +212,27 @@ input.post-input-text:focus {
     outline-width: 0;
 }
 
+.edit-post-page {
+    --width: 40%;
+    --height: 100%;
+
+    position: absolute;
+    display: flex;
+    left: calc((100% - var(--width)) / 2);
+    align-items: center;
+    justify-content: center;
+    min-width: var(--width);
+    max-width: var(--width);
+    min-height: var(--height);
+}
+
+.edit-post-container {
+    --width: 100%;
+
+    position: relative;
+    min-width: var(--width);
+}
+
 /* Creating a Post File Upload */
 
 .post-file-upload-container {
@@ -257,6 +275,27 @@ input[type=file].post-file-upload {
 }
 
 /* Post File Upload Preview */
+
+.post-files-upload-thumbnails-container {
+    width: 100%;
+    position: relative;
+    margin: auto;
+    display: flex;
+    /* justify-content: space-between; */
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.post-files-container-heading {
+    --padding-top-bottom: 0.5rem;
+    --padding-left-right: 1.5rem;
+
+    width: 100%;
+    margin: auto;
+    padding: var(--padding-top-bottom) var(--padding-left-right);
+    font-size: 2rem;
+    font-weight: bold;
+}
 
 .post-file-upload-image-thumbnails-container {
     --margin-bottom: 5%;
@@ -400,6 +439,32 @@ input[type=file].post-file-upload {
     margin: auto;
     top: calc((var(--width) - var(--close-button-width)) / 2);
     background-image: url("/images/close_white_24dp.svg");
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+/* Post file Preview Window */
+
+.post-file-upload-unknown-file-thumbnail {
+    --height: var(--width);
+    --border-radius: 15px;
+    
+    width: var(--width);
+    height: var(--width);
+    border-radius: var(--border-radius);
+    background-color: var(--site-theme-color-1);
+}
+
+.unknown-file {
+    --unknown-file-width: 1.5rem;
+    --color: var(--letter-color);
+
+    position: relative;
+    width: var(--unknown-file-width);
+    height: var(--unknown-file-width);
+    margin: auto;
+    top: calc((var(--height) - var(--unknown-file-width)) / 2);
+    background-image: url("/images/report_problem_white_24dp.svg");
     background-size: cover;
     box-sizing: border-box;
 }

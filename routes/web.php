@@ -24,19 +24,17 @@ use App\Http\Controllers\BookmarksController;
 
 Route::get('/post/{post}', [PostController::class, 'index'])->name('view_post');
 
-Route::group(['middleware' => ['prevent-back-history', 'guest']], function()
-{
+Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
     Route::get('/login', [LoginController::class, 'index'])->name('login');
-    Route::post('/login', [LoginController::class, 'create']);
+    Route::post('/login', [LoginController::class, 'attempt'])->name('login.attempt');
 });
 
-Route::group(['middleware' => ['prevent-back-history', 'auth']], function()
-{
+Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     Route::get('/bookmarks', [BookmarksController::class, 'index'])->name('bookmarks');
@@ -45,14 +43,13 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function()
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
-    Route::post('/post/create', [PostController::class, 'store']);
+    Route::post('/post/create', [PostController::class, 'store'])->name('post.create');
 
-    Route::group(['middleware' => ['checkUser']], function()
-    {
-        Route::get('/post/{post}/edit', [PostController::class, 'edit'])->name('edit_post');
-        Route::post('/post/{post}/edit', [PostController::class, 'update']);
-        
+    Route::group(['middleware' => ['checkUser']], function () {
+        Route::get('/post/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
+        Route::patch('/post/{post}', [PostController::class, 'update'])->name('post.update');
+        Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
     });
 
-    Route::post('/logout', [LogoutController::class, 'destroy']);
+    Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 });

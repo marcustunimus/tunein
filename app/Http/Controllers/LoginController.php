@@ -15,7 +15,7 @@ class LoginController extends Controller
         return view('login.index');
     }
 
-    public function create(Request $request, Factory $auth, Store $session): RedirectResponse
+    public function attempt(Request $request, Factory $auth, Store $session): RedirectResponse
     {
         $attributes = $request->validate([
             'email' => ['required', 'email'],

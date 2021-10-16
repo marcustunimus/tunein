@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PostController extends Controller
@@ -21,7 +22,20 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        return view('post.edit', ['post' => $post]);
+        $files = [];
+
+        foreach (PostFile::query()->select('file')->where('post_id', '=', $post->id)->get() as $postFile) {
+            array_push($files, 
+                $postFile->file, 
+                Storage::mimeType('public/post_files/' . $postFile->file), 
+                Storage::size('public/post_files/' . $postFile->file)
+            );
+        }
+
+        return view('post.edit', [
+            'post' => $post,
+            'files' => implode('|', $files)
+        ]);
     }
 
     public function store()
@@ -30,9 +44,7 @@ class PostController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
-
-        ddd($files);
+        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
 
         Post::create($postAttributes);
 
@@ -49,24 +61,39 @@ class PostController extends Controller
     {
         $postAttributes = $this->validatePostBody(new Post());
 
-
-
-        // foreach($post->files()->select('file') as $filePath) {
-        //     File::delete(storage_path('app/'.$filePath));
-        //     File::delete()
-        // }
+        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
 
         $post->update($postAttributes);
 
-        return back()->with('success', 'Post Updated');
+        $this->removePostFiles($post->id, explode('/', request('removedPostFiles')));
+
+        if (count($files)) {
+            $this->createPostFiles($post->id, $files);
+        }
+
+        return redirect('home');
     }
 
-    // public function destroy(Post $post)
-    // {
-    //     $post->delete();
+    public function destroy(Post $post)
+    {
+        $postFiles = PostFile::query()->select('file')->where('post_id', '=', $post->id)->get();
 
-    //     return back()->with('success', 'Post Deleted');
-    // }
+        $postFilesNames = [];
+
+        foreach ($postFiles as $postFile) {
+            array_push($postFilesNames, $postFile->file);
+        }
+
+        Storage::delete(array_map(function ($value) {
+            return 'public/post_files/' . $value;
+        }, $postFilesNames));
+
+        $postFiles = PostFile::query()->select('file')->where('post_id', '=', $post->id)->delete();
+
+        $post->delete();
+
+        return redirect('home');
+    }
 
     protected function validatePostBody(?Post $post = null): array
     {
@@ -77,18 +104,32 @@ class PostController extends Controller
         ]);
     }
 
-    protected function filterFiles(array $files, string $removedAttachments = ""): array
+    protected function filterUploadedFiles(array $files, ?string $removedAttachments = ""): array
     {
-        $removedAttachments = collect(explode('/', $removedAttachments));
+        if ($removedAttachments) {
+            $removedAttachments = collect(explode('/', $removedAttachments));
+        }
 
         $files = collect($files);
         $files = $files->unique(function (UploadedFile $file) {
             return $file->getClientOriginalName().$file->getMimeType().$file->getSize();
         })->filter(function (UploadedFile $file) use ($removedAttachments) {
-            return ! $removedAttachments->contains($file->getClientOriginalName());
+            return $removedAttachments ? ! $removedAttachments->contains($file->getClientOriginalName()) : true;
         })->values()->toArray();
 
         return ['file' => $files];
+    }
+
+    protected function removePostFiles(int $postId, array $removedPostFiles) {
+        if (! $removedPostFiles) {
+            return;
+        }
+
+        PostFile::query()->select()->where('post_id', '=', $postId)->whereIn('file', $removedPostFiles)->delete();
+
+        Storage::delete(array_map(function ($value) {
+            return 'public/post_files/' . $value;
+        }, $removedPostFiles));
     }
 
     protected function validateFiles(Request $request): array
@@ -117,10 +158,8 @@ class PostController extends Controller
                 $filename = $postFile->id . '_' . Str::random(32) . '.' . $file->extension();
                 $postFile->file = $filename;
                 $postFile->save();
-                $postFile->file = $file->storeAs('post_files', $filename);
+                $postFile->file = $file->storeAs('post_files', $filename, 'public');
             }
         }
     }
-
-
 }
