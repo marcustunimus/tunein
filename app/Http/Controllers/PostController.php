@@ -6,12 +6,8 @@ use App\Models\Post;
 use App\Models\PostFile;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PostController extends Controller
 {
@@ -44,7 +40,7 @@ class PostController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
+        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
         Post::create($postAttributes);
 
@@ -61,7 +57,7 @@ class PostController extends Controller
     {
         $postAttributes = $this->validatePostBody(new Post());
 
-        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles'), request('removedAttachments')))) : [];
+        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
         $post->update($postAttributes);
 
@@ -76,7 +72,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $postFiles = PostFile::query()->select('file')->where('post_id', '=', $post->id)->get();
+        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->get();
 
         $postFilesNames = [];
 
@@ -88,7 +84,7 @@ class PostController extends Controller
             return 'public/post_files/' . $value;
         }, $postFilesNames));
 
-        $postFiles = PostFile::query()->select('file')->where('post_id', '=', $post->id)->delete();
+        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->delete();
 
         $post->delete();
 
@@ -104,17 +100,12 @@ class PostController extends Controller
         ]);
     }
 
-    protected function filterUploadedFiles(array $files, ?string $removedAttachments = ""): array
+    protected function filterUploadedFiles(array $files): array
     {
-        if ($removedAttachments) {
-            $removedAttachments = collect(explode('/', $removedAttachments));
-        }
-
         $files = collect($files);
+        
         $files = $files->unique(function (UploadedFile $file) {
             return $file->getClientOriginalName().$file->getMimeType().$file->getSize();
-        })->filter(function (UploadedFile $file) use ($removedAttachments) {
-            return $removedAttachments ? ! $removedAttachments->contains($file->getClientOriginalName()) : true;
         })->values()->toArray();
 
         return ['file' => $files];

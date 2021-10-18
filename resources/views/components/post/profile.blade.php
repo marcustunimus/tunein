@@ -1,7 +1,7 @@
 @props(['url' => ''])
 
 <div class="post-profile">
-    <div class="post-profile-picture" style="content: url({{ asset('/' . $url) }});"></div>
+    <img class="post-profile-picture" src="{{ asset('/' . $url) }}">
     
     <span class="post-profile-name">
         {{ $slot }}

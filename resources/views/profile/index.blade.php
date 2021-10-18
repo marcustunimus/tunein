@@ -22,7 +22,7 @@
             <div class="profile-username">marktuning</div>
         </div>
 
-        <x-post.create profilePicture="images/pfp.jpg" username="{{ $user->username }}" />
+        <x-post.create profilePicture="images/pfp.jpg" username="{{ $user->username }}" route="{{ route('post.create') }}" />
 
         @foreach ($posts as $post)
             <x-post.panel profilePictureURL="images/pfp.jpg" profileName="{{ $post->author->username }}">

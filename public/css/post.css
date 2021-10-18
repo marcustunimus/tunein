@@ -277,36 +277,27 @@ input[type=file].post-file-upload {
 /* Post File Upload Preview */
 
 .post-files-upload-thumbnails-container {
-    width: 100%;
+    --gap: 10px;
+
+    /* width: 100%; */
     position: relative;
-    margin: auto;
     display: flex;
     /* justify-content: space-between; */
-    gap: 10px;
+    gap: var(--gap);
     flex-wrap: wrap;
-}
-
-.post-files-container-heading {
-    --padding-top-bottom: 0.5rem;
-    --padding-left-right: 1.5rem;
-
-    width: 100%;
-    margin: auto;
-    padding: var(--padding-top-bottom) var(--padding-left-right);
-    font-size: 2rem;
-    font-weight: bold;
 }
 
 .post-file-upload-image-thumbnails-container {
     --margin-bottom: 5%;
+    --gap: 10px;
     
-    width: 100%;
+    /* width: 100%; */
     position: relative;
     margin: auto;
     margin-bottom: var(--margin-bottom);
     display: flex;
     /* justify-content: space-between; */
-    gap: 10px;
+    gap: var(--gap);
     flex-wrap: wrap;
 }
 

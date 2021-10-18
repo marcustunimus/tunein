@@ -20,7 +20,9 @@
         </label>
     </div>
 
-    <div id="uploads" class="post-file-upload-image-thumbnails-container"></div>
+    <div id="uploads" class="post-file-upload-image-thumbnails-container">
+        <span id="post-files" class="post-files-upload-thumbnails-container"></span>
+    </div>
 
     <x-form.error name="{{ $name }}.*" />
 </div>

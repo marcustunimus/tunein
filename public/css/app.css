@@ -1,6 +1,9 @@
 :root {
-    --site-theme-color-1: hsl(268, 40%, 63%);
-    --site-theme-color-1-hover: hsl(268, 40%, 78%);
+    --site-theme-color-1: #4079c7;
+    --site-theme-color-1-hover: #5b90da;
+
+    /* --site-theme-color-1: hsl(268, 40%, 63%);
+    --site-theme-color-1-hover: hsl(268, 40%, 78%); */
     --site-theme-color-2: hsl(183, 72%, 79%);
     --background-color: hsl(0, 0%, 10%);
     --field-color: hsl(0, 0%, 20%);
@@ -121,6 +124,13 @@ body {
     max-height: 100%;
     max-width: 100%;
     margin: auto;
+}
+
+.preview-background {
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .hide {
