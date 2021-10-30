@@ -11,8 +11,6 @@
             <x-form.submit class="create-post-button center link">Post</x-form.submit>
         </div>
 
-        <script type="text/javascript" src="{{ asset('/js/create-post.js') }}"></script>
-
         <script>
             addFilesToForm("createPostForm");
             showUploadedFilesPreview("uploadedFiles");

@@ -21,8 +21,9 @@
     </div>
 
     <div id="uploads" class="post-file-upload-image-thumbnails-container">
-        <span id="post-files" class="post-files-upload-thumbnails-container"></span>
+        <div id="post-files" class="post-files-upload-thumbnails-container"></div>
     </div>
 
-    <x-form.error name="{{ $name }}.*" />
+    <x-form.error name="file.*" />
+    <x-form.error name="max_post_size" />
 </div>

@@ -25,10 +25,17 @@
         <x-post.create profilePicture="images/pfp.jpg" username="{{ $user->username }}" route="{{ route('post.create') }}" />
 
         @foreach ($posts as $post)
-            <x-post.panel profilePictureURL="images/pfp.jpg" profileName="{{ $post->author->username }}">
-                <div>{{ $post->body }}</div>
+            <x-post.panel profilePictureURL="images/pfp.jpg" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}">
+                <x-post.dropdown>
+                    <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
+                    <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE">Delete</x-post.dropdown-button>
+                </x-post.dropdown>
+                
+                <div class="post-body-text">{{ $post->body }}</div>
 
-                <x-post.file url="images/pfp.jpg" />
+                <script>
+                    loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}");
+                </script>
             </x-post.panel>
         @endforeach
     </div>

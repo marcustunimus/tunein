@@ -8,19 +8,37 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
     public function index(Post $post)
     {
-        return view('post.index', ['post' => $post]);
+        $files=[];
+
+        $postFiles = [];
+
+        foreach ($post->files as $postFile) {
+            array_push($postFiles, 
+                $postFile->file, 
+                Storage::mimeType('public/post_files/' . $postFile->file), 
+                Storage::size('public/post_files/' . $postFile->file)
+            );
+        }
+
+        $files[$post->id] = implode('|', $postFiles);
+
+        return view('post.index', [
+            'post' => $post,
+            'files' => $files
+        ]);
     }
 
     public function edit(Post $post)
     {
         $files = [];
 
-        foreach (PostFile::query()->select('file')->where('post_id', '=', $post->id)->get() as $postFile) {
+        foreach (PostFile::query()->where('post_id', '=', $post->id)->get() as $postFile) {
             array_push($files, 
                 $postFile->file, 
                 Storage::mimeType('public/post_files/' . $postFile->file), 
@@ -42,6 +60,8 @@ class PostController extends Controller
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
+        $this->validateMaxPostFilesSize($this->getAllUploadedFilesSize($files['file']));
+
         Post::create($postAttributes);
 
         if (count($files)) {
@@ -58,6 +78,8 @@ class PostController extends Controller
         $postAttributes = $this->validatePostBody(new Post());
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
+
+        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + $this->getAllUploadedFilesSize($files['file']));
 
         $post->update($postAttributes);
 
@@ -100,6 +122,15 @@ class PostController extends Controller
         ]);
     }
 
+    protected function validateMaxPostFilesSize(int $size): void
+    {
+        $maxPostSize = 40; // Mbs
+
+        if ($size > $maxPostSize * 1024 * 1024) {
+            throw ValidationException::withMessages(['max_post_size' => 'The maximum post files size must not be larger than ' . $maxPostSize . ' Mbs.']);
+        }
+    }
+
     protected function filterUploadedFiles(array $files): array
     {
         $files = collect($files);
@@ -109,6 +140,30 @@ class PostController extends Controller
         })->values()->toArray();
 
         return ['file' => $files];
+    }
+
+    protected function getAllUploadedFilesSize(array $files): int
+    {
+        $size = 0;
+
+        foreach($files as $file) {
+            $size += $file->getSize();
+        }
+
+        return $size;
+    }
+
+    protected function getAllPostFilesSize(Post $post, array $removedPostFiles): int
+    {
+        $size = 0;
+
+        foreach (PostFile::query()->where('post_id', '=', $post->id)->get() as $postFile) {
+            if (! in_array($postFile->file, $removedPostFiles, true)) {
+                $size += Storage::size('public/post_files/' . $postFile->file);
+            }
+        }
+
+        return $size;
     }
 
     protected function removePostFiles(int $postId, array $removedPostFiles) {

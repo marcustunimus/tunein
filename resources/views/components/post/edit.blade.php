@@ -16,9 +16,6 @@
             Attach files...
         </x-form.file>
 
-        <script type="text/javascript" src="{{ asset('/js/create-post.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('/js/edit-post.js') }}"></script>
-
         <script>
             addFilesToForm("editPostForm");
             showPostFilesPreview('{{ $files }}');

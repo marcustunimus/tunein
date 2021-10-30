@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ asset('/css/login.css') }}">
         <link rel="stylesheet" href="{{ asset('/css/register.css') }}">
         <link rel="stylesheet" href="{{ asset('/css/tailwind.min.css') }}">
+        <script type="text/javascript" src="{{ asset('/js/app.js') }}"></script>
         
         <title>{{ $title }}</title>
     </head>

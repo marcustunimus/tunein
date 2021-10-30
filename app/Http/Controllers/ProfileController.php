@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostFile;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -18,10 +20,27 @@ class ProfileController extends Controller
         else {
             $posts = $auth->guard()->user()->posts;
         }
+
+        $files=[];
+
+        foreach ($posts as $post) {
+            $postFiles = [];
+
+            foreach ($post->files as $postFile) {
+                array_push($postFiles, 
+                    $postFile->file, 
+                    Storage::mimeType('public/post_files/' . $postFile->file), 
+                    Storage::size('public/post_files/' . $postFile->file)
+                );
+            }
+
+            $files[$post->id] = implode('|', $postFiles);
+        }
         
         return view('profile.index', [
             'posts' => $posts,
-            'user' => $auth->guard()->user()
+            'user' => $auth->guard()->user(),
+            'files' => $files
         ]);
     }
 }
