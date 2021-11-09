@@ -49,6 +49,7 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
         Route::get('/post/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
         Route::patch('/post/{post}', [PostController::class, 'update'])->name('post.update');
         Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+        Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
     });
 
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');

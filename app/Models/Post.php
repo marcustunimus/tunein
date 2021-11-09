@@ -24,4 +24,9 @@ class Post extends Model
     {
         return $this->hasMany(PostFile::class, 'post_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'post_id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostFile;
 use Illuminate\Support\Str;
@@ -60,7 +61,9 @@ class PostController extends Controller
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
-        $this->validateMaxPostFilesSize($this->getAllUploadedFilesSize($files['file']));
+        if (isset($files['file'])) {
+            $this->validateMaxPostFilesSize($this->getAllUploadedFilesSize($files['file']));
+        }
 
         Post::create($postAttributes);
 
@@ -112,6 +115,61 @@ class PostController extends Controller
 
         return redirect('home');
     }
+
+    public function like(Post $post)
+    {
+        $likeAttributes = [
+            'user_id' => auth()->user()->id,
+            'post_id' => $post->id
+        ];
+
+        $likedPost = Like::query()->where([
+            ['user_id', '=', $likeAttributes['user_id']],
+            ['post_id', '=', $likeAttributes['post_id']]
+        ])->get()->first();
+
+        if ($likedPost) {
+            $likedPost->delete();
+
+            return json_encode("Disliked");
+        }
+
+        Like::create($likeAttributes);
+
+        return json_encode("Liked");
+    }
+
+
+
+    public static function getLikesOfPosts($posts): array
+    {
+        $postsLikes = [];
+
+        foreach ($posts as $post) {
+            $likes = Like::query()->where('post_id', $post->id)->get();
+
+            $postsLikes[$post->id] = $likes;
+        }
+        
+        return $postsLikes;
+    }
+
+    public static function getUserLikedPosts($postsLikes): array
+    {
+        $userLikedPosts = [];
+
+        foreach ($postsLikes as $id => $postLikes) {
+            foreach ($postLikes as $like) {
+                if ($like->user_id === auth()->user()->id) {
+                    array_push($userLikedPosts, $id);
+                }
+            }
+        }
+
+        return $userLikedPosts;
+    }
+
+
 
     protected function validatePostBody(?Post $post = null): array
     {

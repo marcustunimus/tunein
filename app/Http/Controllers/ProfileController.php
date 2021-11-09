@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostFile;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class ProfileController extends Controller
             $posts = $auth->guard()->user()->posts;
         }
 
-        $files=[];
+        $files = [];
 
         foreach ($posts as $post) {
             $postFiles = [];
@@ -36,11 +37,17 @@ class ProfileController extends Controller
 
             $files[$post->id] = implode('|', $postFiles);
         }
+
+        $postLikes = PostController::getLikesOfPosts($posts);
+
+        $userLikes = PostController::getUserLikedPosts($postLikes);
         
         return view('profile.index', [
             'posts' => $posts,
             'user' => $auth->guard()->user(),
-            'files' => $files
+            'files' => $files,
+            'postLikes' => $postLikes,
+            'userLikes' => $userLikes
         ]);
     }
 }

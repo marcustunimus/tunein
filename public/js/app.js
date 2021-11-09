@@ -650,3 +650,37 @@ function loadPreviewPostFile(files, i) {
     previewContainer.appendChild(nextButtonContainer);
     previewContainer.appendChild(beforeButtonContainer);
 }
+
+function setInteractionButtonsFunctionality(postId, numberOfLikes) {
+    let postLikeButtonContainer = document.getElementById("post-" + postId + "-like");
+    let postInfoContainer = document.getElementById("post-" + postId + "-info");
+
+    postLikeButtonContainer.onclick = function () {
+        fetch('/post/' + postId + '/like', {
+            method: 'POST',
+            headers: {
+                'url': '/post/' + postId + '/like',
+                "X-CSRF-Token": document.querySelector('input[name=_token]').value
+            }
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if (data === "Liked") {
+                postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon post-liked-icon");
+                postLikeButtonContainer.lastElementChild.innerText = "Dislike";
+                numberOfLikes += 1;
+                postInfoContainer.innerText = numberOfLikes + " likes";
+            }
+            else if (data === "Disliked") {
+                postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon post-likable-icon");
+                postLikeButtonContainer.lastElementChild.innerText = "Like";
+                numberOfLikes -= 1;
+                postInfoContainer.innerText = numberOfLikes + " likes";
+            }
+
+            return console.log(data);
+        }).catch(function (error) {
+            return console.log(error);
+        });
+    }
+}

@@ -36,7 +36,22 @@
                 <script>
                     loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}");
                 </script>
+
+                <x-post.interaction.tab>
+                    <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'post-liked-icon' : 'post-likable-icon' }}">
+                        {{ in_array($post->id, $userLikes) ? 'Dislike' : 'Like' }}
+                    </x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="post-comment-icon">Comments</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-share" icon="post-share-icon">Share</x-post-interaction-button>
+                </x-post.interaction.tab>
+
+                {{-- TODO --}}
+                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} likes</x-post.interaction.info> 
             </x-post.panel>
+
+            <script>
+                setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }});
+            </script>
         @endforeach
     </div>
 
