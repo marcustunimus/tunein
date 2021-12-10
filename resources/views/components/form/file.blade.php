@@ -3,11 +3,11 @@
 <div class="{{ $containerClass }} block">
     <div id="files-input-container">
         <input
-            name="{{ $name }}[]"
+            name="{{ $name }}{{ $multiple ? '[]' : '' }}"
             id="{{ $name }}"
             type="file"
-            placeholder="{{ $slot }}"
-            class="{{ $class }}"
+            {{-- placeholder="{{ $slot }}" --}}
+            class="{{ $class }} hidden"
             {{ $multiple ? 'multiple' : '' }}
             {{ $accept ? 'accept=' . $accept : '' }}
         >

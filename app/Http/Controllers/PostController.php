@@ -15,6 +15,8 @@ class PostController extends Controller
 {
     public function index(Post $post)
     {
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->get();
+
         $files=[];
 
         $postFiles = [];
@@ -29,9 +31,26 @@ class PostController extends Controller
 
         $files[$post->id] = implode('|', $postFiles);
 
+        $postLikes = $this::getLikesOfPosts([$post]);
+
+        $userLikes = $this::getUserLikedPosts($postLikes);
+
+        $commentsFiles = $this::getPostsFiles($comments);
+
+        $commentsLikes = $this::getLikesOfPosts($comments);
+
+        $userCommentsLikes = $this::getUserLikedPosts($postLikes);
+        
         return view('post.index', [
             'post' => $post,
-            'files' => $files
+            'user' => auth()->user(),
+            'files' => $files,
+            'postLikes' => $postLikes,
+            'userLikes' => $userLikes,
+            'comments' => $comments,
+            'commentsFiles' => $commentsFiles,
+            'commentsLikes' => $commentsLikes,
+            'userCommentsLikes' => $userCommentsLikes
         ]);
     }
 
@@ -58,6 +77,8 @@ class PostController extends Controller
         $postAttributes = array_merge($this->validatePostBody(), [
             'user_id' => auth()->user()->id
         ]);
+        
+        $postAttributes['comment_on_post'] = (!request('comment_on_post') ? null : $this->validatePostCommentId()['comment_on_post']);
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
@@ -82,7 +103,7 @@ class PostController extends Controller
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
-        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + $this->getAllUploadedFilesSize($files['file']));
+        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + (isset($files['file'])) ? $this->getAllUploadedFilesSize($files['file']) : 0);
 
         $post->update($postAttributes);
 
@@ -118,6 +139,10 @@ class PostController extends Controller
 
     public function like(Post $post)
     {
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
+
         $likeAttributes = [
             'user_id' => auth()->user()->id,
             'post_id' => $post->id
@@ -131,12 +156,20 @@ class PostController extends Controller
         if ($likedPost) {
             $likedPost->delete();
 
-            return json_encode("Disliked");
+            return json_encode("Unliked");
         }
 
         Like::create($likeAttributes);
 
         return json_encode("Liked");
+    }
+
+    public function likesInfo(Post $post) {
+        $postLikes = PostController::getLikesOfPosts([$post]);
+
+        $postLikesInStringFormat = PostController::convertLikesOfPostsToStringFormats($postLikes);
+
+        return json_encode($postLikesInStringFormat);
     }
 
 
@@ -154,19 +187,61 @@ class PostController extends Controller
         return $postsLikes;
     }
 
+    public static function convertLikesOfPostsToStringFormats($postLikes): array
+    {
+        $postLikesInStringFormat = [];
+        $tempCount = 0;
+
+        foreach($postLikes as $key => $postLike) {
+            $temp = "";
+
+            foreach($postLike as $like) {
+                $tempCount++;
+                $temp .= implode('|', [$like->user->id, $like->user->username]) . ($tempCount !== $postLike->count() ? '|' : "");
+            }
+
+            $postLikesInStringFormat[$key] = $temp;
+        }
+
+        return $postLikesInStringFormat;
+    }
+
     public static function getUserLikedPosts($postsLikes): array
     {
         $userLikedPosts = [];
 
         foreach ($postsLikes as $id => $postLikes) {
             foreach ($postLikes as $like) {
-                if ($like->user_id === auth()->user()->id) {
-                    array_push($userLikedPosts, $id);
+                if (auth()->user() != null) {
+                    if ($like->user_id === auth()->user()->id) {
+                        array_push($userLikedPosts, $id);
+                    }
                 }
             }
         }
 
         return $userLikedPosts;
+    }
+
+    public static function getPostsFiles($posts): array
+    {
+        $files = [];
+
+        foreach ($posts as $post) {
+            $postFiles = [];
+
+            foreach ($post->files as $postFile) {
+                array_push($postFiles, 
+                    $postFile->file, 
+                    Storage::mimeType('public/post_files/' . $postFile->file), 
+                    Storage::size('public/post_files/' . $postFile->file)
+                );
+            }
+
+            $files[$post->id] = implode('|', $postFiles);
+        }
+
+        return $files;
     }
 
 
@@ -177,6 +252,15 @@ class PostController extends Controller
 
         return request()->validate([
             'body' => ['required', 'max:2000'],
+        ]);
+    }
+
+    protected function validatePostCommentId(?Post $post = null): array
+    {
+        $post ??= new Post();
+
+        return request()->validate([
+            'comment_on_post' => ['state' => 'exists:posts,id']
         ]);
     }
 

@@ -24,10 +24,19 @@ class HomeController extends Controller
         }
 
         $posts = Post::query()->whereIn('user_id', $followingQuery)->orderByDesc('created_at')->get();
+
+        $files = PostController::getPostsFiles($posts);
+
+        $postLikes = PostController::getLikesOfPosts($posts);
+
+        $userLikes = PostController::getUserLikedPosts($postLikes);
         
         return view('home.index', [
             'posts' => $posts,
-            'user' => $auth->guard()->user()
+            'user' => $auth->guard()->user(),
+            'files' => $files,
+            'postLikes' => $postLikes,
+            'userLikes' => $userLikes,
         ]);
     }
 }

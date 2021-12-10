@@ -1,9 +1,9 @@
-<x-metadata title="TuneIn - Register">
+<x-metadata title="TuneInMedia - Register">
     <div class="register-page">
         <div class="register-form-container">
             <div class="register-heading-text center">Register</div>
 
-            <form method="POST" action="/register">
+            <form method="POST" action="{{ route('register.store') }}">
                 @csrf
                             
                 <x-form.input name="name" type="text" class="register-input-text center" containerClass="register-input-container">Name</x-form.input>
@@ -18,7 +18,7 @@
             </form>
                         
             <div class="register-text center mt-3">
-                Already have an account?<a href="/login" class="register-text register-link ml-1">Login</a>
+                Already have an account?<a href="{{ route('login') }}" class="register-text register-link ml-1">Login</a>
             </div>
         </div>
     </div>

@@ -36,6 +36,8 @@
     max-height: calc(2 * var(--profile-picture-radius));
     margin-left: var(--margin);
     border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
 
     z-index: 4;
 }
@@ -58,4 +60,84 @@
     position: relative;
     vertical-align: middle;
     font-size: var(--font-size);
+}
+
+/* Profile Settings Related */
+
+.profile-settings-heading-text {
+    --font-size: 3rem;
+    --font-weight: bold;
+    --margin: 5%;
+
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.profile-settings-section-text {
+    --font-size: 2rem;
+    --font-weight: bold;
+    --margin: 5%;
+
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.profile-image-preview {
+    --profile-picture-radius: 75px;
+
+    position: relative;
+    width: calc(2 * var(--profile-picture-radius));
+    max-width: calc(2 * var(--profile-picture-radius));
+    height: calc(2 * var(--profile-picture-radius));
+    max-height: calc(2 * var(--profile-picture-radius));
+    margin: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+
+    z-index: 4;
+}
+
+.profile-image-preview-upload {
+    --margin-top: 2.5%;
+    --font-weight: 500;
+
+    position: relative;
+    margin-top: var(--margin-top);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: var(--font-weight);
+}
+
+.profile-settings-submit-container {
+    --width: 30%;
+    --margin: 7.5%;
+
+    position: relative;
+    margin: auto;
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+    width: var(--width);
+    max-width: var(--width);
+    border-radius: var(--border-radius);
+}
+
+.profile-settings-gender-container {
+    --padding: 15px;
+    --width: 75%;
+    --margin-top: 5%;
+
+    position: relative;
+    display: flex;
+    width: var(--width);
+    max-width: var(--width);
+    margin: auto;
+    margin-top: var(--margin-top);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+    justify-content: space-between;
 }

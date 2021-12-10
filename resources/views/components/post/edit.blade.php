@@ -18,8 +18,8 @@
 
         <script>
             addFilesToForm("editPostForm");
-            showPostFilesPreview('{{ $files }}');
-            showUploadedFilesPreview('uploadedFiles');
+            showPostFilesPreview('{{ $files }}', "{{ asset('') }}");
+            showUploadedFilesPreview("uploadedFiles", "{{ asset('') }}");
         </script>
 
         <div class="post-submit-container block">

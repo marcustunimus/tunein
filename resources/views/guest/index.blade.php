@@ -1,4 +1,4 @@
-<x-metadata title="TuneIn - Welcome">
+<x-metadata title="TuneInMedia - Welcome">
     <div class="welcome-container">
         <div class="welcome-content">
             <div class="welcome-heading-text">
@@ -10,11 +10,11 @@
             </div>
 
             <div class="welcome-text">
-                Join today!<a href="/register" class="welcome-link ml-2">Register</a>
+                Join today!<a href="{{ route('register') }}" class="welcome-link ml-2">Register</a>
             </div>
 
             <div class="welcome-text">
-                Already have an account?<a href="/login" class="welcome-link ml-2">Log In</a>
+                Already have an account?<a href="{{ route('login') }}" class="welcome-link ml-2">Log In</a>
             </div>
         </div>
     </div>

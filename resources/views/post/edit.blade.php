@@ -1,9 +1,9 @@
-<x-metadata title="TuneIn - Edit Post">
+<x-metadata title="TuneInMedia - Edit Post">
     <div id="preview" class="preview-container block"></div>
 
     <div class="left-sidebar-container block">
         <div class="left-sidebar-content block">
-            <x-sidebar.link-button href="/home">Back to Home</x-sidebar.link-button>
+            <x-sidebar.link-button href="{{ route('home') }}">Back to Home</x-sidebar.link-button>
         </div>
     </div>
 

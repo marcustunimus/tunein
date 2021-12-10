@@ -1,9 +1,9 @@
-<x-metadata title="TuneIn - Login">
+<x-metadata title="TuneInMedia - Login">
     <div class="login-page">
         <div class="login-form-container">
             <div class="login-heading-text center">Login</div>
 
-            <form method="POST" action="/login">
+            <form method="POST" action="{{ route('login.attempt') }}">
                 @csrf
 
                 <x-form.input name="email" type="email" class="login-input-text center" containerClass="login-input-container">Email</x-form.input>
@@ -16,7 +16,7 @@
             </form>
 
             <div class="login-text center mt-3">
-                Don't have an account?<a href="/register" class="login-text login-link ml-1">Register</a>
+                Don't have an account?<a href="{{ route('register') }}" class="login-text login-link ml-1">Register</a>
             </div>
         </div>
     </div>

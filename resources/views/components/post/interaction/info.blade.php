@@ -1,5 +1,7 @@
 @props(['id'])
 
-<div id="{{ $id }}" class="post-interactable-info">
-    {{ $slot }}
+<div class="post-interactable-info">
+    <span id="{{ $id }}" class="cursor-pointer">
+        {{ $slot }}
+    </span>
 </div>

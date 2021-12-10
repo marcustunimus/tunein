@@ -11,7 +11,7 @@ class Post extends Model
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['user_id', 'slug', 'body', 'attached_file'];
+    protected $fillable = ['user_id', 'body', 'comment_on_post'];
 
     protected $with = ['author'];
 

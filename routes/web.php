@@ -24,6 +24,8 @@ use App\Http\Controllers\BookmarksController;
 
 Route::get('/post/{post}', [PostController::class, 'index'])->name('view_post');
 
+Route::post('/post/{post}/likesInfo', [PostController::class, 'likesInfo'])->name('post.likesInfo');
+
 Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
 
@@ -43,14 +45,26 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
+    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+    Route::post('/profile/settings', [ProfileController::class, 'storeSettings'])->name('profile.settings.store');
+
     Route::post('/post/create', [PostController::class, 'store'])->name('post.create');
 
     Route::group(['middleware' => ['checkUser']], function () {
         Route::get('/post/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
         Route::patch('/post/{post}', [PostController::class, 'update'])->name('post.update');
         Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
-        Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
     });
 
+    Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
+
+    Route::post('/post/{post}/comment', [PostController::class, 'store'])->name('post.comment');
+
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
+
+
+
+    Route::get('/profile/update/profile-picture', [ProfileController::class, 'storePicture'])->name('store_profile_picture');
 });
+
+// Add function to set the profile picture and the background picture.

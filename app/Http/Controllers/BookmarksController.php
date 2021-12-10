@@ -21,10 +21,20 @@ class BookmarksController extends Controller
                 });
         }
 
-        $posts = Post::query()->whereIn('user_id', $bookmarksQuery)->get();
+        $posts = Post::query()->whereIn('id', $bookmarksQuery)->get();
+
+        $files = PostController::getPostsFiles($posts);
+
+        $postLikes = PostController::getLikesOfPosts($posts);
+
+        $userLikes = PostController::getUserLikedPosts($postLikes);
         
         return view('bookmarks.index', [
-            'bookmarks' => $posts
+            'bookmarks' => $posts,
+            'user' => $auth->guard()->user(),
+            'files' => $files,
+            'postLikes' => $postLikes,
+            'userLikes' => $userLikes,
         ]);
     }
 }

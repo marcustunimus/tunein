@@ -1,5 +1,5 @@
-@props(['href'])
+@props(['href' => '', 'id' => ''])
 
-<a class="post-dropdown-content-button" href="{{ $href }}">
+<a id="{{ $id }}" class="post-dropdown-content-button" href="{{ $href }}">
     {{ $slot }}
 </a>

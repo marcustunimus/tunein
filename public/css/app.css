@@ -20,6 +20,7 @@
 body {
     background-color: var(--background-color);
     color: var(--letter-color);
+    overflow-y: overlay;
 }
 
 /* Main Content Related */
@@ -85,6 +86,10 @@ body {
 
 .link {
     cursor: pointer;
+}
+
+.link-color {
+    color: var(--site-theme-color-1);
 }
 
 .block {
