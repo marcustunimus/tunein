@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\Bookmark;
 use App\Models\PostFile;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -35,11 +36,19 @@ class PostController extends Controller
 
         $userLikes = $this::getUserLikedPosts($postLikes);
 
+        $postBookmarks = PostController::getBookmarksOfPosts([$post]);
+
+        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+
         $commentsFiles = $this::getPostsFiles($comments);
 
         $commentsLikes = $this::getLikesOfPosts($comments);
 
         $userCommentsLikes = $this::getUserLikedPosts($postLikes);
+
+        $commentsBookmarks = PostController::getBookmarksOfPosts($comments);
+
+        $userCommentsBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
         
         return view('post.index', [
             'post' => $post,
@@ -47,10 +56,14 @@ class PostController extends Controller
             'files' => $files,
             'postLikes' => $postLikes,
             'userLikes' => $userLikes,
+            'postBookmarks' => $postBookmarks,
+            'userBookmarks' => $userBookmarks,
             'comments' => $comments,
             'commentsFiles' => $commentsFiles,
             'commentsLikes' => $commentsLikes,
-            'userCommentsLikes' => $userCommentsLikes
+            'userCommentsLikes' => $userCommentsLikes,
+            'commentsBookmarks' => $commentsBookmarks,
+            'userCommentsBookmarks' => $userCommentsBookmarks,
         ]);
     }
 
@@ -164,10 +177,39 @@ class PostController extends Controller
         return json_encode("Liked");
     }
 
-    public function likesInfo(Post $post) {
-        $postLikes = PostController::getLikesOfPosts([$post]);
+    public function bookmark(Post $post)
+    {
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
 
-        $postLikesInStringFormat = PostController::convertLikesOfPostsToStringFormats($postLikes);
+        $bookmarkAttributes = [
+            'user_id' => auth()->user()->id,
+            'post_id' => $post->id
+        ];
+
+        $bookmarkedPost = Bookmark::query()->where([
+            ['user_id', '=', $bookmarkAttributes['user_id']],
+            ['post_id', '=', $bookmarkAttributes['post_id']]
+        ])->get()->first();
+
+        if ($bookmarkedPost) {
+            $bookmarkedPost->delete();
+
+            return json_encode("Unbookmarked");
+        }
+
+        Bookmark::create($bookmarkAttributes);
+
+        return json_encode("Bookmarked");
+    }
+
+
+
+    public function likesInfo(Post $post) {
+        $postLikes = $this::getLikesOfPosts([$post]);
+
+        $postLikesInStringFormat = $this::convertLikesOfPostsToStringFormats($postLikes);
 
         return json_encode($postLikesInStringFormat);
     }
@@ -221,6 +263,55 @@ class PostController extends Controller
         }
 
         return $userLikedPosts;
+    }
+
+    public static function getBookmarksOfPosts($posts): array
+    {
+        $postsBookmarks = [];
+
+        foreach ($posts as $post) {
+            $bookmarks = Bookmark::query()->where('post_id', $post->id)->get();
+
+            $postsBookmarks[$post->id] = $bookmarks;
+        }
+        
+        return $postsBookmarks;
+    }
+
+    public static function convertBookmarksOfPostsToStringFormats($postBookmarks): array
+    {
+        $postBookmarksInStringFormat = [];
+        $tempCount = 0;
+
+        foreach($postBookmarks as $key => $postBookmark) {
+            $temp = "";
+
+            foreach($postBookmark as $bookmark) {
+                $tempCount++;
+                $temp .= implode('|', [$bookmark->user->id, $bookmark->user->username]) . ($tempCount !== $postBookmark->count() ? '|' : "");
+            }
+
+            $postBookmarksInStringFormat[$key] = $temp;
+        }
+
+        return $postBookmarksInStringFormat;
+    }
+
+    public static function getUserBookmarkedPosts($postsBookmarks): array
+    {
+        $userBookmarkedPosts = [];
+
+        foreach ($postsBookmarks as $id => $postBookmarks) {
+            foreach ($postBookmarks as $bookmark) {
+                if (auth()->user() != null) {
+                    if ($bookmark->user_id === auth()->user()->id) {
+                        array_push($userBookmarkedPosts, $id);
+                    }
+                }
+            }
+        }
+
+        return $userBookmarkedPosts;
     }
 
     public static function getPostsFiles($posts): array

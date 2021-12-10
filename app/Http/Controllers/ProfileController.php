@@ -29,6 +29,10 @@ class ProfileController extends Controller
         $postLikes = PostController::getLikesOfPosts($posts);
 
         $userLikes = PostController::getUserLikedPosts($postLikes);
+
+        $postBookmarks = PostController::getBookmarksOfPosts($posts);
+
+        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
         
         return view('profile.index', [
             'posts' => $posts,
@@ -36,6 +40,8 @@ class ProfileController extends Controller
             'files' => $files,
             'postLikes' => $postLikes,
             'userLikes' => $userLikes,
+            'postBookmarks' => $postBookmarks,
+            'userBookmarks' => $userBookmarks,
         ]);
     }
 

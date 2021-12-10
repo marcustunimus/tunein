@@ -24,6 +24,10 @@ class ExploreController extends Controller
         $postLikes = PostController::getLikesOfPosts($posts);
 
         $userLikes = PostController::getUserLikedPosts($postLikes);
+
+        $postBookmarks = PostController::getBookmarksOfPosts($posts);
+
+        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
         
         return view('explore.index', [
             'posts' => $posts,
@@ -31,6 +35,8 @@ class ExploreController extends Controller
             'files' => $files,
             'postLikes' => $postLikes,
             'userLikes' => $userLikes,
+            'postBookmarks' => $postBookmarks,
+            'userBookmarks' => $userBookmarks,
         ]);
     }
 }

@@ -30,7 +30,7 @@
             <x-post.interaction.tab>
                 <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
                 <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
-                <x-post.interaction.button id="post-{{ $post->id }}-share" icon="{{ 'background-image: url(' . asset('/images/share_white_24dp.svg') . ');' }}">Share</x-post-interaction-button>
+                <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
             </x-post.interaction.tab>
 
             <script>
@@ -62,8 +62,8 @@
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
-                <x-post.interaction.button id="post-{{ $post->id }}-share" icon="{{ 'background-image: url(' . asset('/images/share_white_24dp.svg') . ');' }}">Share</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userCommentsBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
                 </x-post.interaction.tab>
 
                 <script>

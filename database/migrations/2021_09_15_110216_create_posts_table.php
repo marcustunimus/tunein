@@ -18,7 +18,6 @@ class CreatePostsTable extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('body');
             $table->foreignId('comment_on_post')->nullable();
-            $table->foreignId('share_of_post')->nullable();
             $table->timestamps();
         });
     }

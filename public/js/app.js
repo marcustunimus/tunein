@@ -679,10 +679,20 @@ function loadPreviewPostFile(files, i, path) {
 function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
     let postLikeButtonContainer = document.getElementById("post-" + postId + "-like");
     let postCommentButtonContainer = document.getElementById("post-" + postId + "-comment");
+    let postBookmarkButtonContainer = document.getElementById("post-" + postId + "-bookmark");
     let postLinkButtonContainer = document.getElementById("post-" + postId + "-link");
     let postInfoContainer = document.getElementById("post-" + postId + "-info");
 
     postLikeButtonContainer.onclick = function () {
+        if (postLikeButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
+            postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+            postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
+        }
+        else if (postLikeButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
+            postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+            postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
+        }
+
         try {
             fetch(path + 'post/' + postId + '/like', {
                 method: 'POST',
@@ -718,6 +728,45 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
     postCommentButtonContainer.onclick = function () {
         window.open(path + 'post/' + postId).focus();
+    }
+
+    postBookmarkButtonContainer.onclick = function () {
+        if (postBookmarkButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);") {
+            postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+            postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
+        }
+        else if (postBookmarkButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/bookmark_white_24dp.svg);") {
+            postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+            postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
+        }
+
+        try {
+            fetch(path + 'post/' + postId + '/bookmark', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'post/' + postId + '/bookmark',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                if (data === "Bookmarked") {
+                    postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+                    postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
+                }
+                else if (data === "Unbookmarked") {
+                    postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+                    postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
+                }
+                else if (data === "Login") {
+                    window.location.replace(path + '/login');
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        } catch (error) {
+            window.location.replace(path + '/login');
+        }
     }
 
     postLinkButtonContainer.onclick = function (event) {

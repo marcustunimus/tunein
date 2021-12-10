@@ -87,7 +87,7 @@
 .post-interaction-container {
     --columns: 3;
     --rows: 1;
-    --gap: 0.3rem;
+    --gap: 1rem;
     --height: 2.25rem;
     --margin-top: 0.75rem;
 

@@ -60,6 +60,8 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::post('/post/{post}/comment', [PostController::class, 'store'])->name('post.comment');
 
+    Route::post('/post/{post}/bookmark', [PostController::class, 'bookmark'])->name('post.bookmark');
+
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
 

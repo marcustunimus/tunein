@@ -30,6 +30,10 @@ class HomeController extends Controller
         $postLikes = PostController::getLikesOfPosts($posts);
 
         $userLikes = PostController::getUserLikedPosts($postLikes);
+
+        $postBookmarks = PostController::getBookmarksOfPosts($posts);
+
+        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
         
         return view('home.index', [
             'posts' => $posts,
@@ -37,6 +41,8 @@ class HomeController extends Controller
             'files' => $files,
             'postLikes' => $postLikes,
             'userLikes' => $userLikes,
+            'postBookmarks' => $postBookmarks,
+            'userBookmarks' => $userBookmarks,
         ]);
     }
 }
