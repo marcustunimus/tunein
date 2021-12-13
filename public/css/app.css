@@ -56,6 +56,7 @@ body {
 
 .scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: var(--field-scrollbar-color-hover);
+    cursor: pointer;
 }
 
 .scrollbar::-webkit-scrollbar-track-piece:start {
@@ -67,6 +68,45 @@ body {
 
 .scrollbar::-webkit-scrollbar-track-piece:end {
     --margin-bottom: 5px;
+
+    background: transparent;
+    margin-bottom: var(--margin-bottom); 
+}
+
+/* Scrollbar Preview */
+
+.scrollbar-preview::-webkit-scrollbar {
+    --width: 15px;
+
+    display: block;
+    width: calc(var(--width) / 2);
+}
+
+.scrollbar-preview::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.scrollbar-preview::-webkit-scrollbar-thumb {
+    --border-radius: 5px;
+
+    background-color: var(--field-scrollbar-color); 
+    border-radius: var(--border-radius);
+}
+
+.scrollbar-preview::-webkit-scrollbar-thumb:hover {
+    background-color: var(--field-scrollbar-color-hover);
+    cursor: pointer;
+}
+
+.scrollbar-preview::-webkit-scrollbar-track-piece:start {
+    --margin-top: 1rem;
+
+    background: transparent;
+    margin-top: var(--margin-top);
+}
+
+.scrollbar-preview::-webkit-scrollbar-track-piece:end {
+    --margin-bottom: 1rem;
 
     background: transparent;
     margin-bottom: var(--margin-bottom); 

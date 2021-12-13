@@ -64,9 +64,5 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
-
-
     Route::get('/profile/update/profile-picture', [ProfileController::class, 'storePicture'])->name('store_profile_picture');
 });
-
-// Add function to set the profile picture and the background picture.

@@ -150,6 +150,44 @@
     padding-right: var(--margin-top);
 }
 
+.post-likes-preview-container {
+    --width: 35%;
+    --height: 75%;
+    --border-radius: 1rem;
+
+    min-width: var(--width); 
+    max-width: var(--width); 
+    min-height: var(--height); 
+    max-height: var(--height); 
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    overflow-y: auto;
+}
+
+.post-likes-preview-heading {
+    --font-size: 3rem;
+    --font-weight: 600;
+    --margin: 5%;
+
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.post-likes-profile-container {
+    --height: 10%;
+    --padding: 10px;
+    --profile-picture-radius: 25px;
+
+    position: relative;
+    display: block;
+    background-color: var(--background-color);
+    padding: var(--padding);
+    padding-left: calc(var(--padding) + 1rem);
+    z-index: 1;
+}
+
 /* Post Input */
 
 .post-input-container {

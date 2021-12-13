@@ -783,10 +783,14 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
         document.body.style.overflow = 'hidden';
 
         let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
-        let previewContent = document.createElement("div"); previewContent.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;"; previewContent.setAttribute("class", "preview center");
+        let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
         let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
         let skipFunction = false;
+
+        let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Likes";
+
+        previewContent.appendChild(previewContentHeading);
 
         closeButtonContainer.appendChild(closeButton);
 
@@ -806,27 +810,48 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
         previewContainer.appendChild(closeButtonContainer);
 
-        //What it needs to preview. Add a POST function like the like button function.
+        try {
+            fetch(path + 'post/' + postId + '/likesInfo', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'post/' + postId + '/likesInfo',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                usersLiked = data[postId].split("|");
 
-        // try {
-        //     fetch('/post/' + postId + '/likesInfo', {
-        //         method: 'POST',
-        //         headers: {
-        //             'url': '/post/' + postId + '/likesInfo',
-        //             "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
-        //         }
-        //     }).then(function (response) {
-        //         return response.json();
-        //     }).then(function (data) {
-        //         usersLiked = data[postId].split("|");
+                let usersLikedContainer = document.createElement("div");
 
-        //         console.log(usersLiked);
-        //     }).catch(function (error) {
-        //         return console.log(error);
-        //     });
-        // } catch (error) {
-        //     return console.log(error);
-        // }
+                if (usersLiked.length > 1) {
+                    for (let i = 0; i < usersLiked.length; i += 2) {
+                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "storage/profile_pictures/" + usersLiked[i]);
+                        let username = document.createElement("span"); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
+                    
+                        userContainer.appendChild(userProfilePicture);
+                        userContainer.appendChild(username);
+                    
+                        usersLikedContainer.appendChild(userContainer);
+                    }
+                }
+
+                previewContent.appendChild(usersLikedContainer);
+
+                previewContent.onclick = function() {
+                    skipFunction = true;
+
+                    previewContent.onclick;
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        } catch (error) {
+            return console.log(error);
+        }
+
+        previewContainer.appendChild(previewContent);
     }
 }
 

@@ -8,6 +8,10 @@
     </div>
 
     <div class="main-container block">
+        @if ($errors->any())
+            <div class="error center-text">The form could not be submitted! There were errors with the validation.</div>
+        @endif
+
         <div class="profile-settings-heading-text center">Settings</div>
 
         <form method="POST" action="{{ route('profile.settings.store') }}" enctype="multipart/form-data">

@@ -239,7 +239,7 @@ class PostController extends Controller
 
             foreach($postLike as $like) {
                 $tempCount++;
-                $temp .= implode('|', [$like->user->id, $like->user->username]) . ($tempCount !== $postLike->count() ? '|' : "");
+                $temp .= implode('|', [$like->user->profile_picture, $like->user->username]) . ($tempCount !== $postLike->count() ? '|' : "");
             }
 
             $postLikesInStringFormat[$key] = $temp;
