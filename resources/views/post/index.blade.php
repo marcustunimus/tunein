@@ -12,7 +12,7 @@
             <x-post.dropdown>
                 <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                 @if ($user != null)
-                    @if ($post->author->id === $user->id)
+                    @if ($post->author->id === auth()->user()->id)
                         <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
                         <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE">Delete</x-post.dropdown-button>
                     @endif
@@ -45,7 +45,7 @@
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $comment->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)
-                        @if ($comment->author->id === $user->id)
+                        @if ($comment->author->id === auth()->user()->id)
                             <x-post.dropdown-link href="{{ route('post.edit', $comment) }}">Edit</x-post.dropdown-link>
                             <x-post.dropdown-button href="{{ route('post.destroy', $comment) }}" method="DELETE">Delete</x-post.dropdown-button>
                         @endif

@@ -43,10 +43,7 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::get('/explore', [ExploreController::class, 'index'])->name('explore');
 
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-
-    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
-    Route::post('/profile/settings', [ProfileController::class, 'storeSettings'])->name('profile.settings.store');
+    Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->name('profile');
 
     Route::post('/post/create', [PostController::class, 'store'])->name('post.create');
 
@@ -54,6 +51,9 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
         Route::get('/post/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
         Route::patch('/post/{post}', [PostController::class, 'update'])->name('post.update');
         Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+
+        Route::get('/profile/{user:username}/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+        Route::post('/profile/{user:username}/settings', [ProfileController::class, 'storeSettings'])->name('profile.settings.store');
     });
 
     Route::post('/post/{post}/like', [PostController::class, 'like'])->name('post.like');
@@ -63,6 +63,4 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
     Route::post('/post/{post}/bookmark', [PostController::class, 'bookmark'])->name('post.bookmark');
 
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
-
-    Route::get('/profile/update/profile-picture', [ProfileController::class, 'storePicture'])->name('store_profile_picture');
 });

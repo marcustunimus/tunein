@@ -827,7 +827,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                 if (usersLiked.length > 1) {
                     for (let i = 0; i < usersLiked.length; i += 2) {
                         let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "storage/profile_pictures/" + usersLiked[i]);
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/pfp.jpg");
                         let username = document.createElement("span"); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
                     
                         userContainer.appendChild(userProfilePicture);

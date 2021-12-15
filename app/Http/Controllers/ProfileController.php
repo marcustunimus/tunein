@@ -13,15 +13,15 @@ use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
-    public function index(Factory $auth)
+    public function index(User $user)
     {
         $search = request()->query('search');
 
         if ($search) {
-            $posts = $auth->guard()->user()->posts()->where('body', 'like', '%'.$search.'%')->get();
+            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->get();
         }
         else {
-            $posts = $auth->guard()->user()->posts;
+            $posts = $user->posts;
         }
 
         $files = PostController::getPostsFiles($posts);
@@ -35,8 +35,8 @@ class ProfileController extends Controller
         $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
         
         return view('profile.index', [
+            'user' => $user,
             'posts' => $posts,
-            'user' => $auth->guard()->user(),
             'files' => $files,
             'postLikes' => $postLikes,
             'userLikes' => $userLikes,
@@ -45,21 +45,21 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function settings(Factory $auth)
+    public function settings(User $user)
     {
         return view('profile.settings', [
-            'user' => $auth->guard()->user()
+            'user' => $user
         ]);
     }
 
-    public function storeSettings(Request $request, Factory $auth)
+    public function storeSettings(Request $request, User $user)
     {
         $genders = ['Male', 'Female', 'Unspecified'];
 
         $attributes = $request->validate([
             'name' => ['required', 'min:3', 'max:64'],
-            'username' => ['required', 'min:3', 'max:32', Rule::unique('users', 'username')->ignore($auth->guard()->user()->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($auth->guard()->user()->id)],
+            'username' => ['required', 'min:3', 'max:32', Rule::unique('users', 'username')->ignore($user->id)],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'gender' => ['required', Rule::in($genders)],
             'password_current' => ['nullable'],
             'password' => ['min:8', 'max:255', 'confirmed', 'nullable'],
@@ -78,7 +78,7 @@ class ProfileController extends Controller
             $this->validateBackgroundPictureSize($profileBackgroundPicture['uploadedBackgroundPictureFile']->getSize());
         }
 
-        $this->validatePasswords($auth, $attributes);
+        $this->validatePasswords($user, $attributes);
 
         if (! isset($profilePicture['uploadedProfilePictureFile'])) {
             $profilePicture['uploadedProfilePictureFile'] = null;
@@ -90,7 +90,7 @@ class ProfileController extends Controller
 
         $this->saveProfileDetails($attributes, $profilePicture['uploadedProfilePictureFile'], $profileBackgroundPicture['uploadedBackgroundPictureFile']);
 
-        ddd('success');
+        return view('home');
     }
 
     protected function validatePicture(Request $request, string $name): array
@@ -122,10 +122,10 @@ class ProfileController extends Controller
         }
     }
 
-    protected function validatePasswords(Factory $auth, array $attributes): void
+    protected function validatePasswords(User $user, array $attributes): void
     {
         if ($attributes['password_current'] != null || $attributes['password'] != null || $attributes['password_confirmation'] != null) {
-            if (password_verify($attributes['password_current'], $auth->guard()->user()->password)) {
+            if (password_verify($attributes['password_current'], $user->password)) {
                 if ($attributes['password'] == null) {
                     throw ValidationException::withMessages(['password' => 'Input a new password that you want to have your password changed to.']);
                 }

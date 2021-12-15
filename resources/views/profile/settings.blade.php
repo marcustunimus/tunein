@@ -14,7 +14,7 @@
 
         <div class="profile-settings-heading-text center">Settings</div>
 
-        <form method="POST" action="{{ route('profile.settings.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('profile.settings.store', auth()->user()->username) }}" enctype="multipart/form-data">
             @csrf
             
             <div class="profile-settings-section-text center">Change Profile Details</div>
@@ -28,13 +28,13 @@
                 <x-form.radio name="gender" id="unspecified-radio-button" type="radio" class="" containerClass="" value="Unspecified" checked="{{ $user->gender == null ? 'checked' : '' }}">Unspecified</x-form.radio>
             </div>
             <div class="profile-settings-section-text center">Change Profile Picture</div>
-            <x-profile.image-preview id="profile-picture" url="storage/profile_pictures/{{ $user->profile_picture }}" />
+            <x-profile.image-preview id="profile-picture" url="{{ $user->profile_picture }}" />
             <x-form.file name="uploadedProfilePictureFile" class="profile-image-preview-upload center" containerClass="" accept=".png,.jpeg,.jpg"><span class="link link-color" id="uploadedProfilePictureFileButton">Change...</span></x-form.file>
             <script>
                 showProfilePicturePreview("uploadedProfilePictureFile", "{{ asset('') }}");
             </script>
             <div class="profile-settings-section-text center">Change Background Picture</div>
-            <x-profile.background-preview id="profile-background" url="storage/profile_backgrounds/{{ $user->background_picture }}" />
+            <x-profile.background-preview id="profile-background" url="{{ $user->background_picture }}" />
             <x-form.file name="uploadedBackgroundPictureFile" class="profile-image-preview-upload center" containerClass="" accept=".png,.jpeg,.jpg"><span class="link link-color" id="uploadedBackgroundPictureFileButton">Change...</span></x-form.file>
             <script>
                 showBackgroundPicturePreview("uploadedBackgroundPictureFile", "{{ asset('') }}");

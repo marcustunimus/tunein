@@ -6,19 +6,19 @@
             <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
             <x-sidebar.link-button href="{{ route('bookmarks') }}">Bookmarks</x-sidebar.link-button>
             <x-sidebar.link-button href="{{ route('explore') }}">Explore</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('profile') }}">Profile</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('profile.settings') }}">Settings</x-sidebar.link-button>
+            <x-sidebar.link-button href="{{ route('profile', auth()->user()->username) }}">Profile</x-sidebar.link-button>
+            <x-sidebar.link-button href="{{ route('profile.settings', auth()->user()->username) }}">Settings</x-sidebar.link-button>
             <x-sidebar.form-button href="{{ route('logout') }}">Log Out</x-sidebar.form-button>
         </div>
     </div>
 
     <div class="main-container block">
         @foreach ($bookmarks as $bookmark)
-            <x-post.panel profilePictureURL="storage/profile_pictures/{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}">
+            <x-post.panel profilePictureURL="{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}">
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $bookmark->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)
-                        @if ($bookmark->author->id === $user->id)
+                        @if ($bookmark->author->id === auth()->user()->id)
                             <x-post.dropdown-link href="{{ route('post.edit', $bookmark) }}">Edit</x-post.dropdown-link>
                             <x-post.dropdown-button href="{{ route('post.destroy', $bookmark) }}" method="DELETE">Delete</x-post.dropdown-button>
                         @endif

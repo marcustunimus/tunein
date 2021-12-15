@@ -18,7 +18,13 @@ class CheckUser
     {
         $post = $request->route('post');
 
-        if ($request->user()->username == $post->author->username) {
+        if (! $post) {
+            $user = $request->route('user');
+
+            if ($request->user()->username == $user->username) {
+                return $next($request);
+            }
+        } elseif ($request->user()->username == $post->author->username) {
             return $next($request);
         }
 
