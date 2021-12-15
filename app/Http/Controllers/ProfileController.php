@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Following;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -92,6 +93,34 @@ class ProfileController extends Controller
 
         return view('home');
     }
+
+    public function follow(User $user) {
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
+
+        $followAttributes = [
+            'user_id' => auth()->user()->id,
+            'following_id' => $user->id
+        ];
+
+        $followedProfile = Following::query()->where([
+            ['user_id', '=', $followAttributes['user_id']],
+            ['following_id', '=', $followAttributes['following_id']]
+        ])->get()->first();
+
+        if ($followedProfile) {
+            $followedProfile->delete();
+
+            return json_encode("Unfollowed");
+        }
+
+        Following::create($followAttributes);
+
+        return json_encode("Followed");
+    }
+
+
 
     protected function validatePicture(Request $request, string $name): array
     {

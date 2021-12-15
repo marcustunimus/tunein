@@ -45,6 +45,8 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->name('profile');
 
+    Route::post('/profile/{user:username}/follow', [ProfileController::class, 'follow'])->name('profile.follow');
+
     Route::post('/post/create', [PostController::class, 'store'])->name('post.create');
 
     Route::group(['middleware' => ['checkUser']], function () {

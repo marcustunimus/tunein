@@ -141,3 +141,39 @@
     padding-right: var(--padding);
     justify-content: space-between;
 }
+
+/* Profile Follow Related */
+
+.profile-follow-form {
+    --width: 35%;
+
+    position: relative;
+    display: inline-block;
+    width: var(--width);
+    max-width: var(--width);
+    border-radius: var(--border-radius);
+}
+
+.profile-follow-button {
+    --border-radius: 15px;
+    --font-size: 1.75rem;
+    --font-weight: bold;
+    --padding-top-bottom: 0.25rem;
+    --padding-left-right: 1rem;
+    
+    width: 100%;
+    max-width: 100%;
+    padding: 0.25rem 1rem;
+    border-radius: var(--border-radius);
+    background-color: var(--site-theme-color-1);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+}
+
+.profile-follow-button:hover {
+    background-color: var(--site-theme-color-1-hover);
+}
+
+.profile-follow-button:focus {
+    outline-width: 0;
+}

@@ -17,6 +17,7 @@ class CreateFollowingsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('following_id')->constrained('users');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ class CreateFollowingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('followers');
+        Schema::dropIfExists('followings');
     }
 }

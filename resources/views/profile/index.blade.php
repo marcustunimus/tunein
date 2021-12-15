@@ -18,7 +18,17 @@
         <div class="profile-info">
             <x-profile.image url="{{ $user->profile_picture }}" />
 
-            <div class="profile-name">{{ $user->name }}</div>
+            <div class="flex justify-between">
+                <div class="profile-name">{{ $user->name }}</div>
+
+                <div class="profile-follow-form">
+                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">Follow</div>
+                </div>
+
+                <script>
+                    setFollowButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+                </script>
+            </div>
 
             <div class="profile-username">{{ $user->username }}</div>
         </div>

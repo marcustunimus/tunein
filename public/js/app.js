@@ -901,3 +901,42 @@ function showBackgroundPicturePreview(name, path) {
         reader.readAsDataURL(inputFileElement.files[0]);
     }
 }
+
+function setFollowButtonFunctionality(username, path) {
+    let profileFollowButton = document.getElementById("profile-" + username);
+
+    profileFollowButton.onclick = function () {
+        if (profileFollowButton.innerText === "Following") {
+            profileFollowButton.innerText = "Follow";
+        }
+        else if (profileFollowButton.innerText === "Follow") {
+            profileFollowButton.innerText = "Following";
+        }
+
+        try {
+            fetch(path + 'profile/' + username + '/follow', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'profile/' + username + '/follow',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                if (data === "Followed") {
+                    profileFollowButton.innerText = "Following";
+                }
+                else if (data === "Unfollowed") {
+                    profileFollowButton.innerText = "Follow";
+                }
+                else if (data === "Login") {
+                    window.location.replace(path + '/login');
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        } catch (error) {
+            window.location.replace(path + '/login');
+        }
+    }
+}
