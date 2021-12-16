@@ -18,6 +18,16 @@
         <div class="profile-info">
             <x-profile.image url="{{ $user->profile_picture }}" />
 
+            <div class="flex justify-end">
+                <div class="profile-edit-text-container center">
+                    @if ($user->id === auth()->user()->id)
+                        <a href="{{ route('profile.settings', auth()->user()->username) }}" class="profile-edit-text link link-color">Edit</a>
+                    @else
+                        <div class="profile-edit-text"></div>
+                    @endif
+                </div>
+            </div>
+
             <div class="flex justify-between">
                 <div class="profile-name">{{ $user->name }}</div>
 

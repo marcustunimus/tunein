@@ -177,3 +177,23 @@
 .profile-follow-button:focus {
     outline-width: 0;
 }
+
+/* Profile Edit Related */
+
+.profile-edit-text-container {
+    --width: 35%;
+
+    position: relative;
+    top: -50px;
+    width: var(--width);
+    max-width: var(--width);
+    color: var(--background-color);
+}
+
+.profile-edit-text {
+    --height: 30px;
+
+    min-height: var(--height);
+    max-height: var(--height);
+    font-size: 1.25rem;
+}
