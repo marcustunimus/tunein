@@ -197,3 +197,11 @@
     max-height: var(--height);
     font-size: 1.25rem;
 }
+
+/* Profile Followers Related */
+
+.profile-followers-count-text {
+    --margin-top: 2.5%;
+
+    margin-top: var(--margin-top);
+}

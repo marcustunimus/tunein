@@ -120,7 +120,28 @@ class ProfileController extends Controller
         return json_encode("Followed");
     }
 
+    public function followersInfo(User $user) {
+        $userFollowers = Following::query()->where('following_id', $user->id)->get();
 
+        $userFollowersInStringFormat = $this::convertFollowersOfUserToStringFormat($userFollowers);
+
+        return json_encode($userFollowersInStringFormat);
+    }
+
+    
+
+    public static function convertFollowersOfUserToStringFormat($userFollowers): string
+    {
+        $postLikesInStringFormat = "";
+        $tempCount = 0;
+
+        foreach($userFollowers as $userFollower) {
+            $tempCount++;
+            $postLikesInStringFormat .= implode('|', [$userFollower->user->profile_picture, $userFollower->user->username]) . ($tempCount !== $userFollowers->count() ? '|' : "");
+        }
+
+        return $postLikesInStringFormat;
+    }
 
     protected function validatePicture(Request $request, string $name): array
     {

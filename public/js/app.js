@@ -940,3 +940,87 @@ function setFollowButtonFunctionality(username, path) {
         }
     }
 }
+
+function setPreviewFollowersButtonFunctionality(username, path) {
+    let followersInfoContainer = document.getElementById("profile-followers-count");
+
+    followersInfoContainer.onclick = function () {
+        let previewContainer = document.getElementById('preview');
+
+        previewContainer.innerHTML = "";
+
+        previewContainer.style.zIndex = 100;
+        document.body.style.overflow = 'hidden';
+
+        let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
+        let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
+        let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let skipFunction = false;
+
+        let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Followers";
+
+        previewContent.appendChild(previewContentHeading);
+
+        closeButtonContainer.appendChild(closeButton);
+
+        previewBackground.onclick = function () { hidePreview(); }
+        previewContent.onclick = function () {
+            if (!skipFunction) {
+                hidePreview();
+            }
+            else {
+                skipFunction = false;
+            }
+        }
+
+        previewContainer.appendChild(previewBackground);
+
+        closeButtonContainer.onclick = function () { hidePreview(); }
+
+        previewContainer.appendChild(closeButtonContainer);
+
+        try {
+            fetch(path + 'profile/' + username + '/followersInfo', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'profile/' + username + '/followersInfo',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                userFollowed = data.split("|");
+
+                let userFollowedContainer = document.createElement("div");
+
+                if (userFollowed.length > 1) {
+                    for (let i = 0; i < userFollowed.length; i += 2) {
+                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/pfp.jpg");
+                        let usernameElement = document.createElement("span"); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = userFollowed[i + 1];
+                    
+                        userContainer.appendChild(userProfilePicture);
+                        userContainer.appendChild(usernameElement);
+                    
+                        userFollowedContainer.appendChild(userContainer);
+                    }
+                }
+
+                previewContent.appendChild(userFollowedContainer);
+
+                previewContent.onclick = function() {
+                    skipFunction = true;
+
+                    previewContent.onclick;
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        } catch (error) {
+            return console.log(error);
+        }
+
+        previewContainer.appendChild(previewContent);
+    }
+}

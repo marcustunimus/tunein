@@ -3,12 +3,16 @@
 
     <div class="left-sidebar-container block">
         <div class="left-sidebar-content block">
-            <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('bookmarks') }}">Bookmarks</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('explore') }}">Explore</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('profile', auth()->user()->username) }}">Profile</x-sidebar.link-button>
-            <x-sidebar.link-button href="{{ route('profile.settings', auth()->user()->username) }}">Settings</x-sidebar.link-button>
-            <x-sidebar.form-button href="{{ route('logout') }}">Log Out</x-sidebar.form-button>
+            @if (auth()->check())
+                <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
+                <x-sidebar.link-button href="{{ route('bookmarks') }}">Bookmarks</x-sidebar.link-button>
+                <x-sidebar.link-button href="{{ route('explore') }}">Explore</x-sidebar.link-button>
+                <x-sidebar.link-button href="{{ route('profile', auth()->user()->username) }}">Profile</x-sidebar.link-button>
+                <x-sidebar.link-button href="{{ route('profile.settings', auth()->user()->username) }}">Settings</x-sidebar.link-button>
+                <x-sidebar.form-button href="{{ route('logout') }}">Log Out</x-sidebar.form-button>
+            @else
+                <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
+            @endif
         </div>
     </div>
 
@@ -20,8 +24,12 @@
 
             <div class="flex justify-end">
                 <div class="profile-edit-text-container center">
-                    @if ($user->id === auth()->user()->id)
-                        <a href="{{ route('profile.settings', auth()->user()->username) }}" class="profile-edit-text link link-color">Edit</a>
+                    @if (auth()->check())
+                        @if ($user->id === auth()->user()->id)
+                            <a href="{{ route('profile.settings', auth()->user()->username) }}" class="profile-edit-text link link-color">Edit</a>
+                        @else
+                            <div class="profile-edit-text"></div>
+                        @endif
                     @else
                         <div class="profile-edit-text"></div>
                     @endif
@@ -41,15 +49,27 @@
             </div>
 
             <div class="profile-username">{{ $user->username }}</div>
+
+            <div class="profile-followers-count-text">
+                <span id="profile-followers-count">0 followers</span>
+            </div>
+
+            <script>
+                setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+            </script>
         </div>
 
-        <x-post.create profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.create') }}" />
+        @if (auth()->check())
+            @if ($user->id === auth()->user()->id)
+                <x-post.create profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.create') }}" />
+            @endif
+        @endif
 
         @foreach ($posts as $post)
             <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}">
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
-                    @if ($user != null)
+                    @if (auth()->check())
                         @if ($post->author->id === auth()->user()->id)
                             <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
                             <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE">Delete</x-post.dropdown-button>

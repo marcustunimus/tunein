@@ -26,6 +26,10 @@ Route::get('/post/{post}', [PostController::class, 'index'])->name('view_post');
 
 Route::post('/post/{post}/likesInfo', [PostController::class, 'likesInfo'])->name('post.likesInfo');
 
+Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->name('profile');
+
+Route::post('/profile/{user:username}/followersInfo', [ProfileController::class, 'followersInfo'])->name('profile.followersInfo');
+
 Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
 
@@ -42,8 +46,6 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
     Route::get('/bookmarks', [BookmarksController::class, 'index'])->name('bookmarks');
 
     Route::get('/explore', [ExploreController::class, 'index'])->name('explore');
-
-    Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->name('profile');
 
     Route::post('/profile/{user:username}/follow', [ProfileController::class, 'follow'])->name('profile.follow');
 
