@@ -22,7 +22,7 @@ use App\Http\Controllers\BookmarksController;
 |
 */
 
-Route::get('/post/{post}', [PostController::class, 'index'])->name('view_post');
+Route::get('/post/{post}', [PostController::class, 'index'])->name('view.post');
 
 Route::post('/post/{post}/likesInfo', [PostController::class, 'likesInfo'])->name('post.likesInfo');
 

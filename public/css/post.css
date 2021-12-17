@@ -419,6 +419,20 @@ input.post-input-text:focus {
     border-radius: 0.5rem;
 }
 
+/* Post Comment */
+
+.post-comment-header {
+    --width: 90%;
+
+    position: relative;
+    top: -20px;
+    width: var(--width);
+    max-width: var(--width);
+    font-style: italic;
+    margin: auto;
+    z-index: 10;
+}
+
 /* Post Files */
 
 .post-files-container {

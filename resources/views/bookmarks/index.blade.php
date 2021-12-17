@@ -15,6 +15,10 @@
     <div class="main-container block">
         @foreach ($bookmarks as $bookmark)
             <x-post.panel profilePictureURL="{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}">
+                @if ($bookmark->comment_on_post != null)
+                    <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $bookmark->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
+                @endif
+                
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $bookmark->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)

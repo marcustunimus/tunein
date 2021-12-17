@@ -15,6 +15,10 @@
     <div class="main-container block">
         @foreach ($posts as $post)
             <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}">
+                @if ($post->comment_on_post != null)
+                    <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $post->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
+                @endif
+                
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)
