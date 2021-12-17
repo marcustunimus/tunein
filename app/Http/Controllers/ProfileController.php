@@ -34,6 +34,14 @@ class ProfileController extends Controller
         $postBookmarks = PostController::getBookmarksOfPosts($posts);
 
         $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+
+        $userFollowers = Following::query()->where('following_id', $user->id)->get();
+
+        $userFollowed = [];
+
+        if (auth()->check()) {
+            $userFollowed = Following::query()->where('following_id', $user->id)->where('user_id', auth()->user()->id)->get();
+        }
         
         return view('profile.index', [
             'user' => $user,
@@ -43,6 +51,8 @@ class ProfileController extends Controller
             'userLikes' => $userLikes,
             'postBookmarks' => $postBookmarks,
             'userBookmarks' => $userBookmarks,
+            'userFollowers' => $userFollowers,
+            'userFollowed' => $userFollowed,
         ]);
     }
 

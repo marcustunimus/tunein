@@ -707,13 +707,13 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                     postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
                     numberOfLikes += 1;
-                    postInfoContainer.innerText = numberOfLikes + " likes";
+                    postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Unliked") {
                     postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
                     numberOfLikes -= 1;
-                    postInfoContainer.innerText = numberOfLikes + " likes";
+                    postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Login") {
                     window.location.replace(path + '/login');
@@ -902,8 +902,9 @@ function showBackgroundPicturePreview(name, path) {
     }
 }
 
-function setFollowButtonFunctionality(username, path) {
+function setFollowButtonFunctionality(username, numberOfFollowers, path) {
     let profileFollowButton = document.getElementById("profile-" + username);
+    let followersInfoContainer = document.getElementById("profile-followers-count");
 
     profileFollowButton.onclick = function () {
         if (profileFollowButton.innerText === "Following") {
@@ -925,9 +926,13 @@ function setFollowButtonFunctionality(username, path) {
             }).then(function (data) {
                 if (data === "Followed") {
                     profileFollowButton.innerText = "Following";
+                    numberOfFollowers += 1;
+                    followersInfoContainer.innerText = numberOfFollowers + " " + (numberOfFollowers === 1 ? "follower" : "followers");
                 }
                 else if (data === "Unfollowed") {
                     profileFollowButton.innerText = "Follow";
+                    numberOfFollowers -= 1;
+                    followersInfoContainer.innerText = numberOfFollowers + " " + (numberOfFollowers === 1 ? "follower" : "followers");
                 }
                 else if (data === "Login") {
                     window.location.replace(path + '/login');

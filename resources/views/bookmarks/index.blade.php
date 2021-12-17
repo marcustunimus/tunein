@@ -31,7 +31,7 @@
                     loadPostFiles({{ $bookmark->id }}, "{{ $files[$bookmark->id] }}", "{{ asset('') }}");
                 </script>
 
-                <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $postLikes[$bookmark->id]->count() }} likes</x-post.interaction.info> 
+                <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $postLikes[$bookmark->id]->count() }} {{ $postLikes[$bookmark->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $bookmark->id }}-like" icon="{{ in_array($bookmark->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>

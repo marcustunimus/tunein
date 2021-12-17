@@ -40,21 +40,18 @@
                 <div class="profile-name">{{ $user->name }}</div>
 
                 <div class="profile-follow-form">
-                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">Follow</div>
+                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ $userFollowed->count() ? 'Following' : 'Follow' }}</div>
                 </div>
-
-                <script>
-                    setFollowButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
-                </script>
             </div>
 
             <div class="profile-username">{{ $user->username }}</div>
 
             <div class="profile-followers-count-text">
-                <span id="profile-followers-count">0 followers</span>
+                <span id="profile-followers-count" class="link">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
             </div>
 
             <script>
+                setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
                 setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
             </script>
         </div>
@@ -83,7 +80,7 @@
                     loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}");
                 </script>
 
-                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} likes</x-post.interaction.info> 
+                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} {{ $postLikes[$post->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
