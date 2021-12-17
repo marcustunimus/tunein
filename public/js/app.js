@@ -827,8 +827,8 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                 if (usersLiked.length > 1) {
                     for (let i = 0; i < usersLiked.length; i += 2) {
                         let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/pfp.jpg");
-                        let username = document.createElement("span"); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/pfp.jpg"));
+                        let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
                     
                         userContainer.appendChild(userProfilePicture);
                         userContainer.appendChild(username);
@@ -1002,8 +1002,8 @@ function setPreviewFollowersButtonFunctionality(username, path) {
                 if (userFollowed.length > 1) {
                     for (let i = 0; i < userFollowed.length; i += 2) {
                         let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/pfp.jpg");
-                        let usernameElement = document.createElement("span"); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = userFollowed[i + 1];
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/pfp.jpg"));
+                        let usernameElement = document.createElement("a"); usernameElement.setAttribute("href", path + "profile/" + userFollowed[i + 1]); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = userFollowed[i + 1];
                     
                         userContainer.appendChild(userProfilePicture);
                         userContainer.appendChild(usernameElement);
