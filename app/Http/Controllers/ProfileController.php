@@ -68,13 +68,13 @@ class ProfileController extends Controller
         $genders = ['Male', 'Female', 'Unspecified'];
 
         $attributes = $request->validate([
-            'name' => ['required', 'min:3', 'max:64'],
-            'username' => ['required', 'min:3', 'max:32', Rule::unique('users', 'username')->ignore($user->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
+            'name' => ['required', 'string', 'min:3', 'max:64'],
+            'username' => ['required', 'string', 'min:3', 'max:32', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
+            'email' => ['required', 'string', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'gender' => ['required', Rule::in($genders)],
-            'password_current' => ['nullable'],
-            'password' => ['min:8', 'max:255', 'confirmed', 'nullable'],
-            'password_confirmation' => ['nullable']
+            'password_current' => ['nullable', 'string'],
+            'password' => ['string', 'min:8', 'max:255', 'confirmed', 'nullable'],
+            'password_confirmation' => ['nullable', 'string']
         ]);
 
         $profilePicture = $this->validatePicture($request, 'uploadedProfilePictureFile');

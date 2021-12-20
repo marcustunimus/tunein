@@ -18,8 +18,8 @@ class LoginController extends Controller
     public function attempt(Request $request, Factory $auth, Store $session): RedirectResponse
     {
         $attributes = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
         if (! $auth->guard()->attempt($attributes)) {

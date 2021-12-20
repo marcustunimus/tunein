@@ -40,7 +40,7 @@
                 <div class="profile-name">{{ $user->name }}</div>
 
                 <div class="profile-follow-form">
-                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ $userFollowed->count() ? 'Following' : 'Follow' }}</div>
+                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
                 </div>
             </div>
 

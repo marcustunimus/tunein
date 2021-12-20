@@ -342,7 +342,7 @@ class PostController extends Controller
         $post ??= new Post();
 
         return request()->validate([
-            'body' => ['required', 'max:2000'],
+            'body' => ['required', 'string', 'max:2000'],
         ]);
     }
 
