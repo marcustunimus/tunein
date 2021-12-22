@@ -101,7 +101,7 @@ class ProfileController extends Controller
 
         $this->saveProfileDetails($attributes, $profilePicture['uploadedProfilePictureFile'], $profileBackgroundPicture['uploadedBackgroundPictureFile']);
 
-        return view('home');
+        return redirect()->back()->with('message', 'The settings have been saved.');
     }
 
     public function follow(User $user) {

@@ -30,6 +30,6 @@ class LoginController extends Controller
         
         $session->regenerate();
 
-        return redirect()->route('home')->with('success', 'Welcome, ' . $auth->guard()->user()->username . '!');
+        return redirect()->route('home')->with('message', 'Welcome, ' . $auth->guard()->user()->name . '!');
     }
 }

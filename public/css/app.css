@@ -112,6 +112,70 @@ body {
     margin-bottom: var(--margin-bottom); 
 }
 
+/* Flash Message Classes */
+
+.flash-message-container {
+    --width: 30%;
+    --border-radius: 1rem;
+    
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: var(--width);
+    max-width: var(--width);
+    padding: var(--border-radius);
+    z-index: 1000;
+}
+
+.flash-message-content {
+    position: relative;
+    width: 100%;
+    height: 75%;
+    border-radius: var(--border-radius);
+    padding: var(--border-radius);
+    background-color: var(--site-theme-color-1);
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+}
+
+.flash-message-text {
+    --font-weight: bold;
+
+    width: calc(100% - 2.5rem);
+    font-weight: var(--font-weight);
+}
+
+.flash-message-close-button-container {
+    --width: 1.5rem;
+
+    position: absolute;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--width);
+    max-height: var(--width);
+    top: 1rem;
+    right: 1rem;
+    border-radius: 50%;
+}
+
+.flash-message-close-button-container:hover {
+    background-color: var(--site-theme-color-1-hover);
+    cursor: pointer;
+}
+
+.flash-message-close-button {
+    --close-button-width: 1rem;
+    --color: var(--letter-color);
+
+    position: relative;
+    width: var(--close-button-width);
+    height: var(--close-button-width);
+    margin: auto;
+    top: calc((var(--width) - var(--close-button-width)) / 2);
+    background-size: cover;
+    box-sizing: border-box;
+}
+
 /* Univeral Classes */
 
 .center {

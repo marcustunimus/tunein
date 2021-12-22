@@ -1,5 +1,6 @@
 <x-metadata title="TuneInMedia - Home">
     <div id="preview" class="preview-container block"></div>
+    <x-flash />
 
     <div class="left-sidebar-container block">
         <div class="left-sidebar-content block">

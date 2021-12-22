@@ -771,7 +771,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
     postLinkButtonContainer.onclick = function (event) {
         event.preventDefault();
-        navigator.clipboard.writeText(path + 'post/' + postId).then(() => alert('Text copied'));;
+        navigator.clipboard.writeText(path + 'post/' + postId).then(() => alert('Text copied'));
     }
 
     postInfoContainer.onclick = function () {
@@ -1027,5 +1027,16 @@ function setPreviewFollowersButtonFunctionality(username, path) {
         }
 
         previewContainer.appendChild(previewContent);
+    }
+}
+
+function setFlashMessageCloseButtonFunctionality() {
+    let flashMessageContainer = document.getElementById("flash-message-container");
+    let flashMessageText = document.getElementById("flash-message-text");
+    let flashMessageCloseButton = document.getElementById("flash-message-close-button");
+
+    flashMessageCloseButton.onclick = function () {
+        flashMessageContainer.style = "display: none;";
+        flashMessageText.innerText = "";
     }
 }

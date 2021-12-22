@@ -107,7 +107,7 @@ class PostController extends Controller
             $this->createPostFiles($lasestPostId, $files);
         }
 
-        return redirect('home');
+        return redirect()->back()->with('message', 'The post has been created.');
     }
 
     public function update(Post $post)
@@ -116,7 +116,7 @@ class PostController extends Controller
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
-        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + (isset($files['file'])) ? $this->getAllUploadedFilesSize($files['file']) : 0);
+        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + (isset($files['file']) ? $this->getAllUploadedFilesSize($files['file']) : 0));
 
         $post->update($postAttributes);
 
@@ -126,7 +126,7 @@ class PostController extends Controller
             $this->createPostFiles($post->id, $files);
         }
 
-        return redirect('home');
+        return redirect()->back()->with('message', 'The post has been edited.');
     }
 
     public function destroy(Post $post)
@@ -147,7 +147,7 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect('home');
+        return redirect()->back()->with('message', 'The post has been deleted.');
     }
 
     public function like(Post $post)

@@ -28,6 +28,6 @@ class RegisterController extends Controller
 
         $auth->guard()->login($user);
 
-        return redirect()->route('home')->with('success', 'You have been registered.');
+        return redirect()->route('home')->with('message', 'Welcome, ' . $auth->guard()->user()->name . '!');
     }
 }
