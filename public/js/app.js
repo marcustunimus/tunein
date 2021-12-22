@@ -1035,6 +1035,22 @@ function setFlashMessageCloseButtonFunctionality() {
     let flashMessageText = document.getElementById("flash-message-text");
     let flashMessageCloseButton = document.getElementById("flash-message-close-button");
 
+    let autoHideFlashMessage = setTimeout(function () {
+        flashMessageContainer.style = "display: none;";
+        flashMessageText.innerText = "";
+    }, 10000);
+
+    flashMessageContainer.onmouseenter = function () {
+        clearTimeout(autoHideFlashMessage);
+    }
+
+    flashMessageContainer.onmouseleave = function () {
+        autoHideFlashMessage = setTimeout(function () {
+            flashMessageContainer.style = "display: none;";
+            flashMessageText.innerText = "";
+        }, 10000);
+    }
+
     flashMessageCloseButton.onclick = function () {
         flashMessageContainer.style = "display: none;";
         flashMessageText.innerText = "";
