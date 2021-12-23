@@ -23,7 +23,7 @@ class HomeController extends Controller
             });
         }
 
-        $posts = Post::query()->whereIn('user_id', $followingQuery)->orderByDesc('created_at')->get();
+        $posts = Post::query()->whereIn('user_id', $followingQuery)->orWhere('user_id', '=', $auth->guard()->user()->id)->orderByDesc('created_at')->get();
 
         $files = PostController::getPostsFiles($posts);
 

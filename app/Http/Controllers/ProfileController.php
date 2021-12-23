@@ -19,10 +19,10 @@ class ProfileController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->get();
+            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->latest()->get();
         }
         else {
-            $posts = $user->posts;
+            $posts = $user->posts()->latest()->get();
         }
 
         $files = PostController::getPostsFiles($posts);
@@ -107,6 +107,10 @@ class ProfileController extends Controller
     public function follow(User $user) {
         if (auth()->user() == null) {
             return json_encode("Login");
+        }
+
+        if ($user->id === auth()->user()->id) {
+            return json_encode("FollowDenied");
         }
 
         $followAttributes = [

@@ -890,7 +890,10 @@ input[type=file].post-file-upload {
 
 .post-body-text {
     --top: -1rem;
+    --padding: 0.75rem;
 
     position: relative;
     top: var(--top);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
 }

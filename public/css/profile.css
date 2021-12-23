@@ -145,7 +145,7 @@
 /* Profile Follow Related */
 
 .profile-follow-form {
-    --width: 35%;
+    --width: 30%;
 
     position: relative;
     display: inline-block;
@@ -156,7 +156,7 @@
 
 .profile-follow-button {
     --border-radius: 15px;
-    --font-size: 1.75rem;
+    --font-size: 1.65rem;
     --font-weight: bold;
     --padding-top-bottom: 0.25rem;
     --padding-left-right: 1rem;

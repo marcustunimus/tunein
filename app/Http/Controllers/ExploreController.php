@@ -13,10 +13,10 @@ class ExploreController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = Post::where('body', 'like', '%'.$search.'%')->get();
+            $posts = Post::query()->where('body', 'like', '%'.$search.'%')->latest()->get();
         }
         else {
-            $posts = Post::all();
+            $posts = Post::query()->orderByDesc('created_at')->get();
         }
 
         $files = PostController::getPostsFiles($posts);

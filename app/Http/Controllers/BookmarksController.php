@@ -21,7 +21,7 @@ class BookmarksController extends Controller
                 });
         }
 
-        $posts = Post::query()->whereIn('id', $bookmarksQuery)->get();
+        $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->get();
 
         $files = PostController::getPostsFiles($posts);
 

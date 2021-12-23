@@ -40,9 +40,11 @@
             <div class="flex justify-between">
                 <div class="profile-name">{{ $user->name }}</div>
 
-                <div class="profile-follow-form">
-                    <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
-                </div>
+                @if ($user->id !== auth()->user()->id)
+                    <div class="profile-follow-form">
+                        <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
+                    </div>
+                @endif
             </div>
 
             <div class="profile-username">{{ $user->username }}</div>
@@ -51,10 +53,16 @@
                 <span id="profile-followers-count" class="link">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
             </div>
 
-            <script>
-                setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
-                setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
-            </script>
+            @if ($user->id !== auth()->user()->id)
+                <script>
+                    setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
+                    setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+                </script>
+            @else
+                <script>
+                    setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+                </script>
+            @endif
         </div>
 
         @if (auth()->check())

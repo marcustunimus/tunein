@@ -953,6 +953,9 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
                 else if (data === "Login") {
                     window.location.replace(path + '/login');
                 }
+                else if (data === "FollowDenied") {
+                    console.log("You can't follow yourself. You can't be that sad to do it. Go outside and find some friends.");
+                }
             }).catch(function (error) {
                 return console.log(error);
             });
