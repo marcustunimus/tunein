@@ -5,8 +5,9 @@
             <div class="flash-message-close-button" style="background-image: url({{ asset('images/close_white_24dp.svg') }});"></div>
         </div>
     </div>
+
+    <script>
+        setFlashMessageCloseButtonFunctionality();
+    </script>
 </div>
 
-<script>
-    setFlashMessageCloseButtonFunctionality();
-</script>

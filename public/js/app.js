@@ -3,6 +3,7 @@ var uploadedFiles = [];
 var removedAttachment = false;
 var postFilesLastIndex = -1;
 var removedPostFiles = [];
+var autoHideFlashMessage;
 
 function addFilesToForm(elementId) {
     let postForm = document.getElementById(elementId);
@@ -771,7 +772,22 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
     postLinkButtonContainer.onclick = function (event) {
         event.preventDefault();
+
         navigator.clipboard.writeText(path + 'post/' + postId).then(() => alert('Text copied'));
+
+        let flashMessageContainer = document.getElementById("flash-message-container");
+        let flashMessageText = document.getElementById("flash-message-text");
+
+        flashMessageContainer.style = "";
+        postLinkButtonContainer.blur();
+        flashMessageText.innerText = "The link to the post has been copied.";
+
+        clearTimeout(autoHideFlashMessage);
+
+        autoHideFlashMessage = setTimeout(function () {
+            flashMessageContainer.style = "display: none;";
+            flashMessageText.innerText = "";
+        }, 10000);
     }
 
     postInfoContainer.onclick = function () {
@@ -1035,16 +1051,29 @@ function setFlashMessageCloseButtonFunctionality() {
     let flashMessageText = document.getElementById("flash-message-text");
     let flashMessageCloseButton = document.getElementById("flash-message-close-button");
 
-    let autoHideFlashMessage = setTimeout(function () {
+    autoHideFlashMessage = setTimeout(function () {
         flashMessageContainer.style = "display: none;";
         flashMessageText.innerText = "";
     }, 10000);
+
+    if (flashMessageText.innerText == null) {
+        clearTimeout(autoHideFlashMessage);
+    }
+
+    flashMessageContainer.onchange = function () {
+        clearTimeout(autoHideFlashMessage);
+        autoHideFlashMessage = setTimeout(function () {
+            flashMessageContainer.style = "display: none;";
+            flashMessageText.innerText = "";
+        }, 10000);
+    }
 
     flashMessageContainer.onmouseenter = function () {
         clearTimeout(autoHideFlashMessage);
     }
 
     flashMessageContainer.onmouseleave = function () {
+        clearTimeout(autoHideFlashMessage);
         autoHideFlashMessage = setTimeout(function () {
             flashMessageContainer.style = "display: none;";
             flashMessageText.innerText = "";
@@ -1052,6 +1081,7 @@ function setFlashMessageCloseButtonFunctionality() {
     }
 
     flashMessageCloseButton.onclick = function () {
+        clearTimeout(autoHideFlashMessage);
         flashMessageContainer.style = "display: none;";
         flashMessageText.innerText = "";
     }
