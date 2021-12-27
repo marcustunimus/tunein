@@ -74,11 +74,9 @@
 
 .post-date-text {
     --font-size: 1rem;
-    --padding-left: 0.5rem;
 
     position: relative;
     display: inline-block;
-    padding-left: var(--padding-left);
     vertical-align: middle;
     font-style: italic;
     font-size: var(--font-size);

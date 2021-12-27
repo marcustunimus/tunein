@@ -15,7 +15,7 @@
 
     <div class="main-container block">
         @foreach ($bookmarks as $bookmark)
-            <x-post.panel profilePictureURL="{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
+            <x-post.panel profilePictureURL="{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}" timePassed="{{ $bookmark->created_at->diffForHumans() }}">
                 @if ($bookmark->comment_on_post != null)
                     <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $bookmark->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
                 @endif
