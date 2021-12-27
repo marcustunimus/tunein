@@ -40,10 +40,12 @@
             <div class="flex justify-between">
                 <div class="profile-name">{{ $user->name }}</div>
 
-                @if ($user->id !== auth()->user()->id)
-                    <div class="profile-follow-form">
-                        <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
-                    </div>
+                @if (auth()->check())
+                    @if ($user->id !== auth()->user()->id)
+                        <div class="profile-follow-form">
+                            <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
+                        </div>
+                    @endif
                 @endif
             </div>
 
@@ -53,11 +55,17 @@
                 <span id="profile-followers-count" class="link">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
             </div>
 
-            @if ($user->id !== auth()->user()->id)
-                <script>
-                    setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
-                    setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
-                </script>
+            @if (auth()->check())
+                @if ($user->id !== auth()->user()->id)
+                    <script>
+                        setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
+                        setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+                    </script>
+                @else
+                    <script>
+                        setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
+                    </script>
+                @endif
             @else
                 <script>
                     setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}");
@@ -72,7 +80,7 @@
         @endif
 
         @foreach ($posts as $post)
-            <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}">
+            <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
                 @if ($post->comment_on_post != null)
                     <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $post->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
                 @endif

@@ -72,6 +72,18 @@
     font-weight: var(--font-weight);
 }
 
+.post-date-text {
+    --font-size: 1rem;
+    --padding-left: 0.5rem;
+
+    position: relative;
+    display: inline-block;
+    padding-left: var(--padding-left);
+    vertical-align: middle;
+    font-style: italic;
+    font-size: var(--font-size);
+}
+
 .edit-post-heading-text {
     --font-size: 3rem;
     --font-weight: bold;

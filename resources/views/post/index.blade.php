@@ -9,7 +9,7 @@
     </div>
 
     <div class="main-container block">
-        <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}">
+        <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
             @if ($post->comment_on_post != null)
                 <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $post->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
             @endif
@@ -46,7 +46,7 @@
         <x-post.comment profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.comment', $post->id) }}" postId="{{ $post->id }}"/>
 
         @foreach ($comments as $comment)
-            <x-post.panel profilePictureURL="{{ $comment->author->profile_picture }}" profileName="{{ $comment->author->username }}" contentId="postContent{{ $comment->id }}">
+            <x-post.panel profilePictureURL="{{ $comment->author->profile_picture }}" profileName="{{ $comment->author->username }}" contentId="postContent{{ $comment->id }}" timePassed="{{ $comment->created_at->diffForHumans() }}">
                 @if ($comment->comment_on_post != null)
                     <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $comment->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
                 @endif

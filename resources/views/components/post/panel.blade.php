@@ -1,7 +1,7 @@
-@props(['profilePictureURL', 'profileName', 'contentId' => ''])
+@props(['profilePictureURL', 'profileName', 'contentId' => '', 'timePassed' => ''])
 
 <div class="post">
-    <x-post.profile url="{{ $profilePictureURL }}">{{ $profileName }}</x-post.profile>
+    <x-post.profile url="{{ $profilePictureURL }}" timePassed="{{ $timePassed }}">{{ $profileName }}</x-post.profile>
     
     <div class="post-container block">
         <div class="post-content block" id="{{ $contentId }}">
