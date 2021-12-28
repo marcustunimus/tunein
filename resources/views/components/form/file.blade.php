@@ -14,6 +14,7 @@
         <label 
             for="{{ $name }}"
             class="{{ $class }}"
+            id="{{ $name }}Label"
         >
             {{ $slot }}
         </label>

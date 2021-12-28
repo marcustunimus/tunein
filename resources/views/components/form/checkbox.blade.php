@@ -3,7 +3,7 @@
 <span class="{{ $containerClass }}">
     <input
         name="{{ $name }}"
-        type="radio"
+        type="checkbox"
         id="{{ $id }}"
         class="{{ $class }}"
         {{ $checked !== '' ? "checked" : "" }}

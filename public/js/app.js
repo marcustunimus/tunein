@@ -1089,3 +1089,41 @@ function setFlashMessageCloseButtonFunctionality() {
         flashMessageText.innerText = "";
     }
 }
+
+function setRemoveProfilePictureButtonFunctionality(path) {
+    let profilePictureRemoveButton = document.getElementById("profile-picture-remove-button");
+    let profilePicturePreview = document.getElementById("profile-picture");
+    let uploadedProfilePictureFileButton = document.getElementById("uploadedProfilePictureFileLabel");
+    let previousPath = profilePicturePreview.src;
+
+    profilePictureRemoveButton.onclick = function () {
+        if (profilePictureRemoveButton.checked) {
+            previousPath = profilePicturePreview.src;
+            profilePicturePreview.setAttribute("src", path + "images/pfp.jpg");
+            uploadedProfilePictureFileButton.style = "visibility: hidden;";
+        }
+        else {
+            profilePicturePreview.setAttribute("src", previousPath);
+            uploadedProfilePictureFileButton.style = "visibility: visible;"
+        }
+    }
+}
+
+function setRemoveBackgroundPictureButtonFunctionality(path) {
+    let backgroundPictureRemoveButton = document.getElementById("background-picture-remove-button");
+    let backgroundPicturePreview = document.getElementById("profile-background");
+    let uploadedBackgroundPictureFileButton = document.getElementById("uploadedBackgroundPictureFileLabel");
+    let previousPath = backgroundPicturePreview.src;
+
+    backgroundPictureRemoveButton.onclick = function () {
+        if (backgroundPictureRemoveButton.checked) {
+            previousPath = backgroundPicturePreview.src;
+            backgroundPicturePreview.setAttribute("src", path + "images/pfp.jpg");
+            uploadedBackgroundPictureFileButton.style = "visibility: hidden;";
+        }
+        else {
+            backgroundPicturePreview.setAttribute("src", previousPath);
+            uploadedBackgroundPictureFileButton.style = "visibility: visible;"
+        }
+    }
+}

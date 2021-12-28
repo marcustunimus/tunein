@@ -77,13 +77,23 @@ class ProfileController extends Controller
             'password_confirmation' => ['nullable', 'string']
         ]);
 
-        $profilePicture = $this->validatePicture($request, 'uploadedProfilePictureFile');
+        $profilePicture = null;
+        $profileBackgroundPicture = null;
+
+        $profilePictureRemove = request('profilePictureRemove');
+        $backgroundPictureRemove = request('backgroundPictureRemove');
+
+        if ($profilePictureRemove !== "on") {
+            $profilePicture = $this->validatePicture($request, 'uploadedProfilePictureFile');
+        }
 
         if ($profilePicture != null) {
             $this->validateProfilePictureSize($profilePicture['uploadedProfilePictureFile']->getSize());
         }
 
-        $profileBackgroundPicture = $this->validatePicture($request, 'uploadedBackgroundPictureFile');
+        if ($backgroundPictureRemove !== "on") {
+            $profileBackgroundPicture = $this->validatePicture($request, 'uploadedBackgroundPictureFile');
+        }
         
         if ($profileBackgroundPicture != null) {
             $this->validateBackgroundPictureSize($profileBackgroundPicture['uploadedBackgroundPictureFile']->getSize());
@@ -99,7 +109,7 @@ class ProfileController extends Controller
             $profileBackgroundPicture['uploadedBackgroundPictureFile'] = null;
         }
 
-        $this->saveProfileDetails($attributes, $profilePicture['uploadedProfilePictureFile'], $profileBackgroundPicture['uploadedBackgroundPictureFile']);
+        $this->saveProfileDetails($attributes, $profilePicture['uploadedProfilePictureFile'], $profileBackgroundPicture['uploadedBackgroundPictureFile'], $profilePictureRemove, $backgroundPictureRemove);
 
         return redirect()->back()->with('message', 'The settings have been saved.');
     }
@@ -200,7 +210,7 @@ class ProfileController extends Controller
         }
     }
 
-    protected function saveProfileDetails($attributes, $profilePicture, $backgroundPicture): void
+    protected function saveProfileDetails($attributes, $profilePicture, $backgroundPicture, $profilePictureRemove, $backgroundPictureRemove): void
     {
         $user = User::query()->where('id', '=', auth()->user()->id)->get()->first();
 
@@ -221,6 +231,16 @@ class ProfileController extends Controller
             'background_picture' => isset($backgroundPictureName) ? $backgroundPictureName : $user->background_picture,
             'gender' => $attributes['gender'] !== 'Unspecified' ? $attributes['gender'] : null,
         ];
+
+        if ($profilePictureRemove === "on") {
+            Storage::delete('public/profile_pictures/' . $user->profile_picture);
+            $profileAttributes['profile_picture'] = "";
+        }
+
+        if ($backgroundPictureRemove === "on") {
+            Storage::delete('public/profile_backgrounds/' . $user->background_picture);
+            $profileAttributes['background_picture'] = "";
+        }
 
         if ($profileAttributes['password'] == null) {
             unset($profileAttributes['password']);
