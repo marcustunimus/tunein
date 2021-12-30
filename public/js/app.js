@@ -843,10 +843,12 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                 if (usersLiked.length > 1) {
                     for (let i = 0; i < usersLiked.length; i += 2) {
                         let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/pfp.jpg"));
+                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + usersLiked[i + 1]);
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/person_white_24dp.svg"));
                         let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
                     
-                        userContainer.appendChild(userProfilePicture);
+                        userProfileLink.appendChild(userProfilePicture);
+                        userContainer.appendChild(userProfileLink);
                         userContainer.appendChild(username);
                     
                         usersLikedContainer.appendChild(userContainer);
@@ -1021,10 +1023,12 @@ function setPreviewFollowersButtonFunctionality(username, path) {
                 if (userFollowed.length > 1) {
                     for (let i = 0; i < userFollowed.length; i += 2) {
                         let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/pfp.jpg"));
+                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + userFollowed[i + 1]);
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/person_white_24dp.svg"));
                         let usernameElement = document.createElement("a"); usernameElement.setAttribute("href", path + "profile/" + userFollowed[i + 1]); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = userFollowed[i + 1];
                     
-                        userContainer.appendChild(userProfilePicture);
+                        userProfileLink.appendChild(userProfilePicture);
+                        userContainer.appendChild(userProfileLink);
                         userContainer.appendChild(usernameElement);
                     
                         userFollowedContainer.appendChild(userContainer);
@@ -1099,7 +1103,7 @@ function setRemoveProfilePictureButtonFunctionality(path) {
     profilePictureRemoveButton.onclick = function () {
         if (profilePictureRemoveButton.checked) {
             previousPath = profilePicturePreview.src;
-            profilePicturePreview.setAttribute("src", path + "images/pfp.jpg");
+            profilePicturePreview.setAttribute("src", path + "images/person_white_24dp.svg");
             uploadedProfilePictureFileButton.style = "visibility: hidden;";
         }
         else {
@@ -1118,7 +1122,7 @@ function setRemoveBackgroundPictureButtonFunctionality(path) {
     backgroundPictureRemoveButton.onclick = function () {
         if (backgroundPictureRemoveButton.checked) {
             previousPath = backgroundPicturePreview.src;
-            backgroundPicturePreview.setAttribute("src", path + "images/pfp.jpg");
+            backgroundPicturePreview.setAttribute("src", path + "images/background_default_image.jpg");
             uploadedBackgroundPictureFileButton.style = "visibility: hidden;";
         }
         else {

@@ -1,7 +1,7 @@
 @props(['url' => '', 'timePassed' => ''])
 
 <div class="post-profile">
-    <a href="{{ route('profile', $slot) }}"><img class="post-profile-picture" src="{{ $url != "" ? asset('/storage/profile_pictures/' . $url) : asset('/images/pfp.jpg') }}"></a>
+    <a href="{{ route('profile', $slot) }}"><img class="post-profile-picture" src="{{ $url != "" ? asset('/storage/profile_pictures/' . $url) : asset('/images/person_white_24dp.svg') }}"></a>
     
     <span class="post-profile-name link"><a href="{{ route('profile', $slot) }}">{{ $slot }}</a></span>
 

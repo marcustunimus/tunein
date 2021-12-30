@@ -14,7 +14,7 @@
     object-fit: cover;
     object-position: center;
     border-radius: var(--border-radius);
-
+    border: 2px solid var(--field-color);
     z-index: 3;
 }
 
@@ -51,7 +51,6 @@
     vertical-align: middle;
     font-size: var(--font-size);
     font-weight: var(--font-weight);
-    /* top: calc(var(--profile-picture-radius) * -1); */
 }
 
 .profile-username {
