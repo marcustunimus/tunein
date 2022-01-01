@@ -16,9 +16,9 @@
     <div class="main-container block">
         @foreach ($bookmarks as $bookmark)
             <x-post.panel profilePictureURL="{{ $bookmark->author->profile_picture }}" profileName="{{ $bookmark->author->username }}" contentId="postContent{{ $bookmark->id }}" timePassed="{{ $bookmark->created_at->diffForHumans() }}">
-                @if ($bookmark->comment_on_post != null)
+                {{-- @if ($bookmark->comment_on_post != null)
                     <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $bookmark->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
-                @endif
+                @endif --}}
                 
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $bookmark->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
@@ -40,7 +40,7 @@
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $bookmark->id }}-like" icon="{{ in_array($bookmark->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $bookmark->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $bookmark->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments[$bookmark->id]->count() }}</x-post-interaction-button>
                     <x-post.interaction.button id="post-{{ $bookmark->id }}-bookmark" icon="{{ in_array($bookmark->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
                 </x-post.interaction.tab>
 

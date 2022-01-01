@@ -19,10 +19,10 @@ class ProfileController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->latest()->get();
+            $posts = $user->posts()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', null]])->latest()->get();
         }
         else {
-            $posts = $user->posts()->latest()->get();
+            $posts = $user->posts()->where('comment_on_post', '=', null)->latest()->get();
         }
 
         $files = PostController::getPostsFiles($posts);
@@ -42,6 +42,8 @@ class ProfileController extends Controller
         if (auth()->check()) {
             $userFollowed = Following::query()->where('following_id', $user->id)->where('user_id', auth()->user()->id)->get();
         }
+
+        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('profile.index', [
             'user' => $user,
@@ -53,6 +55,7 @@ class ProfileController extends Controller
             'userBookmarks' => $userBookmarks,
             'userFollowers' => $userFollowers,
             'userFollowed' => $userFollowed,
+            'comments' => $postComments,
         ]);
     }
 

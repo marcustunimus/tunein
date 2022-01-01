@@ -36,9 +36,9 @@ class PostController extends Controller
 
         $userLikes = $this::getUserLikedPosts($postLikes);
 
-        $postBookmarks = PostController::getBookmarksOfPosts([$post]);
+        $postBookmarks = $this::getBookmarksOfPosts([$post]);
 
-        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+        $userBookmarks = $this::getUserBookmarkedPosts($postBookmarks);
 
         $commentsFiles = $this::getPostsFiles($comments);
 
@@ -46,9 +46,11 @@ class PostController extends Controller
 
         $userCommentsLikes = $this::getUserLikedPosts($postLikes);
 
-        $commentsBookmarks = PostController::getBookmarksOfPosts($comments);
+        $commentsBookmarks = $this::getBookmarksOfPosts($comments);
 
-        $userCommentsBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+        $userCommentsBookmarks = $this::getUserBookmarkedPosts($postBookmarks);
+
+        $commentsOfComments = $this::getCommentsOfPosts($comments);
         
         return view('post.index', [
             'post' => $post,
@@ -64,6 +66,7 @@ class PostController extends Controller
             'userCommentsLikes' => $userCommentsLikes,
             'commentsBookmarks' => $commentsBookmarks,
             'userCommentsBookmarks' => $userCommentsBookmarks,
+            'commentsOfComments' => $commentsOfComments,
         ]);
     }
 
@@ -333,6 +336,19 @@ class PostController extends Controller
         }
 
         return $files;
+    }
+
+    public static function getCommentsOfPosts($posts): array
+    {
+        $postsComments = [];
+
+        foreach ($posts as $post) {
+            $comments = Post::query()->where('comment_on_post', '=', $post->id)->get();
+
+            $postsComments[$post->id] = $comments;
+        }
+        
+        return $postsComments;
     }
 
 

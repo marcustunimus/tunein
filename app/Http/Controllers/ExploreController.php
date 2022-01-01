@@ -13,10 +13,10 @@ class ExploreController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = Post::query()->where('body', 'like', '%'.$search.'%')->latest()->get();
+            $posts = Post::query()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', '']])->latest()->get();
         }
         else {
-            $posts = Post::query()->orderByDesc('created_at')->get();
+            $posts = Post::query()->where('comment_on_post', '=', null)->orderByDesc('created_at')->get();
         }
 
         $files = PostController::getPostsFiles($posts);
@@ -28,6 +28,8 @@ class ExploreController extends Controller
         $postBookmarks = PostController::getBookmarksOfPosts($posts);
 
         $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+
+        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('explore.index', [
             'posts' => $posts,
@@ -37,6 +39,7 @@ class ExploreController extends Controller
             'userLikes' => $userLikes,
             'postBookmarks' => $postBookmarks,
             'userBookmarks' => $userBookmarks,
+            'comments' => $postComments,
         ]);
     }
 }

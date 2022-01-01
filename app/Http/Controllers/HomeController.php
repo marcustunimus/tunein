@@ -23,7 +23,7 @@ class HomeController extends Controller
             });
         }
 
-        $posts = Post::query()->whereIn('user_id', $followingQuery)->orWhere('user_id', '=', $auth->guard()->user()->id)->orderByDesc('created_at')->get();
+        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', $auth->guard()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->get();
 
         $files = PostController::getPostsFiles($posts);
 
@@ -34,6 +34,8 @@ class HomeController extends Controller
         $postBookmarks = PostController::getBookmarksOfPosts($posts);
 
         $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+
+        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('home.index', [
             'posts' => $posts,
@@ -43,6 +45,7 @@ class HomeController extends Controller
             'userLikes' => $userLikes,
             'postBookmarks' => $postBookmarks,
             'userBookmarks' => $userBookmarks,
+            'comments' => $postComments,
         ]);
     }
 }

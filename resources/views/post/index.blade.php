@@ -10,10 +10,6 @@
 
     <div class="main-container block">
         <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
-            @if ($post->comment_on_post != null)
-                <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $post->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
-            @endif
-            
             <x-post.dropdown>
                 <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                 @if ($user != null)
@@ -34,7 +30,7 @@
 
             <x-post.interaction.tab>
                 <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
+                <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments->count() }}</x-post-interaction-button>
                 <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
             </x-post.interaction.tab>
 
@@ -43,14 +39,12 @@
             </script>
         </x-post.panel>
 
+        <div class="post-comments-heading">Comments</div>
+
         <x-post.comment profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.comment', $post->id) }}" postId="{{ $post->id }}"/>
 
         @foreach ($comments as $comment)
             <x-post.panel profilePictureURL="{{ $comment->author->profile_picture }}" profileName="{{ $comment->author->username }}" contentId="postContent{{ $comment->id }}" timePassed="{{ $comment->created_at->diffForHumans() }}">
-                @if ($comment->comment_on_post != null)
-                    <div class="post-comment-header">This post is a comment to <a href="{{ route('view.post', $comment->comment_on_post) }}" class="link link-color" target="_blank">this</a> post.</div>
-                @endif
-                
                 <x-post.dropdown>
                     <x-post.dropdown-link id="post-{{ $comment->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)
@@ -71,7 +65,7 @@
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $comment->id }}-like" icon="{{ in_array($comment->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $comment->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">Comments</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $comment->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $commentsOfComments[$comment->id]->count() }}</x-post-interaction-button>
                     <x-post.interaction.button id="post-{{ $comment->id }}-bookmark" icon="{{ in_array($comment->id, $userCommentsBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
                 </x-post.interaction.tab>
 
