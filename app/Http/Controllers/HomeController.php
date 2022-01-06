@@ -23,7 +23,7 @@ class HomeController extends Controller
             });
         }
 
-        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', $auth->guard()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->get();
+        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', $auth->guard()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->get();//paginate(3)->withQueryString();
 
         $files = PostController::getPostsFiles($posts);
 

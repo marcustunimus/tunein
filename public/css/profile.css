@@ -36,6 +36,7 @@
     max-height: calc(2 * var(--profile-picture-radius));
     margin-left: var(--margin);
     border-radius: 50%;
+    background-color: var(--field-color);
     object-fit: cover;
     object-position: center;
 
@@ -95,6 +96,7 @@
     max-height: calc(2 * var(--profile-picture-radius));
     margin: auto;
     border-radius: 50%;
+    background-color: var(--field-color);
     object-fit: cover;
     object-position: center;
 

@@ -44,11 +44,11 @@ class PostController extends Controller
 
         $commentsLikes = $this::getLikesOfPosts($comments);
 
-        $userCommentsLikes = $this::getUserLikedPosts($postLikes);
+        $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
 
         $commentsBookmarks = $this::getBookmarksOfPosts($comments);
 
-        $userCommentsBookmarks = $this::getUserBookmarkedPosts($postBookmarks);
+        $userCommentsBookmarks = $this::getUserBookmarkedPosts($commentsBookmarks);
 
         $commentsOfComments = $this::getCommentsOfPosts($comments);
         
@@ -205,6 +205,63 @@ class PostController extends Controller
         Bookmark::create($bookmarkAttributes);
 
         return json_encode("Bookmarked");
+    }
+
+    public function viewComments(Post $post) {
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->latest()->get();
+
+        $files=[];
+
+        $postFiles = [];
+
+        foreach ($post->files as $postFile) {
+            array_push($postFiles, 
+                $postFile->file, 
+                Storage::mimeType('public/post_files/' . $postFile->file), 
+                Storage::size('public/post_files/' . $postFile->file)
+            );
+        }
+
+        $files[$post->id] = implode('|', $postFiles);
+
+        $postLikes = $this::getLikesOfPosts([$post]);
+
+        $userLikes = $this::getUserLikedPosts($postLikes);
+
+        $postBookmarks = $this::getBookmarksOfPosts([$post]);
+
+        $userBookmarks = $this::getUserBookmarkedPosts($postBookmarks);
+
+        $commentsFiles = $this::getPostsFiles($comments);
+
+        $commentsLikes = $this::getLikesOfPosts($comments);
+
+        $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
+
+        $commentsBookmarks = $this::getBookmarksOfPosts($comments);
+
+        $userCommentsBookmarks = $this::getUserBookmarkedPosts($commentsBookmarks);
+
+        $commentsOfComments = $this::getCommentsOfPosts($comments);
+        
+        $commentPageHtml = view('post.view', [
+            'post' => $post,
+            'user' => auth()->user(),
+            'files' => $files,
+            'postLikes' => $postLikes,
+            'userLikes' => $userLikes,
+            'postBookmarks' => $postBookmarks,
+            'userBookmarks' => $userBookmarks,
+            'comments' => $comments,
+            'commentsFiles' => $commentsFiles,
+            'commentsLikes' => $commentsLikes,
+            'userCommentsLikes' => $userCommentsLikes,
+            'commentsBookmarks' => $commentsBookmarks,
+            'userCommentsBookmarks' => $userCommentsBookmarks,
+            'commentsOfComments' => $commentsOfComments,
+        ])->render();
+
+        return json_encode($commentPageHtml);
     }
 
 

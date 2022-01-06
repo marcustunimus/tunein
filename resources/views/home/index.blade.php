@@ -31,7 +31,7 @@
                 <div class="post-body-text">{{ $post->body }}</div>
             
                 <script>
-                    loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}");
+                    loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
                 <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} {{ $postLikes[$post->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
@@ -43,10 +43,12 @@
                 </x-post.interaction.tab>
             
                 <script>
-                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }}, "{{ asset('') }}");
+                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }}, "{{ asset('') }}", document.getElementById('preview'));
                 </script>
             </x-post.panel>
         @endforeach
+
+        <div>{{ $posts->links() }}</div>
     </div>
 
     <div class="right-sidebar-container block">

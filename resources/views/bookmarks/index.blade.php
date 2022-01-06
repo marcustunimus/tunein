@@ -33,7 +33,7 @@
                 <div class="post-body-text">{{ $bookmark->body }}</div>
 
                 <script>
-                    loadPostFiles({{ $bookmark->id }}, "{{ $files[$bookmark->id] }}", "{{ asset('') }}");
+                    loadPostFiles({{ $bookmark->id }}, "{{ $files[$bookmark->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
                 <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $postLikes[$bookmark->id]->count() }} {{ $postLikes[$bookmark->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
@@ -45,7 +45,7 @@
                 </x-post.interaction.tab>
 
                 <script>
-                    setInteractionButtonsFunctionality({{ $bookmark->id }}, {{ $postLikes[$bookmark->id]->count() }}, "{{ asset('') }}");
+                    setInteractionButtonsFunctionality({{ $bookmark->id }}, {{ $postLikes[$bookmark->id]->count() }}, "{{ asset('') }}", document.getElementById('preview'));
                 </script>
             </x-post.panel>
         @endforeach 

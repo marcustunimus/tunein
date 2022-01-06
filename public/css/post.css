@@ -57,6 +57,7 @@
     max-height: calc(2 * var(--profile-picture-radius));
     margin-right: var(--margin-right);
     border-radius: 50%;
+    background-color: var(--field-color);
     object-fit: cover;
     object-position: center;
 }
@@ -444,6 +445,20 @@ input.post-input-text:focus {
     padding-left: var(--padding-left);
 }
 
+.post-comments-preview-container {
+    --width: 35%;
+    --height: 100%;
+    --border-radius: 1rem;
+
+    min-width: var(--width); 
+    max-width: var(--width); 
+    min-height: var(--height); 
+    max-height: var(--height); 
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    overflow-y: auto;
+}
+
 /* Post Files */
 
 .post-files-container {
@@ -770,6 +785,39 @@ input[type=file].post-file-upload {
     height: var(--close-button-width);
     margin: auto;
     top: calc((var(--width) - var(--close-button-width)) / 2);
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+/* Back Button */
+
+.back-button-container {
+    --width: 50px;
+
+    position: absolute;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--width);
+    max-height: var(--width);
+    top: calc(var(--width) / 2);
+    left: calc(var(--width) / 2);
+    border-radius: 50%;
+}
+
+.back-button-container:hover {
+    background-color: var(--field-scrollbar-color-hover);
+    cursor: pointer;
+}
+
+.back-button {
+    --back-button-width: 1.5rem;
+    --color: var(--letter-color);
+
+    position: relative;
+    width: var(--back-button-width);
+    height: var(--back-button-width);
+    margin: auto;
+    top: calc((var(--width) - var(--back-button-width)) / 2);
     background-size: cover;
     box-sizing: border-box;
 }

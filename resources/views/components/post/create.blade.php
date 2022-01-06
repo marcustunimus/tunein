@@ -13,7 +13,7 @@
 
         <script>
             addFilesToForm("createPostForm");
-            showUploadedFilesPreview("uploadedFiles", "{{ asset('') }}");
+            showUploadedFilesPreview("uploadedFiles", "{{ asset('') }}", document.getElementById('preview'));
         </script>
     </form>
 </x-post.panel>

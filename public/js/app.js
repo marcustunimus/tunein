@@ -4,6 +4,7 @@ var removedAttachment = false;
 var postFilesLastIndex = -1;
 var removedPostFiles = [];
 var autoHideFlashMessage;
+var commentsArray = [];
 
 function addFilesToForm(elementId) {
     let postForm = document.getElementById(elementId);
@@ -17,8 +18,6 @@ function addFilesToForm(elementId) {
 
         filesContainer.appendChild(removedPostFilesElement);
 
-        //check this out. (removed post files element possibly)
-
         for (let uploadedFile of uploadedFiles) {
             dt.items.add(uploadedFile);
         }
@@ -27,8 +26,7 @@ function addFilesToForm(elementId) {
     }
 }
 
-function showUploadedFilesPreview(name, path) {
-    let previewContainer = document.getElementById('preview');
+function showUploadedFilesPreview(name, path, previewContainer) {
     let uploadsContainer = document.getElementById('uploads');
     let postFilesContainer = document.getElementById('post-files');
 
@@ -134,16 +132,14 @@ function showUploadedFiles(files, path) {
                 imageContainer.setAttribute("src", reader.result);
             }
 
-            loadPreviewFromReaderButton(file, reader, filePreview, path);
+            loadPreviewFromReaderButton(file, reader, filePreview, path, previewContainer);
         }
 
         reader.readAsDataURL(file);
     }
 }
 
-function loadPreviewFromReaderButton(file, reader, filePreview, path) {
-    let previewContainer = document.getElementById('preview');
-
+function loadPreviewFromReaderButton(file, reader, filePreview, path, previewContainer) {
     filePreview.setAttribute("class", "cursor-pointer");
 
     filePreview.onclick = function () {
@@ -181,26 +177,30 @@ function loadPreviewFromReaderButton(file, reader, filePreview, path) {
             else {
                 let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center");
                 unknownFileContainer.innerText = "Unknown File Type";
-                unknownFileContainer.onclick = function () { hidePreview(); }
+                unknownFileContainer.onclick = function () { hidePreview(previewContainer); }
 
                 previewContainer.appendChild(unknownFileContainer);
             }
 
             previewContainer.appendChild(closeButtonContainer);
 
-            previewBackground.onclick = function () { hidePreview(); }
+            previewBackground.onclick = function () { hidePreview(previewContainer); }
 
-            closeButtonContainer.onclick = function () { hidePreview(); }
+            closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
         }
     }
 }
 
-function hidePreview() {
-    let previewContainer = document.getElementById('preview');
-
-    document.body.style = "";
+function hidePreview(previewContainer) {
     previewContainer.style = "";
     previewContainer.innerHTML = "";
+
+    if (document.getElementById('preview').innerHTML !== "") {
+        document.body.style.overflow = 'hidden';
+    }
+    else {
+        document.body.style = "";
+    }
 }
 
 function showPostFilesPreview(filesInStringFormat, path) {
@@ -260,14 +260,12 @@ function showPostFilesPreview(filesInStringFormat, path) {
             filePreview.appendChild(fileShowcase); filePreview.appendChild(closeButtonContainer);
             postFilesContainer.appendChild(filePreview);
 
-            loadPreviewUploadedPostFileButton(files, i, filePreview, path);
+            loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewContainer);
         }
     }
 }
 
-function loadPreviewUploadedPostFileButton(files, i, filePreview, path) {
-    let previewContainer = document.getElementById('preview');
-
+function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewContainer) {
     filePreview.setAttribute("class", "cursor-pointer");
 
     filePreview.onclick = function () {
@@ -305,27 +303,27 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path) {
             else {
                 let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center");
                 unknownFileContainer.innerText = "Unknown File Type"
-                unknownFileContainer.onclick = function () { hidePreview(); }
+                unknownFileContainer.onclick = function () { hidePreview(previewContainer); }
 
                 previewContainer.appendChild(unknownFileContainer);
             }
 
             previewContainer.appendChild(closeButtonContainer);
 
-            previewBackground.onclick = function () { hidePreview(); }
-            closeButtonContainer.onclick = function () { hidePreview(); }
+            previewBackground.onclick = function () { hidePreview(previewContainer); }
+            closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
         }
     }
 }
 
-function loadPostFiles(postId, filesInStringFormat, path) {
+function loadPostFiles(postId, filesInStringFormat, path, previewContainer) {
     if (filesInStringFormat === "") {
         return;
     }
 
-    let previewContainer = document.getElementById('preview');
     let postContentContainer = document.getElementById("postContent" + postId);
     let postFilesContentContainer = document.createElement("div"); postFilesContentContainer.setAttribute("class", "post-files-container");
+    let followingElementContainer = document.getElementById("post-" + postId + "-info-container");
     let files = filesInStringFormat.split("|");
 
     if (files.length !== 0) {
@@ -354,9 +352,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
                 }
 
                 break;
@@ -385,9 +383,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
                 }
 
                 break;
@@ -437,9 +435,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
                 }
 
                 break;
@@ -471,9 +469,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
                 }
 
                 break;
@@ -510,9 +508,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
                 }
 
                 break;
@@ -571,9 +569,9 @@ function loadPostFiles(postId, filesInStringFormat, path) {
                     }
 
                     postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.appendChild(postFilesContentContainer);
+                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path);
+                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
 
                     if (i === 4 * 3) {
                         break;
@@ -586,17 +584,15 @@ function loadPostFiles(postId, filesInStringFormat, path) {
     }
 }
 
-function loadPreviewPostFileButton(files, i, filePreview, path) {
+function loadPreviewPostFileButton(files, i, filePreview, path, previewContainer) {
     filePreview.setAttribute("class", filePreview.getAttribute('class') + " cursor-pointer");
 
     filePreview.onclick = function () {
-        loadPreviewPostFile(files, i, path);
+        loadPreviewPostFile(files, i, path, previewContainer);
     }
 }
 
-function loadPreviewPostFile(files, i, path) {
-    let previewContainer = document.getElementById('preview');
-
+function loadPreviewPostFile(files, i, path, previewContainer) {
     previewContainer.innerHTML = "";
 
     previewContainer.style.zIndex = 100;
@@ -616,10 +612,10 @@ function loadPreviewPostFile(files, i, path) {
     nextButtonContainer.appendChild(nextButton);
     beforeButtonContainer.appendChild(beforeButton);
 
-    previewBackground.onclick = function () { hidePreview(); }
+    previewBackground.onclick = function () { hidePreview(previewContainer); }
     previewContent.onclick = function () {
         if (!skipFunction) {
-            hidePreview();
+            hidePreview(previewContainer);
         }
         else {
             skipFunction = false;
@@ -655,20 +651,20 @@ function loadPreviewPostFile(files, i, path) {
     else {
         let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center noselect");
         unknownFileContainer.innerText = "Unknown File Type"
-        unknownFileContainer.onclick = function () { hidePreview(); }
+        unknownFileContainer.onclick = function () { hidePreview(previewContainer); }
 
         previewContainer.appendChild(unknownFileContainer);
     }
 
-    closeButtonContainer.onclick = function () { hidePreview(); }
+    closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
     nextButtonContainer.onclick = function () {
         if (i + 3 < files.length) {
-            loadPreviewPostFile(files, i + 3, path);
+            loadPreviewPostFile(files, i + 3, path, previewContainer);
         }
     }
     beforeButtonContainer.onclick = function () {
         if (i - 3 >= 0) {
-            loadPreviewPostFile(files, i - 3, path);
+            loadPreviewPostFile(files, i - 3, path, previewContainer);
         }
     }
 
@@ -677,7 +673,7 @@ function loadPreviewPostFile(files, i, path) {
     previewContainer.appendChild(beforeButtonContainer);
 }
 
-function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
+function setInteractionButtonsFunctionality(postId, numberOfLikes, path, previewContainer) {
     let postLikeButtonContainer = document.getElementById("post-" + postId + "-like");
     let postCommentButtonContainer = document.getElementById("post-" + postId + "-comment");
     let postBookmarkButtonContainer = document.getElementById("post-" + postId + "-bookmark");
@@ -685,12 +681,10 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
     let postInfoContainer = document.getElementById("post-" + postId + "-info");
 
     postLikeButtonContainer.onclick = function () {
-        if (postLikeButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
-            postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+        if (postLikeButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
             postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
         }
-        else if (postLikeButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
-            postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+        else if (postLikeButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
             postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
         }
 
@@ -705,39 +699,33 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                 return response.json();
             }).then(function (data) {
                 if (data === "Liked") {
-                    postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
                     numberOfLikes += 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Unliked") {
-                    postLikeButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
                     numberOfLikes -= 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Login") {
-                    window.location.replace(path + '/login');
+                    window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                return console.log(error);
+                window.location.href = path + 'login';
             });
         } catch (error) {
-            window.location.replace(path + '/login');
+            window.location.href = path + 'login';
         }
     }
 
-    postCommentButtonContainer.onclick = function () {
-        window.open(path + 'post/' + postId).focus();
-    }
+    postCommentButtonContainer.onclick = function () { viewCommentsWindow(path, postId, false); }
 
     postBookmarkButtonContainer.onclick = function () {
-        if (postBookmarkButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);") {
-            postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+        if (postBookmarkButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);") {
             postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
         }
-        else if (postBookmarkButtonContainer.firstElementChild.style === "background-image: url(" + path + "/images/bookmark_white_24dp.svg);") {
-            postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
+        else if (postBookmarkButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/bookmark_white_24dp.svg);") {
             postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
         }
 
@@ -752,21 +740,19 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                 return response.json();
             }).then(function (data) {
                 if (data === "Bookmarked") {
-                    postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
                 }
                 else if (data === "Unbookmarked") {
-                    postBookmarkButtonContainer.firstElementChild.setAttribute("class", "post-interaction-icon");
                     postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
                 }
                 else if (data === "Login") {
-                    window.location.replace(path + '/login');
+                    window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                return console.log(error);
+                window.location.href = path + 'login';
             });
         } catch (error) {
-            window.location.replace(path + '/login');
+            window.location.href = path + 'login';
         }
     }
 
@@ -791,8 +777,6 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
     }
 
     postInfoContainer.onclick = function () {
-        let previewContainer = document.getElementById('preview');
-
         previewContainer.innerHTML = "";
 
         previewContainer.style.zIndex = 100;
@@ -810,10 +794,10 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
         closeButtonContainer.appendChild(closeButton);
 
-        previewBackground.onclick = function () { hidePreview(); }
+        previewBackground.onclick = function () { hidePreview(previewContainer); }
         previewContent.onclick = function () {
             if (!skipFunction) {
-                hidePreview();
+                hidePreview(previewContainer);
             }
             else {
                 skipFunction = false;
@@ -822,7 +806,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
 
         previewContainer.appendChild(previewBackground);
 
-        closeButtonContainer.onclick = function () { hidePreview(); }
+        closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
 
         previewContainer.appendChild(closeButtonContainer);
 
@@ -846,11 +830,11 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
                         let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + usersLiked[i + 1]);
                         let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/person_white_24dp.svg"));
                         let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
-                    
+
                         userProfileLink.appendChild(userProfilePicture);
                         userContainer.appendChild(userProfileLink);
                         userContainer.appendChild(username);
-                    
+
                         usersLikedContainer.appendChild(userContainer);
                     }
                 }
@@ -873,6 +857,92 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path) {
     }
 }
 
+function viewCommentsWindow(path, postId, backButtonPressed) {
+    try {
+        fetch(path + 'post/' + postId + '/viewComments', {
+            method: 'POST',
+            headers: {
+                'url': path + 'post/' + postId + '/viewComments',
+                "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+            }
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if (!backButtonPressed) {
+                commentsArray.push(postId);
+            }
+
+            mainPreviewContainer = document.getElementById('preview');
+
+            mainPreviewContainer.innerHTML = "";
+
+            mainPreviewContainer.style.zIndex = 100;
+            document.body.style.overflow = 'hidden';
+
+            let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
+            let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-comments-preview-container scrollbar-preview");
+            let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
+            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+            let backButtonContainer = document.createElement("div"); backButtonContainer.setAttribute("class", "back-button-container");
+            let backButton = document.createElement("div"); backButton.setAttribute("class", "back-button"); backButton.style = "background-image: url(" + path + "/images/arrow_back_white_24dp.svg);";
+            let skipFunction = false;
+
+            closeButtonContainer.appendChild(closeButton);
+            backButtonContainer.appendChild(backButton);
+
+            previewBackground.onclick = function () { 
+                hidePreview(mainPreviewContainer); 
+                commentsArray = [];
+            }
+            previewContent.onclick = function () {
+                if (!skipFunction) {
+                    hidePreview(mainPreviewContainer);
+                    commentsArray = [];
+                }
+                else {
+                    skipFunction = false;
+                }
+            }
+
+            mainPreviewContainer.appendChild(previewBackground);
+
+            closeButtonContainer.onclick = function () { 
+                hidePreview(mainPreviewContainer); 
+                commentsArray = [];
+            }
+            backButtonContainer.onclick = function () { 
+                commentsArray.pop();
+
+                if (commentsArray.length < 1) {
+                    hidePreview(mainPreviewContainer);
+                    return;
+                }
+
+                viewCommentsWindow(path, commentsArray[commentsArray.length - 1], true);
+            }
+
+            mainPreviewContainer.appendChild(closeButtonContainer);
+            mainPreviewContainer.appendChild(backButtonContainer);
+
+            previewContent.onclick = function() {
+                skipFunction = true;
+
+                previewContent.onclick;
+            }
+
+            previewContent.innerHTML = data;
+
+            mainPreviewContainer.appendChild(previewContent);
+
+            eval(getAllFunctionsTextFromHtmlText(data));
+        }).catch(function (error) {
+            return console.log(error);
+        });
+    } catch (error) {
+        return console.log(error);
+    }
+}
+
 function showProfilePicturePreview(name, path) {
     let profilePictureContainer = document.getElementById('profile-picture');
     
@@ -880,8 +950,6 @@ function showProfilePicturePreview(name, path) {
 
     
     inputFileElement.onchange = function() {
-        console.log(inputFileElement.files);
-
         let reader = new FileReader();
 
         reader.onload = function () {
@@ -903,8 +971,6 @@ function showBackgroundPicturePreview(name, path) {
     let inputFileElement = document.getElementById(name);
 
     inputFileElement.onchange = function() {
-        console.log(inputFileElement.files);
-
         let reader = new FileReader();
 
         reader.onload = function () {
@@ -953,26 +1019,24 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
                     followersInfoContainer.innerText = numberOfFollowers + " " + (numberOfFollowers === 1 ? "follower" : "followers");
                 }
                 else if (data === "Login") {
-                    window.location.replace(path + '/login');
+                    window.location.href = path + 'login';
                 }
                 else if (data === "FollowDenied") {
                     console.log("You can't follow yourself. You can't be that sad to do it. Go outside and find some friends.");
                 }
             }).catch(function (error) {
-                return console.log(error);
+                window.location.href = path + 'login';
             });
         } catch (error) {
-            window.location.replace(path + '/login');
+            window.location.href = path + 'login';
         }
     }
 }
 
-function setPreviewFollowersButtonFunctionality(username, path) {
+function setPreviewFollowersButtonFunctionality(username, path, previewContainer) {
     let followersInfoContainer = document.getElementById("profile-followers-count");
 
     followersInfoContainer.onclick = function () {
-        let previewContainer = document.getElementById('preview');
-
         previewContainer.innerHTML = "";
 
         previewContainer.style.zIndex = 100;
@@ -990,10 +1054,10 @@ function setPreviewFollowersButtonFunctionality(username, path) {
 
         closeButtonContainer.appendChild(closeButton);
 
-        previewBackground.onclick = function () { hidePreview(); }
+        previewBackground.onclick = function () { hidePreview(previewContainer); }
         previewContent.onclick = function () {
             if (!skipFunction) {
-                hidePreview();
+                hidePreview(previewContainer);
             }
             else {
                 skipFunction = false;
@@ -1002,7 +1066,7 @@ function setPreviewFollowersButtonFunctionality(username, path) {
 
         previewContainer.appendChild(previewBackground);
 
-        closeButtonContainer.onclick = function () { hidePreview(); }
+        closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
 
         previewContainer.appendChild(closeButtonContainer);
 
@@ -1130,4 +1194,29 @@ function setRemoveBackgroundPictureButtonFunctionality(path) {
             uploadedBackgroundPictureFileButton.style = "visibility: visible;"
         }
     }
+}
+
+function getAllFunctionsTextFromHtmlText(text) {
+    let startFunctionRegex = /<script/g;
+    let endFunctionRegex = /<\/script/g;
+    let result; 
+    let startIndexes = [];
+    let endIndexes = [];
+    let allFunctionsText = "";
+
+    while ( (result = startFunctionRegex.exec(text)) ) {
+        startIndexes.push(result.index);
+    }
+
+    while ( (result = endFunctionRegex.exec(text)) ) {
+        endIndexes.push(result.index);
+    }
+
+    if (startIndexes.length === endIndexes.length) {
+        for (let i = 0; i < startIndexes.length; i++) {
+            allFunctionsText += text.substring(startIndexes[i] + 8, endIndexes[i]).replaceAll(/\s/g, "");
+        }
+    }
+
+    return allFunctionsText;
 }
