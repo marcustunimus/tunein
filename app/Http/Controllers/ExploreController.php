@@ -13,10 +13,10 @@ class ExploreController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = Post::query()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', '']])->latest()->get();
+            $posts = Post::query()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', '']])->latest()->paginate(3)->withQueryString();
         }
         else {
-            $posts = Post::query()->where('comment_on_post', '=', null)->orderByDesc('created_at')->get();
+            $posts = Post::query()->where('comment_on_post', '=', null)->orderByDesc('created_at')->paginate(3)->withQueryString();
         }
 
         $files = PostController::getPostsFiles($posts);

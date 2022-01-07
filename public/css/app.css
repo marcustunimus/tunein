@@ -1,6 +1,7 @@
 :root {
     --site-theme-color-1: #4079c7;
     --site-theme-color-1-hover: #5b90da;
+    --site-theme-color-1-disabled: #2e5a97;
 
     /* --site-theme-color-1: hsl(268, 40%, 63%);
     --site-theme-color-1-hover: hsl(268, 40%, 78%); */
@@ -175,6 +176,73 @@ body {
     top: calc((var(--width) - var(--close-button-width)) / 2);
     background-size: cover;
     box-sizing: border-box;
+}
+
+/* Page Navigation */
+
+.page-navigation-container {
+    --margin: 5%;
+
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.page-navigation-button {
+    --padding: 0.5rem;
+    --border-width: 1px;
+
+    border-color: var(--letter-color);
+    border-width: var(--border-width);
+    padding: var(--padding);
+    background-color: var(--site-theme-color-1);
+}
+
+.page-navigation-disabled-button {
+    background-color: var(--site-theme-color-1-disabled);
+}
+
+.page-navigation-middle-button {
+    --padding-top-bottom: 0.5rem;
+    --padding-left-right: 1rem;
+    --border-width: 1px;
+
+    border-color: var(--letter-color);
+    border-width: var(--border-width);
+    padding-top: var(--padding-top-bottom);
+    padding-bottom: var(--padding-top-bottom);
+    padding-left: var(--padding-left-right);
+    padding-right: var(--padding-left-right);
+    background-color: var(--site-theme-color-1);
+}
+
+.page-navigation-middle-disabled-button {
+    --padding-top-bottom: 0.5rem;
+    --padding-left-right: 1rem;
+    --border-width: 1px;
+
+    border-color: var(--letter-color);
+    border-width: var(--border-width);
+    padding-top: var(--padding-top-bottom);
+    padding-bottom: var(--padding-top-bottom);
+    padding-left: var(--padding-left-right);
+    padding-right: var(--padding-left-right);
+    background-color: var(--site-theme-color-1-disabled);
+}
+
+.page-navigation-previous-button {
+    --border-radius: 0.5rem 0rem 0rem 0.5rem;
+
+    border-radius: var(--border-radius);
+}
+
+.page-navigation-next-button {
+    --border-radius: 0rem 0.5rem 0.5rem 0rem;
+
+    border-radius: var(--border-radius);
+}
+
+.page-navigation-active-button:hover {
+    background-color: var(--site-theme-color-1-hover);
 }
 
 /* Univeral Classes */

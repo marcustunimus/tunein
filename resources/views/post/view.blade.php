@@ -67,3 +67,5 @@
         </script>
     </x-post.panel>
 @endforeach
+
+{{-- <div>{{ $comments->links() }}</div> --}}

@@ -19,10 +19,10 @@ class ProfileController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = $user->posts()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', null]])->latest()->get();
+            $posts = $user->posts()->where([['body', 'like', '%'.$search.'%'], ['comment_on_post', '=', null]])->latest()->paginate(3)->withQueryString();
         }
         else {
-            $posts = $user->posts()->where('comment_on_post', '=', null)->latest()->get();
+            $posts = $user->posts()->where('comment_on_post', '=', null)->latest()->paginate(3)->withQueryString();
         }
 
         $files = PostController::getPostsFiles($posts);

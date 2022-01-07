@@ -21,7 +21,7 @@ class BookmarksController extends Controller
                 });
         }
 
-        $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->get();
+        $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(3)->withQueryString();
 
         $files = PostController::getPostsFiles($posts);
 
@@ -32,6 +32,8 @@ class BookmarksController extends Controller
         $postBookmarks = PostController::getBookmarksOfPosts($posts);
 
         $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
+
+        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('bookmarks.index', [
             'bookmarks' => $posts,
@@ -41,6 +43,7 @@ class BookmarksController extends Controller
             'userLikes' => $userLikes,
             'postBookmarks' => $postBookmarks,
             'userBookmarks' => $userBookmarks,
+            'comments' => $postComments,
         ]);
     }
 }

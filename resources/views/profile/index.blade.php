@@ -110,6 +110,8 @@
                 </script>
             </x-post.panel>
         @endforeach
+
+        <div>{{ $posts->links() }}</div>
     </div>
 
     <div class="right-sidebar-container block">

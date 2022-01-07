@@ -16,7 +16,7 @@ class PostController extends Controller
 {
     public function index(Post $post)
     {
-        $comments = Post::query()->where('comment_on_post', '=', $post->id)->latest()->get();
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->latest()->paginate(3)->withQueryString();
 
         $files=[];
 

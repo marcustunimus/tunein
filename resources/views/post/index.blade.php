@@ -76,6 +76,8 @@
                 </script>
             </x-post.panel>
         @endforeach
+
+        <div>{{ $comments->links() }}</div>
     </div>
 
     <div class="right-sidebar-container block">
