@@ -13,7 +13,7 @@ class Following extends Model
 
     protected $fillable = ['user_id', 'following_id'];
 
-    protected $with = ['user', 'target'];
+    // protected $with = ['user', 'target'];
 
     public function user()
     {

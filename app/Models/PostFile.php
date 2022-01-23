@@ -13,7 +13,7 @@ class PostFile extends Model
 
     protected $fillable = ['post_id', 'file'];
 
-    protected $with = ['post'];
+    // protected $with = ['post'];
 
     public $timestamps = false;
 

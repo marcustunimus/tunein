@@ -13,7 +13,7 @@ class Like extends Model
 
     protected $fillable = ['user_id', 'post_id'];
 
-    protected $with = ['user', 'post'];
+    // protected $with = ['user', 'post'];
 
     public function user()
     {

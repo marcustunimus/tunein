@@ -13,7 +13,7 @@ class Post extends Model
 
     protected $fillable = ['user_id', 'body', 'comment_on_post'];
 
-    protected $with = ['author'];
+    // protected $with = ['author'];
 
     public function author()
     {

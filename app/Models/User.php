@@ -48,7 +48,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $with = ['posts', 'likes', 'bookmarks'];
+    // protected $with = ['posts', 'likes', 'bookmarks'];
 
     public function setPasswordAttribute(string $password): static
     {

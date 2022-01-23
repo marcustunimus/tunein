@@ -13,7 +13,7 @@ class Bookmark extends Model
 
     protected $fillable = ['user_id', 'post_id'];
 
-    protected $with = ['post', 'user'];
+    // protected $with = ['post', 'user'];
 
     public function post()
     {
