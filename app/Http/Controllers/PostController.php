@@ -219,7 +219,9 @@ class PostController extends Controller
     }
 
     public function viewComments(Post $post) {
-        $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->get();
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->paginate(3)->withQueryString();
+
+        $allComments = Post::query()->where('comment_on_post', '=', $post->id)->get();
 
         $files=[];
 
@@ -249,8 +251,6 @@ class PostController extends Controller
 
         $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
 
-        $commentsOfComments = $this::getCommentsOfPosts($comments);
-
 
         
         $commentPageHtml = view('post.view', [
@@ -262,13 +262,33 @@ class PostController extends Controller
             'postBookmarks' => $postBookmarks,
             'userBookmarks' => $userBookmarks,
             'comments' => $comments,
+            'commentsCount' => $allComments->count(),
             'commentsFiles' => $commentsFiles,
             'commentsLikes' => $commentsLikes,
             'userCommentsLikes' => $userCommentsLikes,
-            'commentsOfComments' => $commentsOfComments,
         ])->render();
 
         return json_encode($commentPageHtml);
+    }
+
+    public function viewMoreComments(Post $post) {
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->paginate(3)->withQueryString();
+
+        $commentsFiles = $this::getPostsFiles($comments);
+
+        $commentsLikes = $this::getLikesOfPosts($comments);
+
+        $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
+        
+        $commentsPageHtml = view('post.comments', [
+            'user' => auth()->user(),
+            'comments' => $comments,
+            'commentsFiles' => $commentsFiles,
+            'commentsLikes' => $commentsLikes,
+            'userCommentsLikes' => $userCommentsLikes,
+        ])->render();
+
+        return json_encode($commentsPageHtml);
     }
 
 

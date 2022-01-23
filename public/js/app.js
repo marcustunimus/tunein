@@ -4,6 +4,7 @@ var postFilesLastIndex = -1;
 var removedPostFiles = [];
 var autoHideFlashMessage;
 var commentsArray = [];
+var loadMoreCommentsIndex = 0;
 
 function addFilesToForm(elementId, name, inputFilesElement) {
     let postForm = document.getElementById(elementId);
@@ -202,6 +203,7 @@ function loadPreviewFromReaderButton(file, reader, filePreview, path, previewCon
 function hidePreview(previewContainer) {
     previewContainer.style = "";
     previewContainer.innerHTML = "";
+    loadMoreCommentsIndex = 0;
 
     if (document.getElementById('preview').innerHTML !== "") {
         document.body.style.overflow = 'hidden';
@@ -1105,6 +1107,8 @@ function viewCommentsWindow(path, postId, backButtonPressed) {
             mainPreviewContainer.appendChild(previewContent);
 
             eval(getAllFunctionsTextFromHtmlText(data));
+
+            addLoadMoreCommentsButton(postId, path);
         }).catch(function (error) {
             return console.log(error);
         });
@@ -1460,5 +1464,61 @@ function deleteFormConfirmationFunctionality(form, previewContainer, path) {
         confirmationButtonsContainer.appendChild(confirmationAcceptButton);
         previewContent.appendChild(confirmationButtonsContainer);
         previewContainer.appendChild(previewContent);
+    }
+}
+
+function addLoadMoreCommentsButton(postId, path) {
+    let commentsElement = document.getElementById("comments");
+    let loadMoreCommentsButtonContainer = document.createElement("div"); loadMoreCommentsButtonContainer.setAttribute("class", "center mt-4");
+    let loadMoreCommentsButton = document.createElement("div"); loadMoreCommentsButton.setAttribute("class", "post-comment-load-more-button text-center"); loadMoreCommentsButton.innerText = "Load More...";
+
+    loadMoreCommentsIndex += 1;
+
+    loadMoreCommentsButtonContainer.appendChild(loadMoreCommentsButton);
+
+    loadMoreCommentsButton.onclick = function () {
+        loadMoreCommentsButtonFunctionality(postId, path, commentsElement, loadMoreCommentsButtonContainer);
+    }
+
+    commentsElement.appendChild(loadMoreCommentsButtonContainer);
+}
+
+function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, loadMoreCommentsButtonContainer) {
+    loadMoreCommentsIndex += 1;
+
+    commentsElement.removeChild(loadMoreCommentsButtonContainer);
+
+    try {
+        fetch(path + 'posts/' + postId + '/viewMoreComments?page=' + loadMoreCommentsIndex, {
+            method: 'POST',
+            headers: {
+                'url': path + 'posts/' + postId + '/viewMoreComments?page=' + loadMoreCommentsIndex,
+                "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+            }
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            console.log(data);
+
+            if (data === "") {
+                console.log("No more comments.");
+
+                return;
+            }
+
+            commentsElement.insertAdjacentHTML('beforeend', data);
+
+            eval(getAllFunctionsTextFromHtmlText(data));
+
+            commentsElement.appendChild(loadMoreCommentsButtonContainer);
+        }).catch(function (error) {
+            loadMoreCommentsIndex -= 1;
+
+            commentsElement.appendChild(loadMoreCommentsButtonContainer);
+
+            console.log(error);
+        });
+    } catch (error) {
+        console.log(error);
     }
 }

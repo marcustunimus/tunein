@@ -556,6 +556,31 @@ textarea.post-comment-input-text:focus {
     outline: none;
 }
 
+.post-comment-load-more-button {
+    --border-radius: 15px;
+    --font-size: 1.25rem;
+    --font-weight: bold;
+    --width: 40%;
+    
+    display: inline-block;
+    padding: 0.25rem;
+    width: var(--width);
+    max-width: var(--width);
+    border-radius: var(--border-radius);
+    background-color: var(--site-theme-color-1);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    cursor: pointer;
+}
+
+.post-comment-load-more-button:hover {
+    background-color: var(--site-theme-color-1-hover);
+}
+
+.post-comment-load-more-button:focus {
+    outline-width: 0;
+}
+
 /* Post Files */
 
 .post-files-container {

@@ -32,6 +32,8 @@ Route::post('/profile/{user:username}/followersInfo', [ProfileController::class,
 
 Route::post('/posts/{post}/viewComments', [PostController::class, 'viewComments'])->where('post', '^[0-9]+$')->name('view.post.comments');
 
+Route::post('/posts/{post}/viewMoreComments', [PostController::class, 'viewMoreComments'])->where('post', '^[0-9]+$')->name('view.post.more.comments');
+
 Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
 
