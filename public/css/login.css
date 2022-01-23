@@ -21,6 +21,19 @@
     min-height: var(--height);
 }
 
+.login-form-content-container {
+    border-radius: 2.5rem;
+}
+
+.login-form-content {
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    background-color: var(--field-color-2);
+    border-radius: 2.5rem;
+}
+
 /* Login Elements */
 
 /* Login Heading */
@@ -28,11 +41,12 @@
 .login-heading-text {
     --font-size: 4rem;
     --font-weight: bold;
-    --margin-bottom: 5%;
+    --margin: 7.5%;
 
     font-size: var(--font-size);
     font-weight: var(--font-weight);
-    margin-bottom: var(--margin-bottom);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
 }
 
 /* Login Input */
@@ -119,14 +133,6 @@ input.login-input-text:focus {
     font-size: var(--font-size);
 }
 
-/* Login Links */
-
-.login-link {
-    --color: rgb(0, 89, 255);
-
-    color: var(--color);
-}
-
-.login-link:hover {
-    text-decoration: underline;
+.login-register-container {
+    margin-bottom: 7.5%;
 }

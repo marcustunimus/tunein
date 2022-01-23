@@ -1,6 +1,6 @@
-@props(['name', 'class', 'containerClass', 'accept' => '', 'multiple' => false,])
+@props(['name', 'class', 'containerClass', 'postId' => '', 'accept' => '', 'hideUploadsContainer' => '', 'containerClassPure' => '', 'multiple' => false,])
 
-<div class="{{ $containerClass }} block">
+<div class="{{ $containerClass }} {{ $containerClassPure ? '' : 'block' }}">
     <div id="files-input-container">
         <input
             name="{{ $name }}{{ $multiple ? '[]' : '' }}"
@@ -20,8 +20,8 @@
         </label>
     </div>
 
-    <div id="uploads" class="post-file-upload-image-thumbnails-container">
-        <div id="post-files" class="post-files-upload-thumbnails-container"></div>
+    <div id="uploads{{ $postId }}" class="post-file-upload-image-thumbnails-container" {{ $hideUploadsContainer ? 'style=display:none;' : '' }}>
+        <div id="post-files{{ $postId }}" class="post-files-upload-thumbnails-container"></div>
     </div>
 
     <x-form.error name="file.*" />

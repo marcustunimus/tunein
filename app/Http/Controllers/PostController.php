@@ -46,10 +46,6 @@ class PostController extends Controller
 
         $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
 
-        $commentsBookmarks = $this::getBookmarksOfPosts($comments);
-
-        $userCommentsBookmarks = $this::getUserBookmarkedPosts($commentsBookmarks);
-
         $commentsOfComments = $this::getCommentsOfPosts($comments);
         
         return view('post.index', [
@@ -64,8 +60,6 @@ class PostController extends Controller
             'commentsFiles' => $commentsFiles,
             'commentsLikes' => $commentsLikes,
             'userCommentsLikes' => $userCommentsLikes,
-            'commentsBookmarks' => $commentsBookmarks,
-            'userCommentsBookmarks' => $userCommentsBookmarks,
             'commentsOfComments' => $commentsOfComments,
         ]);
     }
@@ -94,9 +88,18 @@ class PostController extends Controller
             'user_id' => auth()->user()->id
         ]);
         
-        $postAttributes['comment_on_post'] = (!request('comment_on_post') ? null : $this->validatePostCommentId()['comment_on_post']);
+        $postAttributes['comment_on_post'] = (!request('comment_on_post') ? null : $this->validatePostCommentId());
 
-        $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
+        if ($postAttributes['comment_on_post'] === 'Commenting on a comment is not allowed.' || $postAttributes['comment_on_post'] === 'Commenting on a post that does not exist is not possible.') {
+            return redirect()->back()->with('message', $postAttributes['comment_on_post']);
+        }
+
+        if ($postAttributes['comment_on_post'] === null) {
+            $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
+        }
+        else {
+            $files = request('uploadedFiles' . $postAttributes['comment_on_post']) ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles' . $postAttributes['comment_on_post'])))) : [];
+        }
 
         if (isset($files['file'])) {
             $this->validateMaxPostFilesSize($this->getAllUploadedFilesSize($files['file']));
@@ -110,7 +113,12 @@ class PostController extends Controller
             $this->createPostFiles($lasestPostId, $files);
         }
 
-        return redirect()->back()->with('message', 'The post has been created.');
+        if ($postAttributes['comment_on_post'] != null) {
+            return redirect()->back()->with('message', 'The comment has been created.')->with('postId', $postAttributes['comment_on_post']);
+        }
+        else {
+            return redirect()->route('home')->with('message', 'The post has been created.');
+        }
     }
 
     public function update(Post $post)
@@ -134,23 +142,22 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->get();
+        $id = $post->id;
 
-        $postFilesNames = [];
+        $postComments = Post::query()->where('comment_on_post', '=', $post->id)->get();
 
-        foreach ($postFiles as $postFile) {
-            array_push($postFilesNames, $postFile->file);
+        foreach($postComments as $postComment) {
+            $this->deletePost($postComment);
         }
 
-        Storage::delete(array_map(function ($value) {
-            return 'public/post_files/' . $value;
-        }, $postFilesNames));
+        $this->deletePost($post);
 
-        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->delete();
-
-        $post->delete();
-
-        return redirect()->back()->with('message', 'The post has been deleted.');
+        if (url()->previous() !== route('post.edit', $id)) {
+            return redirect()->back()->with('message', 'The post has been deleted.');
+        }
+        else {
+            return redirect()->route('home')->with('message', 'The post has been deleted.');
+        }
     }
 
     public function like(Post $post)
@@ -186,6 +193,10 @@ class PostController extends Controller
             return json_encode("Login");
         }
 
+        if ($post->comment_on_post !== null) {
+            return json_encode("AttemptToBookmarkComment");
+        }
+
         $bookmarkAttributes = [
             'user_id' => auth()->user()->id,
             'post_id' => $post->id
@@ -208,7 +219,7 @@ class PostController extends Controller
     }
 
     public function viewComments(Post $post) {
-        $comments = Post::query()->where('comment_on_post', '=', $post->id)->latest()->get();
+        $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->get();
 
         $files=[];
 
@@ -238,11 +249,9 @@ class PostController extends Controller
 
         $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
 
-        $commentsBookmarks = $this::getBookmarksOfPosts($comments);
-
-        $userCommentsBookmarks = $this::getUserBookmarkedPosts($commentsBookmarks);
-
         $commentsOfComments = $this::getCommentsOfPosts($comments);
+
+
         
         $commentPageHtml = view('post.view', [
             'post' => $post,
@@ -256,8 +265,6 @@ class PostController extends Controller
             'commentsFiles' => $commentsFiles,
             'commentsLikes' => $commentsLikes,
             'userCommentsLikes' => $userCommentsLikes,
-            'commentsBookmarks' => $commentsBookmarks,
-            'userCommentsBookmarks' => $userCommentsBookmarks,
             'commentsOfComments' => $commentsOfComments,
         ])->render();
 
@@ -419,13 +426,23 @@ class PostController extends Controller
         ]);
     }
 
-    protected function validatePostCommentId(?Post $post = null): array
+    protected function validatePostCommentId()
     {
-        $post ??= new Post();
+        $commentOnPost = request('comment_on_post');
 
-        return request()->validate([
-            'comment_on_post' => ['state' => 'exists:posts,id']
-        ]);
+        $originalPost = Post::query()->where('id', '=', $commentOnPost)->first();
+
+        if ($originalPost !== null) {
+            if ($originalPost->comment_on_post !== null) {
+                return 'Commenting on a comment is not allowed.';
+            }
+            else {
+                return $commentOnPost;
+            }
+        }
+        else {
+            return 'Commenting on a post that does not exist is not possible.';
+        }
     }
 
     protected function validateMaxPostFilesSize(int $size): void
@@ -513,5 +530,27 @@ class PostController extends Controller
                 $postFile->file = $file->storeAs('post_files', $filename, 'public');
             }
         }
+    }
+
+    protected function deletePost(Post $post) {
+        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->get();
+
+        $postFilesNames = [];
+
+        foreach ($postFiles as $postFile) {
+            array_push($postFilesNames, $postFile->file);
+        }
+
+        Storage::delete(array_map(function ($value) {
+            return 'public/post_files/' . $value;
+        }, $postFilesNames));
+
+        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->delete();
+
+        $postLikes = Like::query()->where('post_id', '=', $post->id)->delete();
+
+        $postBookmarks = Bookmark::query()->where('post_id', '=', $post->id)->delete();
+
+        $post->delete();
     }
 }

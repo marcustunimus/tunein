@@ -1,3 +1,3 @@
-@props(['class' => ''])
+@props(['class' => '', 'id' => ''])
 
-<input id="submit" type="submit" class="{{ $class }}" value="{{ $slot }}">
+<input id="{{ $id }}" type="submit" class="{{ $class }}" value="{{ $slot }}">

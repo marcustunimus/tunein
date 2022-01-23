@@ -1,4 +1,3 @@
-var inputFilesElement;
 var uploadedFiles = [];
 var removedAttachment = false;
 var postFilesLastIndex = -1;
@@ -6,7 +5,7 @@ var removedPostFiles = [];
 var autoHideFlashMessage;
 var commentsArray = [];
 
-function addFilesToForm(elementId) {
+function addFilesToForm(elementId, name, inputFilesElement) {
     let postForm = document.getElementById(elementId);
 
     postForm.onsubmit = function (e) {
@@ -18,7 +17,7 @@ function addFilesToForm(elementId) {
 
         filesContainer.appendChild(removedPostFilesElement);
 
-        for (let uploadedFile of uploadedFiles) {
+        for (let uploadedFile of uploadedFiles[name]) {
             dt.items.add(uploadedFile);
         }
 
@@ -26,11 +25,14 @@ function addFilesToForm(elementId) {
     }
 }
 
-function showUploadedFilesPreview(name, path, previewContainer) {
-    let uploadsContainer = document.getElementById('uploads');
-    let postFilesContainer = document.getElementById('post-files');
+function showUploadedFilesPreview(inputFilesElement, path, previewContainer, uploadsContainer, postFilesContainer, name) {
+    let uploadsContainerName = uploadsContainer.getAttribute("id");
+    let uploadedFilesLabel = document.getElementById(name + "Label");
+    let uploadedFilesLabelClone = uploadedFilesLabel.cloneNode(true);
 
-    inputFilesElement = document.getElementById(name);
+    uploadedFilesLabel.remove();
+    
+    uploadedFiles[uploadsContainerName] = [];
 
     inputFilesElement.onclick = function () {
         inputFilesElement.value = null;
@@ -50,19 +52,21 @@ function showUploadedFilesPreview(name, path, previewContainer) {
             postFilesContainer.childNodes[i].remove();
         }
 
-        getUploadedFiles(inputFilesElement.files);
+        getUploadedFiles(inputFilesElement.files, uploadsContainerName);
 
-        showUploadedFiles(uploadedFiles, path);
+        showUploadedFiles(uploadedFiles[uploadsContainerName], path, previewContainer, postFilesContainer, uploadedFilesLabel);
     }
+
+    postFilesContainer.appendChild(uploadedFilesLabelClone);
 }
 
-function getUploadedFiles(files) {
+function getUploadedFiles(files, name) {
     for (let file of files) {
         let duplicate = false;
 
         duplicate = false;
 
-        for (let uploadedFile of uploadedFiles) {
+        for (let uploadedFile of uploadedFiles[name]) {
             if (uploadedFile.name === file.name && uploadedFile.type === file.type && uploadedFile.size === file.size) {
                 duplicate = true;
 
@@ -71,14 +75,12 @@ function getUploadedFiles(files) {
         }
 
         if (!duplicate) {
-            uploadedFiles = uploadedFiles.concat(file);
+            uploadedFiles[name] = uploadedFiles[name].concat(file);
         }
     }
 }
 
-function showUploadedFiles(files, path) {
-    let postFilesContainer = document.getElementById('post-files');
-
+function showUploadedFiles(files, path, previewContainer, postFilesContainer, uploadedFilesLabel) {
     for (let file of files) {
         let reader = new FileReader();
         let filePreview = document.createElement("div"); filePreview.setAttribute("title", file.name); filePreview.setAttribute("style", "z-index: 1;");
@@ -137,6 +139,8 @@ function showUploadedFiles(files, path) {
 
         reader.readAsDataURL(file);
     }
+
+    postFilesContainer.appendChild(uploadedFilesLabel);
 }
 
 function loadPreviewFromReaderButton(file, reader, filePreview, path, previewContainer) {
@@ -162,20 +166,24 @@ function loadPreviewFromReaderButton(file, reader, filePreview, path, previewCon
             previewContainer.appendChild(previewBackground);
 
             if (file.type.match('video.mp4') || file.type.match('video.webm')) {
-                let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", "");
-                videoContainer.setAttribute(videoContainer.width > videoContainer.height ? "width" : "height", "100%"); videoContainer.setAttribute("class", "preview center");
+                let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
+                let video = document.createElement("video"); video.setAttribute("controls", "");
+                video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
                 let videoSource = document.createElement("source"); videoSource.setAttribute("src", reader.result); videoSource.setAttribute("type", file.type);
 
-                videoContainer.appendChild(videoSource);
+                video.appendChild(videoSource);
+                videoContainer.appendChild(video);
                 previewContainer.appendChild(videoContainer);
             }
             else if (file.type.match('image.png') || file.type.match('image.jpeg') || file.type.match('image.jpg') || file.type.match('image.gif')) {
-                let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", reader.result); imageContainer.setAttribute("class", "preview center");
+                let imageContainer = document.createElement("div"); imageContainer.setAttribute("class", "preview center"); imageContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
+                let image = document.createElement("img"); image.setAttribute("src", reader.result); image.setAttribute("class", "preview center");
 
+                imageContainer.appendChild(image);
                 previewContainer.appendChild(imageContainer);
             }
             else {
-                let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center");
+                let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center"); unknownFileContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
                 unknownFileContainer.innerText = "Unknown File Type";
                 unknownFileContainer.onclick = function () { hidePreview(previewContainer); }
 
@@ -200,18 +208,26 @@ function hidePreview(previewContainer) {
     }
     else {
         document.body.style = "";
+
+        if ("uploads" in uploadedFiles) {
+            let mainPageUploadedFiles = uploadedFiles["uploads"];
+
+            uploadedFiles = [];
+
+            uploadedFiles["uploads"] = mainPageUploadedFiles;
+        }
+        else {
+            uploadedFiles = [];
+        }
     }
 }
 
-function showPostFilesPreview(filesInStringFormat, path) {
+function showPostFilesPreview(filesInStringFormat, path, previewContainer, postFilesContainer) {
     if (filesInStringFormat === "") {
         return;
     }
 
     postFilesInStringFormat = filesInStringFormat;
-
-    let filesContainer = document.getElementById('files-input-container');
-    let postFilesContainer = document.getElementById('post-files');
 
     var files = filesInStringFormat.split("|");
 
@@ -288,20 +304,24 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
             previewContainer.appendChild(previewBackground);
 
             if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", "");
-                videoContainer.setAttribute(videoContainer.width > videoContainer.height ? "width" : "height", "100%"); videoContainer.setAttribute("class", "preview center");
+                let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
+                let video = document.createElement("video"); video.setAttribute("controls", "");
+                video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
                 let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
 
-                videoContainer.appendChild(videoSource);
+                video.appendChild(videoSource);
+                videoContainer.appendChild(video);
                 previewContainer.appendChild(videoContainer);
             }
             else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]); imageContainer.setAttribute("class", "preview center");
+                let imageContainer = document.createElement("div"); imageContainer.setAttribute("class", "preview center"); imageContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
+                let image = document.createElement("img"); image.setAttribute("src", path + "storage/post_files/" + files[i]); image.setAttribute("class", "preview center");
 
+                imageContainer.appendChild(image);
                 previewContainer.appendChild(imageContainer);
             }
             else {
-                let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center");
+                let unknownFileContainer = document.createElement("span"); unknownFileContainer.style = "font-size: 3rem;"; unknownFileContainer.setAttribute("class", "preview center"); unknownFileContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
                 unknownFileContainer.innerText = "Unknown File Type"
                 unknownFileContainer.onclick = function () { hidePreview(previewContainer); }
 
@@ -602,9 +622,9 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
     let previewContent = document.createElement("div"); previewContent.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;"; previewContent.setAttribute("class", "preview center");
     let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
     let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
-    let nextButtonContainer = document.createElement("div"); nextButtonContainer.setAttribute("class", i + 3 < files.length ? "next-button-container" : "hidden");
+    let nextButtonContainer = document.createElement("div"); nextButtonContainer.setAttribute("class", i + 3 < files.length ? "next-button-container" : "next-button-container-disabled");
     let nextButton = document.createElement("div"); nextButton.setAttribute("class", "next-button"); nextButton.style = "background-image: url(" + path + "/images/navigate_next_white_24dp.svg);";
-    let beforeButtonContainer = document.createElement("div"); beforeButtonContainer.setAttribute("class", i - 3 >= 0 ? "before-button-container" : "hidden");
+    let beforeButtonContainer = document.createElement("div"); beforeButtonContainer.setAttribute("class", i - 3 >= 0 ? "before-button-container" : "before-button-container-disabled");
     let beforeButton = document.createElement("div"); beforeButton.setAttribute("class", "before-button"); beforeButton.style = "background-image: url(" + path + "/images/navigate_before_white_24dp.svg);";
     let skipFunction = false;
 
@@ -689,10 +709,10 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         }
 
         try {
-            fetch(path + 'post/' + postId + '/like', {
+            fetch(path + 'posts/' + postId + '/like', {
                 method: 'POST',
                 headers: {
-                    'url': path + 'post/' + postId + '/like',
+                    'url': path + 'posts/' + postId + '/like',
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
@@ -719,7 +739,9 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         }
     }
 
-    postCommentButtonContainer.onclick = function () { viewCommentsWindow(path, postId, false); }
+    if (postCommentButtonContainer.getAttribute("class") === "post-interaction-button") {
+        postCommentButtonContainer.onclick = function () { viewCommentsWindow(path, postId, false); }
+    }
 
     postBookmarkButtonContainer.onclick = function () {
         if (postBookmarkButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);") {
@@ -730,10 +752,10 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         }
 
         try {
-            fetch(path + 'post/' + postId + '/bookmark', {
+            fetch(path + 'posts/' + postId + '/bookmark', {
                 method: 'POST',
                 headers: {
-                    'url': path + 'post/' + postId + '/bookmark',
+                    'url': path + 'posts/' + postId + '/bookmark',
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
@@ -744,6 +766,9 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                 }
                 else if (data === "Unbookmarked") {
                     postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
+                }
+                else if (data === "AttemptToBookmarkComment") {
+                    console.log("You can not bookmark comments.");
                 }
                 else if (data === "Login") {
                     window.location.href = path + 'login';
@@ -759,7 +784,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
     postLinkButtonContainer.onclick = function (event) {
         event.preventDefault();
 
-        navigator.clipboard.writeText(path + 'post/' + postId).then(() => alert('Text copied'));
+        navigator.clipboard.writeText(path + 'posts/' + postId).then(() => alert('Text copied'));
 
         let flashMessageContainer = document.getElementById("flash-message-container");
         let flashMessageText = document.getElementById("flash-message-text");
@@ -811,10 +836,155 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         previewContainer.appendChild(closeButtonContainer);
 
         try {
-            fetch(path + 'post/' + postId + '/likesInfo', {
+            fetch(path + 'posts/' + postId + '/likesInfo', {
                 method: 'POST',
                 headers: {
-                    'url': path + 'post/' + postId + '/likesInfo',
+                    'url': path + 'posts/' + postId + '/likesInfo',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                usersLiked = data[postId].split("|");
+
+                let usersLikedContainer = document.createElement("div");
+
+                if (usersLiked.length > 1) {
+                    for (let i = 0; i < usersLiked.length; i += 2) {
+                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + usersLiked[i + 1]);
+                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/person_white_24dp.svg"));
+                        let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
+
+                        userProfileLink.appendChild(userProfilePicture);
+                        userContainer.appendChild(userProfileLink);
+                        userContainer.appendChild(username);
+
+                        usersLikedContainer.appendChild(userContainer);
+                    }
+                }
+
+                previewContent.appendChild(usersLikedContainer);
+
+                previewContent.onclick = function() {
+                    skipFunction = true;
+
+                    previewContent.onclick;
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        } catch (error) {
+            return console.log(error);
+        }
+
+        previewContainer.appendChild(previewContent);
+    }
+}
+
+function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, previewContainer) {
+    let postLikeButtonContainer = document.getElementById("post-" + postId + "-like");
+    let postLinkButtonContainer = document.getElementById("post-" + postId + "-link");
+    let postLikeCountElement = document.getElementById("post-" + postId + "-like-count");
+
+    postLikeButtonContainer.onclick = function () {
+        if (postLikeButtonContainer.style == "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
+            postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
+        }
+        else if (postLikeButtonContainer.style == "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
+            postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
+        }
+
+        try {
+            fetch(path + 'posts/' + postId + '/like', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'posts/' + postId + '/like',
+                    "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
+                }
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                if (data === "Liked") {
+                    postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
+                    numberOfLikes += 1;
+                    postLikeCountElement.innerText = numberOfLikes;
+                }
+                else if (data === "Unliked") {
+                    postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
+                    numberOfLikes -= 1;
+                    postLikeCountElement.innerText = numberOfLikes;
+                }
+                else if (data === "Login") {
+                    window.location.href = path + 'login';
+                }
+            }).catch(function (error) {
+                window.location.href = path + 'login';
+            });
+        } catch (error) {
+            window.location.href = path + 'login';
+        }
+    }
+
+    postLinkButtonContainer.onclick = function (event) {
+        event.preventDefault();
+
+        navigator.clipboard.writeText(path + 'posts/' + postId).then(() => alert('Text copied'));
+
+        let flashMessageContainer = document.getElementById("flash-message-container");
+        let flashMessageText = document.getElementById("flash-message-text");
+
+        flashMessageContainer.style = "";
+        postLinkButtonContainer.blur();
+        flashMessageText.innerText = "The link to the post has been copied.";
+
+        clearTimeout(autoHideFlashMessage);
+
+        autoHideFlashMessage = setTimeout(function () {
+            flashMessageContainer.style = "display: none;";
+            flashMessageText.innerText = "";
+        }, 10000);
+    }
+
+    postLikeCountElement.onclick = function () {
+        previewContainer.innerHTML = "";
+
+        previewContainer.style.zIndex = 100;
+        document.body.style.overflow = 'hidden';
+
+        let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
+        let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
+        let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let skipFunction = false;
+
+        let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Likes";
+
+        previewContent.appendChild(previewContentHeading);
+
+        closeButtonContainer.appendChild(closeButton);
+
+        previewBackground.onclick = function () { hidePreview(previewContainer); }
+        previewContent.onclick = function () {
+            if (!skipFunction) {
+                hidePreview(previewContainer);
+            }
+            else {
+                skipFunction = false;
+            }
+        }
+
+        previewContainer.appendChild(previewBackground);
+
+        closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
+
+        previewContainer.appendChild(closeButtonContainer);
+
+        try {
+            fetch(path + 'posts/' + postId + '/likesInfo', {
+                method: 'POST',
+                headers: {
+                    'url': path + 'posts/' + postId + '/likesInfo',
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
@@ -859,10 +1029,10 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
 
 function viewCommentsWindow(path, postId, backButtonPressed) {
     try {
-        fetch(path + 'post/' + postId + '/viewComments', {
+        fetch(path + 'posts/' + postId + '/viewComments', {
             method: 'POST',
             headers: {
-                'url': path + 'post/' + postId + '/viewComments',
+                'url': path + 'posts/' + postId + '/viewComments',
                 "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
             }
         }).then(function (response) {
@@ -1219,4 +1389,76 @@ function getAllFunctionsTextFromHtmlText(text) {
     }
 
     return allFunctionsText;
+}
+
+function autoResizeTextAreas() {
+    let textAreaElements = document.getElementsByName("body");
+    
+    for (let i = 0; i < textAreaElements.length; i++) {
+        textAreaElements[i].oninput = function () {
+            if (textAreaElements[i].offsetHeight < textAreaElements[i].scrollHeight) {
+                let rows = parseInt(textAreaElements[i].getAttribute("rows"), 10);
+
+                if (!isNaN(rows)) {
+                    if (rows < 7) {
+                        textAreaElements[i].setAttribute("rows", (rows + 1).toString(10));
+                    }
+                }
+            }
+        }
+    }
+}
+
+function deleteFormConfirmationFunctionality(form, previewContainer, path) {
+    form.onsubmit = function (e) {
+        e.preventDefault();
+
+        previewContainer.innerHTML = "";
+
+        previewContainer.style.zIndex = 100;
+        document.body.style.overflow = 'hidden';
+
+        let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
+        let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview confirmation-container scrollbar-preview");
+        let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let skipFunction = false;
+
+        closeButtonContainer.appendChild(closeButton);
+
+        previewBackground.onclick = function () { hidePreview(previewContainer); }
+        previewContent.onclick = function () {
+            skipFunction = true;
+
+            if (!skipFunction) {
+                hidePreview(previewContainer);
+            }
+            else {
+                skipFunction = false;
+            }
+        }
+
+        previewContainer.appendChild(previewBackground);
+
+        closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
+
+        previewContainer.appendChild(closeButtonContainer);
+
+        let confirmationTextContainer = document.createElement("div"); confirmationTextContainer.setAttribute("class", "confirmation-text text-center"); confirmationTextContainer.innerText = "Do you want to delete this post?";
+        let confirmationButtonsContainer = document.createElement("div"); confirmationButtonsContainer.setAttribute("class", "confirmation-buttons-container");
+        let confirmationDeclineButton = document.createElement("div"); confirmationDeclineButton.setAttribute("class", "confirmation-button text-center"); confirmationDeclineButton.innerText = "No";
+        let confirmationAcceptButton = document.createElement("div"); confirmationAcceptButton.setAttribute("class", "confirmation-button text-center"); confirmationAcceptButton.innerText = "Yes";
+
+        confirmationDeclineButton.onclick = function () { hidePreview(previewContainer); }
+
+        confirmationAcceptButton.onclick = function () {
+            form.submit();
+        }
+
+        previewContent.appendChild(confirmationTextContainer);
+        confirmationButtonsContainer.appendChild(confirmationDeclineButton);
+        confirmationButtonsContainer.appendChild(confirmationAcceptButton);
+        previewContent.appendChild(confirmationButtonsContainer);
+        previewContainer.appendChild(previewContent);
+    }
 }

@@ -22,15 +22,15 @@ use App\Http\Controllers\BookmarksController;
 |
 */
 
-Route::get('/post/{post}', [PostController::class, 'index'])->where('post', '^[0-9]+$')->name('view.post');
+Route::get('/posts/{post}', [PostController::class, 'index'])->where('post', '^[0-9]+$')->name('view.post');
 
-Route::post('/post/{post}/likesInfo', [PostController::class, 'likesInfo'])->where('post', '^[0-9]+$')->name('post.likesInfo');
+Route::post('/posts/{post}/likesInfo', [PostController::class, 'likesInfo'])->where('post', '^[0-9]+$')->name('post.likesInfo');
 
 Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->whereAlphaNumeric('user')->name('profile');
 
 Route::post('/profile/{user:username}/followersInfo', [ProfileController::class, 'followersInfo'])->whereAlphaNumeric('user')->name('profile.followersInfo');
 
-Route::post('/post/{post}/viewComments', [PostController::class, 'viewComments'])->where('post', '^[0-9]+$')->name('view.post.comments');
+Route::post('/posts/{post}/viewComments', [PostController::class, 'viewComments'])->where('post', '^[0-9]+$')->name('view.post.comments');
 
 Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
@@ -51,7 +51,7 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::post('/profile/{user:username}/follow', [ProfileController::class, 'follow'])->whereAlphaNumeric('user')->name('profile.follow');
 
-    Route::post('/post/create', [PostController::class, 'store'])->name('post.create');
+    Route::post('/posts/create', [PostController::class, 'store'])->name('post.create');
 
     Route::group(['middleware' => ['checkUser']], function () {
         Route::get('/post/{post}/edit', [PostController::class, 'edit'])->where('post', '^[0-9]+$')->name('post.edit');
@@ -62,11 +62,11 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
         Route::post('/profile/{user:username}/settings', [ProfileController::class, 'storeSettings'])->whereAlphaNumeric('user')->name('profile.settings.store');
     });
 
-    Route::post('/post/{post}/like', [PostController::class, 'like'])->where('post', '^[0-9]+$')->name('post.like');
+    Route::post('/posts/{post}/like', [PostController::class, 'like'])->where('post', '^[0-9]+$')->name('post.like');
 
-    Route::post('/post/{post}/comment', [PostController::class, 'store'])->where('post', '^[0-9]+$')->name('post.comment');
+    Route::post('/posts/{post}/comment', [PostController::class, 'store'])->where('post', '^[0-9]+$')->name('post.comment');
 
-    Route::post('/post/{post}/bookmark', [PostController::class, 'bookmark'])->where('post', '^[0-9]+$')->name('post.bookmark');
+    Route::post('/posts/{post}/bookmark', [PostController::class, 'bookmark'])->where('post', '^[0-9]+$')->name('post.bookmark');
 
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 });

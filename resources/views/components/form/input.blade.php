@@ -1,4 +1,4 @@
-@props(['name', 'class', 'containerClass', 'disableOldValue' => ''])
+@props(['name', 'class', 'containerClass', 'value' => '', 'disableOldValue' => ''])
 
 <div class="{{ $containerClass }} block">
     <input
@@ -6,7 +6,8 @@
         id="{{ $name }}"
         placeholder="{{ $slot }}"
         class="{{ $class }}"
-        {{ $attributes(['value' => $disableOldValue ? '' : old($name)]) }}
+        value="{{ $disableOldValue ? '' : (old($name) ? old($name) : $value) }}"
+        {{ $attributes([]) }}
     >
 
     <x-form.error name="{{ $name }}" />

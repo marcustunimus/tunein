@@ -3,6 +3,7 @@
 .profile-background {
     --height: 300px;
     --margin-top: 5%;
+    --margin-bottom: -100px;
     --border-radius: 20px;
 
     position: relative;
@@ -11,6 +12,7 @@
     min-height: var(--height);
     max-height: var(--height);
     margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
     object-fit: cover;
     object-position: center;
     border-radius: var(--border-radius);
@@ -28,12 +30,14 @@
 .profile-image {
     --profile-picture-radius: 75px;
     --margin: 15px;
+    --margin-top: 100px;
 
     position: relative;
     width: calc(2 * var(--profile-picture-radius));
     max-width: calc(2 * var(--profile-picture-radius));
     height: calc(2 * var(--profile-picture-radius));
     max-height: calc(2 * var(--profile-picture-radius));
+    margin-top: var(--margin-top);
     margin-left: var(--margin);
     border-radius: 50%;
     background-color: var(--field-color);
@@ -64,26 +68,16 @@
 
 /* Profile Settings Related */
 
-.profile-settings-heading-text {
-    --font-size: 3rem;
-    --font-weight: bold;
-    --margin: 5%;
-
-    font-size: var(--font-size);
-    font-weight: var(--font-weight);
-    margin-top: var(--margin);
-    margin-bottom: var(--margin);
-}
-
 .profile-settings-section-text {
     --font-size: 2rem;
     --font-weight: bold;
-    --margin: 5%;
+    --margin-top: 5%;
+    --margin-bottom: 5%;
 
     font-size: var(--font-size);
     font-weight: var(--font-weight);
-    margin-top: var(--margin);
-    margin-bottom: var(--margin);
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
 }
 
 .profile-image-preview {
@@ -144,9 +138,26 @@
 }
 
 .profile-settings-remove-image-container {
-    --margin: 5%;
+    --margin: 2.5%;
 
-    margin-bottom: var(--margin);
+    margin-top: var(--margin);
+}
+
+.profile-settings-change-text {
+    margin-top: 0.75rem;
+}
+
+.profile-settings-prevent-hidden-behind-background {
+    margin-top: calc(100px + 0.75rem);
+}
+
+.profile-remove-picture-checkbox {
+    height: 0.8rem;
+}
+
+.profile-remove-picture-text {
+    padding-left: 0.25rem;
+    font-size: 0.8rem;
 }
 
 /* Profile Follow Related */

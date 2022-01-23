@@ -48,6 +48,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $with = ['posts', 'likes', 'bookmarks'];
+
     public function setPasswordAttribute(string $password): static
     {
         $this->attributes['password'] = password_hash($password, PASSWORD_DEFAULT);
@@ -58,5 +60,15 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
     }
 }

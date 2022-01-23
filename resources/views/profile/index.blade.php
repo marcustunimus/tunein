@@ -1,9 +1,9 @@
-<x-metadata title="TuneInMedia - Profile">
+<x-metadata title="Profile - TuneInMedia">
     <div id="preview" class="preview-container block"></div>
     <x-flash />
 
     <div class="left-sidebar-container block">
-        <div class="left-sidebar-content block">
+        <div class="left-sidebar-content scrollbar block">
             @if (auth()->check())
                 <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
                 <x-sidebar.link-button href="{{ route('bookmarks') }}">Bookmarks</x-sidebar.link-button>
@@ -18,7 +18,9 @@
     </div>
 
     <div class="main-container block">
-        <x-profile.background url="{{ $user->background_picture }}" />
+        @if ($user->background_picture != null)
+            <x-profile.background url="{{ $user->background_picture }}" />
+        @endif
 
         <div class="profile-info">
             <x-profile.image url="{{ $user->profile_picture }}" />
@@ -49,10 +51,10 @@
                 @endif
             </div>
 
-            <div class="profile-username">{{ $user->username }}</div>
+            <div class="profile-username">{{ '@' . $user->username }}</div>
 
             <div class="profile-followers-count-text">
-                <span id="profile-followers-count" class="link">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
+                <span id="profile-followers-count" class="link link-color">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
             </div>
 
             @if (auth()->check())
@@ -79,14 +81,29 @@
             @endif
         @endif
 
+        @if (! $posts->count())
+            @if (auth()->check())
+                @if ($user->id === auth()->user()->id)
+                    <div class="no-posts-found-text">You have no posts currently.</div>
+                @else
+                    <div class="no-posts-found-text">This user has no posts currently.</div>
+                @endif
+            @else
+                <div class="no-posts-found-text">This user has no posts currently.</div>
+            @endif
+        @endif
+
         @foreach ($posts as $post)
             <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
-                <x-post.dropdown>
+                <x-post.dropdown containerClass="post-dropdown-container">
                     <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if (auth()->check())
                         @if ($post->author->id === auth()->user()->id)
                             <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
-                            <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE">Delete</x-post.dropdown-button>
+                            <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE" id="delete{{ $post->id }}" elementPosition="last">Delete</x-post.dropdown-button>
+                            <script>
+                                deleteFormConfirmationFunctionality(document.getElementById("delete{{ $post->id }}Form"), document.getElementById('preview'), "{{ asset('') }}");
+                            </script>
                         @endif
                     @endif
                 </x-post.dropdown>
@@ -102,7 +119,7 @@
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
                     <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments[$post->id]->count() }}</x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}">Bookmark</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
                 </x-post.interaction.tab>
 
                 <script>
@@ -111,12 +128,18 @@
             </x-post.panel>
         @endforeach
 
-        <div>{{ $posts->links() }}</div>
+        <div class="mb-6">{{ $posts->links() }}</div>
     </div>
 
     <div class="right-sidebar-container block">
-        <div class="right-sidebar-content block">
+        <div class="right-sidebar-content scrollbar block">
             <x-sidebar.search-bar href="/profile">Search...</x-sidebar.search-bar>
         </div>
     </div>
+
+    @if (session('postId'))
+        <script>
+            viewCommentsWindow("{{ asset('') }}", {{ session('postId') }}, false);
+        </script>
+    @endif
 </x-metadata>

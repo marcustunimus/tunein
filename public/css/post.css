@@ -1,7 +1,7 @@
 /* Post Related */
 
 .post {
-    --border-radius: 0.1rem;
+    --border-radius: 1rem;
     --padding: 25px;
     --profile-picture-radius: 25px;
 
@@ -14,32 +14,33 @@
 }
 
 .post-container {
+    --margin-top: -35px;
     --background-image-gradient-direction: bottom right;
 
     position: relative;
-    padding: var(--border-radius);
+    padding: 2px;
+    margin-top: var(--margin-top);
     border-radius: var(--border-radius);
     background-image: linear-gradient(to var(--background-image-gradient-direction), var(--site-theme-color-1), var(--site-theme-color-2));
     box-sizing: border-box;
+    overflow: visible;
 }
 
 .post-content {
     position: relative;
     padding: calc((var(--profile-picture-radius) + var(--padding) / 3) / 2);
-    padding-top: calc(var(--profile-picture-radius) + var(--padding) / 3);
     background-color: var(--background-color);
-    overflow-y: hidden;
+    border-radius: calc(var(--border-radius) / 1.1);
+    overflow: visible;
 }
 
 .post-profile {
-    --bottom: -35px;
     --left: -35px;
     --padding: 10px;
 
     position: relative;
     display: inline-block;
-    bottom: var(--bottom);
-    left: var(--left);
+    margin-left: var(--left);
     background-color: var(--background-color);
     padding: var(--padding);
     z-index: 1;
@@ -132,10 +133,24 @@
     cursor: pointer;
 }
 
+.post-interaction-button-disabled {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-column: span 1;
+    grid-row: span 1;
+    width: 100%;
+    padding: 0.2rem;
+    background-color: var(--site-theme-color-1-disabled);
+    border-radius: 1rem;
+    overflow-y: hidden;
+}
+
 .post-interaction-icon {
     --width: 1.5rem;
 
-    display: flex;
+    display: inline-flex;
     min-width: var(--width);
     max-width: var(--width);
     min-height: var(--width);
@@ -207,11 +222,12 @@
     --border-radius: 15px;
 
     position: relative;
+    padding-top: 1.5rem;
     margin: auto;
     width: var(--width);
     max-width: var(--width);
     height: var(--height);
-    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
 }
 
 .post-input-text {
@@ -285,7 +301,7 @@ input.post-input-text:focus {
 }
 
 .create-post-submit-container {
-    --width: 20%;
+    --width: 7rem;
     --margin-top: 7.5%;
 
     position: relative;
@@ -344,7 +360,7 @@ input.post-input-text:focus {
 /* Post Dropdown Button */
 
 .post-dropdown-container {
-    --top: -1.5rem;
+    --top: -0.5rem;
     --left: calc(100% - 1.5em);
     --width: 2.25rem;
     
@@ -379,7 +395,8 @@ input.post-input-text:focus {
     border-radius: 0.5rem;
     min-width: 7.5rem;
     max-width: 7.5rem;
-    z-index: 1;
+    box-shadow: 0.25rem 0.25rem 0.25rem #00000099;
+    z-index: 15;
 }
   
 .post-dropdown-content-button {
@@ -393,7 +410,7 @@ input.post-input-text:focus {
     display: block;
     width: 100%;
     height: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 1rem;
     text-align: left;
     border-radius: 0.5rem;
     background-color: transparent;
@@ -446,17 +463,97 @@ input.post-input-text:focus {
 }
 
 .post-comments-preview-container {
-    --width: 35%;
+    --width: 40%;
     --height: 100%;
-    --border-radius: 1rem;
+    --padding: 1.5%;
 
     min-width: var(--width); 
     max-width: var(--width); 
     min-height: var(--height); 
     max-height: var(--height); 
     background-color: var(--background-color);
-    border-radius: var(--border-radius);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
     overflow-y: auto;
+}
+
+.post-comment {
+    --border-radius: 1rem;
+    --padding: 25px;
+    --profile-picture-radius: 25px;
+
+    z-index: 1;
+}
+
+.post-comment:last-child > .post-comment-container {
+    padding-bottom: 0px;
+}
+
+.post-comment-padding {
+    --padding: 25px;
+
+    padding: 0px 25px;
+}
+
+.post-comment-container {
+    --margin-top: -35px;
+    --background-image-gradient-direction: bottom right;
+
+    position: relative;
+    padding-bottom: 2px;
+    margin-top: var(--margin-top);
+    background-image: linear-gradient(to var(--background-image-gradient-direction), var(--site-theme-color-1), var(--site-theme-color-2));
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.post-comment-content {
+    position: relative;
+    padding: calc((var(--profile-picture-radius) + var(--padding) / 3) / 2);
+    padding-right: 0px;
+    background-color: var(--background-color);
+    overflow: visible;
+}
+
+.post-comment-input-container {
+    --width: 100%;
+    --height: 20%;
+    --border-radius: 15px;
+
+    position: relative;
+    padding-top: 0.5rem;
+    margin: auto;
+    margin-bottom: 0.5rem;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--height);
+    z-index: 1;
+}
+
+.post-comment-input-text {
+    --border-radius: 15px;
+    --font-size: 1.1rem;
+    --border-width: 5px;
+    
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: var(--border-radius);
+    border-style: solid;
+    border-width: var(--border-width);
+    border-color: var(--field-color);
+    background-color: var(--field-color);
+    font-size: var(--font-size);
+    resize: none;
+}
+
+textarea.post-comment-input-text {
+    padding: 0.5rem;
+}
+
+textarea.post-comment-input-text:focus {
+    outline: none;
 }
 
 /* Post Files */
@@ -586,14 +683,15 @@ input.post-input-text:focus {
 /* Creating a Post File Upload */
 
 .post-file-upload-container {
-    --margin-bottom: 5%;
+    --margin: 5%;
 
 	position: relative;
-    margin-bottom: var(--margin-bottom);
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
 }
 
 .post-file-upload {
-    --width: 30%;
+    --width: 9rem;
     --margin-top-bottom: 5%;
     --padding: 10px;
     --border-radius: 15px;
@@ -760,10 +858,11 @@ input[type=file].post-file-upload {
     max-width: var(--width);
     height: var(--width);
     max-height: var(--width);
-    top: calc(var(--width) * 4.8 * -1);
+    top: calc(var(--width) * 4.8 * -1 + var(--width));
     right: calc(var(--width) / 6);
     margin: auto;
     margin-right: 0%;
+    margin-top: calc(-1 * var(--width));
     background-color: var(--error-color);
     border-radius: 50%;
     z-index: 2;
@@ -842,6 +941,20 @@ input[type=file].post-file-upload {
     cursor: pointer;
 }
 
+.next-button-container-disabled {
+    --width: 40px;
+
+    position: absolute;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--width);
+    max-height: var(--width);
+    top: calc(100% / 2 - var(--width) / 2);
+    right: calc(100% / 4 + var(--width) / 2);
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
 .next-button {
     --close-button-width: 1.5rem;
     --color: var(--letter-color);
@@ -873,6 +986,20 @@ input[type=file].post-file-upload {
 .before-button-container:hover {
     background-color: var(--field-scrollbar-color-hover);
     cursor: pointer;
+}
+
+.before-button-container-disabled {
+    --width: 40px;
+
+    position: absolute;
+    width: var(--width);
+    max-width: var(--width);
+    height: var(--width);
+    max-height: var(--width);
+    top: calc(100% / 2 - var(--width) / 2);
+    left: calc(100% / 4 + var(--width) / 2);
+    border-radius: 50%;
+    opacity: 0.5;
 }
 
 .before-button {
@@ -955,4 +1082,79 @@ input[type=file].post-file-upload {
     top: var(--top);
     padding-left: var(--padding);
     padding-right: var(--padding);
+}
+
+.comment-body-text {
+    --top: -1.5rem;
+    --padding: 0.5rem;
+    --margin: 1rem;
+
+    position: relative;
+    top: var(--top);
+    padding-left: var(--padding);
+    margin-right: var(--margin);
+    margin-bottom: -1.5rem;
+    z-index: 3;
+}
+
+/* Comment Dropdown */
+
+.comment-dropdown-container {
+    --top: -0.5rem;
+    --left: calc(100% - 1em);
+    --width: 1.75rem;
+    
+    position: relative;
+    display: inline-block;
+    top: var(--top);
+    left: var(--left);
+    min-width: var(--width);
+    max-width: var(--width);
+    min-height: var(--width);
+    max-height: var(--width);
+    border-radius: 50%;
+    z-index: 11;
+}
+
+.comment-dropdown-container:focus-within .post-dropdown-content {
+    display: block;
+    outline: none;
+    background-color: var(--field-color);
+}
+
+/* Comment Interaction */
+
+.comment-interaction-container {
+    --top: 0.5rem;
+    --padding: 0.75rem;
+
+    position: relative;
+    top: var(--top);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+
+.comment-interaction-icon {
+    --width: 1.5rem;
+
+    position: relative;
+    display: inline-block;
+    min-width: var(--width);
+    max-width: var(--width);
+    min-height: var(--width);
+    max-height: var(--width);
+    background-size: contain;
+}
+
+.comment-interaction-icon:hover {
+    cursor: pointer;
+}
+
+.comment-interaction-text {
+    position: relative;
+    top: -0.4rem;
+}
+
+.comment-interaction-text:hover {
+    cursor: pointer;
 }

@@ -1,9 +1,9 @@
-<x-metadata title="TuneInMedia - Settings">
+<x-metadata title="Settings - TuneInMedia">
     <div id="preview" class="preview-container block hidden"></div>
     <x-flash />
 
     <div class="left-sidebar-container block">
-        <div class="left-sidebar-content block">
+        <div class="left-sidebar-content scrollbar block">
             <x-sidebar.link-button href="{{ route('home') }}">Back to Home</x-sidebar.link-button>
         </div>
     </div>
@@ -13,7 +13,7 @@
             <div class="error center-text">The form could not be submitted! There were errors with the validation.</div>
         @endif
 
-        <div class="profile-settings-heading-text center">Settings</div>
+        <div class="heading-text center">Settings</div>
 
         <form method="POST" action="{{ route('profile.settings.store', auth()->user()->username) }}" enctype="multipart/form-data">
             @csrf
@@ -29,21 +29,21 @@
                 <x-form.radio name="gender" id="unspecified-radio-button" class="" containerClass="" value="Unspecified" checked="{{ $user->gender == null ? 'checked' : '' }}">Unspecified</x-form.radio>
             </div>
             <div class="profile-settings-section-text center">Change Profile Picture</div>
-            <div class="profile-settings-remove-image-container center">
-                <x-form.checkbox name="profilePictureRemove" id="profile-picture-remove-button" class="" containerClass="">Remove Profile Picture</x-form.checkbox>
-            </div>
             <x-profile.image-preview id="profile-picture" url="{{ $user->profile_picture }}" />
-            <x-form.file name="uploadedProfilePictureFile" class="profile-image-preview-upload center" containerClass="" accept=".png,.jpeg,.jpg"><span class="link link-color" id="uploadedProfilePictureFileButton">Change...</span></x-form.file>
+            <x-form.file name="uploadedProfilePictureFile" class="profile-image-preview-upload center" containerClass="profile-settings-change-text center" accept=".png,.jpeg,.jpg" hideUploadsContainer="true" containerClassPure="true"><span class="link link-color" id="uploadedProfilePictureFileButton">Change...</span></x-form.file>
+            <div class="profile-settings-remove-image-container center">
+                <x-form.checkbox name="profilePictureRemove" id="profile-picture-remove-button" class="profile-remove-picture-text" containerClass="center" inputClass="profile-remove-picture-checkbox">Remove Profile Picture</x-form.checkbox>
+            </div>
             <script>
                 showProfilePicturePreview("uploadedProfilePictureFile", "{{ asset('') }}");
                 setRemoveProfilePictureButtonFunctionality("{{ asset('') }}");
             </script>
             <div class="profile-settings-section-text center">Change Background Picture</div>
-            <div class="profile-settings-remove-image-container center">
-                <x-form.checkbox name="backgroundPictureRemove" id="background-picture-remove-button" class="" containerClass="">Remove Background Picture</x-form.checkbox>
-            </div>
             <x-profile.background-preview id="profile-background" url="{{ $user->background_picture }}" />
-            <x-form.file name="uploadedBackgroundPictureFile" class="profile-image-preview-upload center" containerClass="" accept=".png,.jpeg,.jpg"><span class="link link-color" id="uploadedBackgroundPictureFileButton">Change...</span></x-form.file>
+            <x-form.file name="uploadedBackgroundPictureFile" class="profile-image-preview-upload center" containerClass="profile-settings-prevent-hidden-behind-background center" accept=".png,.jpeg,.jpg" hideUploadsContainer="true" containerClassPure="true"><span class="link link-color" id="uploadedBackgroundPictureFileButton">Change...</span></x-form.file>
+            <div class="profile-settings-remove-image-container center">
+                <x-form.checkbox name="backgroundPictureRemove" id="background-picture-remove-button" class="profile-remove-picture-text" containerClass="center" inputClass="profile-remove-picture-checkbox">Remove Background Picture</x-form.checkbox>
+            </div>
             <script>
                 showBackgroundPicturePreview("uploadedBackgroundPictureFile", "{{ asset('') }}");
                 setRemoveBackgroundPictureButtonFunctionality("{{ asset('') }}")
@@ -60,7 +60,7 @@
     </div>
 
     <div class="right-sidebar-container block">
-        <div class="right-sidebar-content block">
+        <div class="right-sidebar-content scrollbar block">
         </div>
     </div>
 </x-metadata>

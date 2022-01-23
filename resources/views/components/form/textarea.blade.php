@@ -6,6 +6,7 @@
         id="{{ $name }}"
         placeholder="{{ $placeholder }}"
         class="{{ $class }}"
+        maxlength="2000"
         {{ $required ? 'required' : '' }}
         {{ $attributes(['rows' => 1]) }}
     >{{ old($name) ? old($name) : $slot }}</textarea>
