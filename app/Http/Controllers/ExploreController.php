@@ -21,25 +21,10 @@ class ExploreController extends Controller
 
         $files = PostController::getPostsFiles($posts);
 
-        $postLikes = PostController::getLikesOfPosts($posts);
-
-        $userLikes = PostController::getUserLikedPosts($postLikes);
-
-        $postBookmarks = PostController::getBookmarksOfPosts($posts);
-
-        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
-
-        $postComments = PostController::getCommentsOfPosts($posts);
-        
         return view('explore.index', [
             'posts' => $posts,
             'user' => $auth->guard()->user(),
             'files' => $files,
-            'postLikes' => $postLikes,
-            'userLikes' => $userLikes,
-            'postBookmarks' => $postBookmarks,
-            'userBookmarks' => $userBookmarks,
-            'comments' => $postComments,
         ]);
     }
 }

@@ -1,3 +1,7 @@
+@php
+    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts */
+@endphp
+
 <x-metadata title="Explore - TuneInMedia">
     <div id="preview" class="preview-container block"></div>
     <x-flash />
@@ -34,23 +38,23 @@
                         @endif
                     @endif
                 </x-post.dropdown>
-                
+
                 <div class="post-body-text">{{ $post->body }}</div>
-            
+
                 <script>
                     loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
-    
-                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} {{ $postLikes[$post->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
-            
+
+                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info>
+
                 <x-post.interaction.tab>
-                    <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments[$post->id]->count() }}</x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $post->subPosts()->count() }}</x-post.interaction.button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
                 </x-post.interaction.tab>
-            
+
                 <script>
-                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }}, "{{ asset('') }}", document.getElementById('preview'));
+                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('preview'));
                 </script>
             </x-post.panel>
         @endforeach

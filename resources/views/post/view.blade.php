@@ -1,3 +1,8 @@
+@php
+    /** @var \App\Models\Post $post */
+    /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $comments */
+@endphp
+
 <div id="second-preview" class="second-preview-container block"></div>
 
 <div class="heading-text center">Post</div>
@@ -6,7 +11,7 @@
     <x-post.dropdown containerClass="post-dropdown-container">
         <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
         @if ($user != null)
-            @if ($post->author->id === auth()->user()->id)
+            @if ($post->author->id === $user->id)
                 <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
                 <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE" id="delete{{ $post->id }}" elementPosition="last">Delete</x-post.dropdown-button>
                 <script>
@@ -15,23 +20,23 @@
             @endif
         @endif
     </x-post.dropdown>
-    
+
     <div class="post-body-text">{{ $post->body }}</div>
 
     <script>
         loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('second-preview'));
     </script>
 
-    <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} {{ $postLikes[$post->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
+    <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
 
     <x-post.interaction.tab>
-        <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-        <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}" buttonClassAddition="-disabled">{{ $commentsCount }}</x-post-interaction-button>
-        <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+        <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+        <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}" buttonClassAddition="-disabled">{{ $post->subPosts()->count() }}</x-post.interaction.button>
+        <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
     </x-post.interaction.tab>
 
     <script>
-        setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }}, "{{ asset('') }}", document.getElementById('second-preview'));
+        setInteractionButtonsFunctionality({{ $post->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('second-preview'));
     </script>
 </x-post.panel>
 
@@ -70,12 +75,12 @@
             </script>
 
             <x-post.comment-interaction.panel>
-                <x-post.comment-interaction.button id="post-{{ $comment->id }}-like" icon="{{ in_array($comment->id, $userCommentsLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.comment-interaction.button>
-                <span id="post-{{ $comment->id }}-like-count" class="comment-interaction-text">{{ $commentsLikes[$comment->id]->count() }}</span>
+                <x-post.comment-interaction.button id="post-{{ $comment->id }}-like" icon="{{ $comment->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.comment-interaction.button>
+                <span id="post-{{ $comment->id }}-like-count" class="comment-interaction-text">{{ ($likesCount = $comment->likes()->count()) }}</span>
             </x-post.comment-interaction.panel>
 
             <script>
-                setCommentInteractionButtonsFunctionality({{ $comment->id }}, {{ $commentsLikes[$comment->id]->count() }}, "{{ asset('') }}", document.getElementById('second-preview'));
+                setCommentInteractionButtonsFunctionality({{ $comment->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('second-preview'));
             </script>
         </x-post.comment-panel>
     @endforeach
