@@ -268,11 +268,13 @@ class PostController extends Controller
             'userCommentsLikes' => $userCommentsLikes,
         ])->render();
 
-        return json_encode($commentPageHtml);
+        return json_encode([$commentPageHtml, $allComments->count() === 3 && $allComments->count() === $comments->count() ? $comments->count() - 1 : $comments->count()]);
     }
 
     public function viewMoreComments(Post $post) {
         $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->paginate(3)->withQueryString();
+
+        $allComments = Post::query()->where('comment_on_post', '=', $post->id)->get();
 
         $commentsFiles = $this::getPostsFiles($comments);
 
@@ -288,7 +290,7 @@ class PostController extends Controller
             'userCommentsLikes' => $userCommentsLikes,
         ])->render();
 
-        return json_encode($commentsPageHtml);
+        return json_encode([$commentsPageHtml, $allComments->count() === 3 * request('page') && $allComments->count() === $comments->count() * request('page') ? $comments->count() - 1 : $comments->count()]);
     }
 
 

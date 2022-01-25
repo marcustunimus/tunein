@@ -3,8 +3,8 @@ var removedAttachment = false;
 var postFilesLastIndex = -1;
 var removedPostFiles = [];
 var autoHideFlashMessage;
-var commentsArray = [];
 var loadMoreCommentsIndex = 0;
+var commentsCount = 3;
 
 function addFilesToForm(elementId, name, inputFilesElement) {
     let postForm = document.getElementById(elementId);
@@ -1029,7 +1029,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
     }
 }
 
-function viewCommentsWindow(path, postId, backButtonPressed) {
+function viewCommentsWindow(path, postId) {
     try {
         fetch(path + 'posts/' + postId + '/viewComments', {
             method: 'POST',
@@ -1040,10 +1040,6 @@ function viewCommentsWindow(path, postId, backButtonPressed) {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            if (!backButtonPressed) {
-                commentsArray.push(postId);
-            }
-
             mainPreviewContainer = document.getElementById('preview');
 
             mainPreviewContainer.innerHTML = "";
@@ -1055,21 +1051,16 @@ function viewCommentsWindow(path, postId, backButtonPressed) {
             let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-comments-preview-container scrollbar-preview");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
             let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
-            let backButtonContainer = document.createElement("div"); backButtonContainer.setAttribute("class", "back-button-container");
-            let backButton = document.createElement("div"); backButton.setAttribute("class", "back-button"); backButton.style = "background-image: url(" + path + "/images/arrow_back_white_24dp.svg);";
             let skipFunction = false;
 
             closeButtonContainer.appendChild(closeButton);
-            backButtonContainer.appendChild(backButton);
 
             previewBackground.onclick = function () { 
-                hidePreview(mainPreviewContainer); 
-                commentsArray = [];
+                hidePreview(mainPreviewContainer);
             }
             previewContent.onclick = function () {
                 if (!skipFunction) {
                     hidePreview(mainPreviewContainer);
-                    commentsArray = [];
                 }
                 else {
                     skipFunction = false;
@@ -1079,22 +1070,10 @@ function viewCommentsWindow(path, postId, backButtonPressed) {
             mainPreviewContainer.appendChild(previewBackground);
 
             closeButtonContainer.onclick = function () { 
-                hidePreview(mainPreviewContainer); 
-                commentsArray = [];
-            }
-            backButtonContainer.onclick = function () { 
-                commentsArray.pop();
-
-                if (commentsArray.length < 1) {
-                    hidePreview(mainPreviewContainer);
-                    return;
-                }
-
-                viewCommentsWindow(path, commentsArray[commentsArray.length - 1], true);
+                hidePreview(mainPreviewContainer);
             }
 
             mainPreviewContainer.appendChild(closeButtonContainer);
-            mainPreviewContainer.appendChild(backButtonContainer);
 
             previewContent.onclick = function() {
                 skipFunction = true;
@@ -1102,13 +1081,15 @@ function viewCommentsWindow(path, postId, backButtonPressed) {
                 previewContent.onclick;
             }
 
-            previewContent.innerHTML = data;
+            previewContent.innerHTML = data[0];
 
             mainPreviewContainer.appendChild(previewContent);
 
-            eval(getAllFunctionsTextFromHtmlText(data));
+            eval(getAllFunctionsTextFromHtmlText(data[0]));
 
-            addLoadMoreCommentsButton(postId, path);
+            if (data[1] === commentsCount) {
+                addLoadMoreCommentsButton(postId, path);
+            }
         }).catch(function (error) {
             return console.log(error);
         });
@@ -1498,19 +1479,19 @@ function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, load
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log(data);
-
-            if (data === "") {
+            if (data[0] === "") {
                 console.log("No more comments.");
 
                 return;
             }
 
-            commentsElement.insertAdjacentHTML('beforeend', data);
+            commentsElement.insertAdjacentHTML('beforeend', data[0]);
 
-            eval(getAllFunctionsTextFromHtmlText(data));
+            eval(getAllFunctionsTextFromHtmlText(data[0]));
 
-            commentsElement.appendChild(loadMoreCommentsButtonContainer);
+            if (data[1] === commentsCount) {
+                commentsElement.appendChild(loadMoreCommentsButtonContainer);
+            }
         }).catch(function (error) {
             loadMoreCommentsIndex -= 1;
 

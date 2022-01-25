@@ -913,39 +913,6 @@ input[type=file].post-file-upload {
     box-sizing: border-box;
 }
 
-/* Back Button */
-
-.back-button-container {
-    --width: 50px;
-
-    position: absolute;
-    width: var(--width);
-    max-width: var(--width);
-    height: var(--width);
-    max-height: var(--width);
-    top: calc(var(--width) / 2);
-    left: calc(var(--width) / 2);
-    border-radius: 50%;
-}
-
-.back-button-container:hover {
-    background-color: var(--field-scrollbar-color-hover);
-    cursor: pointer;
-}
-
-.back-button {
-    --back-button-width: 1.5rem;
-    --color: var(--letter-color);
-
-    position: relative;
-    width: var(--back-button-width);
-    height: var(--back-button-width);
-    margin: auto;
-    top: calc((var(--width) - var(--back-button-width)) / 2);
-    background-size: cover;
-    box-sizing: border-box;
-}
-
 /* Next File Preview Button */
 
 .next-button-container {
