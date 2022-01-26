@@ -7,8 +7,6 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Auth\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -26,36 +24,11 @@ class ProfileController extends Controller
         }
 
         $files = PostController::getPostsFiles($posts);
-
-        $postLikes = PostController::getLikesOfPosts($posts);
-
-        $userLikes = PostController::getUserLikedPosts($postLikes);
-
-        $postBookmarks = PostController::getBookmarksOfPosts($posts);
-
-        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
-
-        $userFollowers = Following::query()->where('following_id', $user->id)->get();
-
-        $userFollowed = [];
-
-        if (auth()->check()) {
-            $userFollowed = Following::query()->where('following_id', $user->id)->where('user_id', auth()->user()->id)->get();
-        }
-
-        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('profile.index', [
             'user' => $user,
             'posts' => $posts,
             'files' => $files,
-            'postLikes' => $postLikes,
-            'userLikes' => $userLikes,
-            'postBookmarks' => $postBookmarks,
-            'userBookmarks' => $userBookmarks,
-            'userFollowers' => $userFollowers,
-            'userFollowed' => $userFollowed,
-            'comments' => $postComments,
         ]);
     }
 
@@ -131,13 +104,8 @@ class ProfileController extends Controller
             'following_id' => $user->id
         ];
 
-        $followedProfile = Following::query()->where([
-            ['user_id', '=', $followAttributes['user_id']],
-            ['following_id', '=', $followAttributes['following_id']]
-        ])->get()->first();
-
-        if ($followedProfile) {
-            $followedProfile->delete();
+        if (auth()->user()->isFollowingUser($user)) {
+            auth()->user()->followers()->where('following_id', $user->id)->first()->delete();
 
             return json_encode("Unfollowed");
         }
@@ -148,9 +116,7 @@ class ProfileController extends Controller
     }
 
     public function followersInfo(User $user) {
-        $userFollowers = Following::query()->where('following_id', $user->id)->get();
-
-        $userFollowersInStringFormat = $this::convertFollowersOfUserToStringFormat($userFollowers);
+        $userFollowersInStringFormat = $this::convertFollowersOfUserToStringFormat($user->followers);
 
         return json_encode($userFollowersInStringFormat);
     }

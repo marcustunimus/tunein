@@ -107,7 +107,7 @@ class PostController extends Controller
 
         $post->update($postAttributes);
 
-        $this->removePostFiles($post->id, explode('/', request('removedPostFiles')));
+        $post->deleteFilesByNames(explode('/', request('removedPostFiles')));
 
         if (count($files)) {
             $this->createPostFiles($post->id, $files);
@@ -118,17 +118,13 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $id = $post->id;
-
-        $postComments = Post::query()->where('comment_on_post', '=', $post->id)->get();
-
-        foreach ($postComments as $postComment) {
-            $this->deletePost($postComment);
+        foreach ($post->subPosts as $postComment) {
+            $postComment->remove();
         }
 
-        $this->deletePost($post);
+        $post->remove();
 
-        if (url()->previous() !== route('post.edit', $id)) {
+        if (url()->previous() !== route('post.edit', $post->id)) {
             return redirect()->back()->with('message', 'The post has been deleted.');
         } else {
             return redirect()->route('home')->with('message', 'The post has been deleted.');
@@ -177,13 +173,8 @@ class PostController extends Controller
             'post_id' => $post->id
         ];
 
-        $bookmarkedPost = Bookmark::query()->where([
-            ['user_id', '=', $bookmarkAttributes['user_id']],
-            ['post_id', '=', $bookmarkAttributes['post_id']]
-        ])->get()->first();
-
-        if ($bookmarkedPost) {
-            $bookmarkedPost->delete();
+        if ($post->isBookmarkedByUser(auth()->user()->id)) {
+            $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
 
             return json_encode("Unbookmarked");
         }
@@ -226,33 +217,23 @@ class PostController extends Controller
 
     public function viewMoreComments(Post $post)
     {
-        $comments = Post::query()->where('comment_on_post', '=', $post->id)->orderBy('created_at')->paginate(3)->withQueryString();
-
-        $allComments = Post::query()->where('comment_on_post', '=', $post->id)->get();
+        $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
         $commentsFiles = $this::getPostsFiles($comments);
-
-        $commentsLikes = $this::getLikesOfPosts($comments);
-
-        $userCommentsLikes = $this::getUserLikedPosts($commentsLikes);
 
         $commentsPageHtml = view('post.comments', [
             'user' => auth()->user(),
             'comments' => $comments,
             'commentsFiles' => $commentsFiles,
-            'commentsLikes' => $commentsLikes,
-            'userCommentsLikes' => $userCommentsLikes,
         ])->render();
 
-        return json_encode([$commentsPageHtml, $allComments->count() === 3 * request('page') && $allComments->count() === $comments->count() * request('page') ? $comments->count() - 1 : $comments->count()]);
+        return json_encode([$commentsPageHtml, $comments->hasMorePages()]);
     }
 
 
     public function likesInfo(Post $post)
     {
-        $postLikes = $this::getLikesOfPosts([$post]);
-
-        $postLikesInStringFormat = $this::convertLikesOfPostsToStringFormats($postLikes);
+        $postLikesInStringFormat = $this::convertLikesOfPostsToStringFormats($post->likes);
 
         return json_encode($postLikesInStringFormat);
     }
@@ -359,9 +340,7 @@ class PostController extends Controller
 
     protected function filterUploadedFiles(array $files): array
     {
-        $files = collect($files);
-
-        $files = $files->unique(function (UploadedFile $file) {
+        $files = collect($files)->unique(function (UploadedFile $file) {
             return $file->getClientOriginalName() . $file->getMimeType() . $file->getSize();
         })->values()->toArray();
 
@@ -383,26 +362,13 @@ class PostController extends Controller
     {
         $size = 0;
 
-        foreach (PostFile::query()->where('post_id', '=', $post->id)->get() as $postFile) {
+        foreach ($post->files as $postFile) {
             if (!in_array($postFile->file, $removedPostFiles, true)) {
-                $size += Storage::size('public/post_files/' . $postFile->file);
+                $size += $postFile->getSize();
             }
         }
 
         return $size;
-    }
-
-    protected function removePostFiles(int $postId, array $removedPostFiles)
-    {
-        if (!$removedPostFiles) {
-            return;
-        }
-
-        PostFile::query()->select()->where('post_id', '=', $postId)->whereIn('file', $removedPostFiles)->delete();
-
-        Storage::delete(array_map(function ($value) {
-            return 'public/post_files/' . $value;
-        }, $removedPostFiles));
     }
 
     protected function validateFiles(Request $request): array
@@ -434,30 +400,5 @@ class PostController extends Controller
                 $postFile->file = $file->storeAs('post_files', $filename, 'public');
             }
         }
-    }
-
-    protected function deletePost(Post $post)
-    {
-        $postFiles = PostFile::query()->where('post_id', '=', $post->id)->get();
-
-        $postFilesNames = [];
-
-        foreach ($postFiles as $postFile) {
-            $postFilesNames[] = $postFile->file;
-        }
-
-        Storage::delete(array_map(function ($value) {
-            return 'public/post_files/' . $value;
-        }, $postFilesNames));
-
-        // TODO: REFACTOR!
-
-        PostFile::query()->where('post_id', '=', $post->id)->delete();
-
-        Like::query()->where('post_id', '=', $post->id)->delete();
-
-        Bookmark::query()->where('post_id', '=', $post->id)->delete();
-
-        $post->delete();
     }
 }

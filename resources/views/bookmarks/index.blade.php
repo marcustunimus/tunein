@@ -29,7 +29,7 @@
                 <x-post.dropdown containerClass="post-dropdown-container">
                     <x-post.dropdown-link id="post-{{ $bookmark->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
                     @if ($user != null)
-                        @if ($bookmark->author->id === auth()->user()->id)
+                        @if ($bookmark->author->id === $user->id)
                             <x-post.dropdown-link href="{{ route('post.edit', $bookmark) }}">Edit</x-post.dropdown-link>
                             <x-post.dropdown-button href="{{ route('post.destroy', $bookmark) }}" method="DELETE" id="delete{{ $bookmark->id }}" elementPosition="last">Delete</x-post.dropdown-button>
                             <script>
@@ -45,16 +45,16 @@
                     loadPostFiles({{ $bookmark->id }}, "{{ $files[$bookmark->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
-                <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $postLikes[$bookmark->id]->count() }} {{ $postLikes[$bookmark->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
+                <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $likesCount = $bookmark->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info> 
 
                 <x-post.interaction.tab>
-                    <x-post.interaction.button id="post-{{ $bookmark->id }}-like" icon="{{ in_array($bookmark->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $bookmark->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments[$bookmark->id]->count() }}</x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $bookmark->id }}-bookmark" icon="{{ in_array($bookmark->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $bookmark->id }}-like" icon="{{ $bookmark->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $bookmark->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $bookmark->subPosts()->count() }}</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $bookmark->id }}-bookmark" icon="{{ $bookmark->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
                 </x-post.interaction.tab>
 
                 <script>
-                    setInteractionButtonsFunctionality({{ $bookmark->id }}, {{ $postLikes[$bookmark->id]->count() }}, "{{ asset('') }}", document.getElementById('preview'));
+                    setInteractionButtonsFunctionality({{ $bookmark->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('preview'));
                 </script>
             </x-post.panel>
         @endforeach

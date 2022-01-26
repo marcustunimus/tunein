@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -48,8 +49,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // protected $with = ['posts', 'likes', 'bookmarks'];
-
     public function setPasswordAttribute(string $password): static
     {
         $this->attributes['password'] = password_hash($password, PASSWORD_DEFAULT);
@@ -57,18 +56,38 @@ class User extends Authenticatable
         return $this;
     }
 
-    public function posts()
+    public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
     }
 
-    public function likes()
+    public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }
 
-    public function bookmarks()
+    public function bookmarks(): HasMany
     {
         return $this->hasMany(Bookmark::class);
+    }
+
+    public function following(): HasMany
+    {
+        return $this->hasMany(Following::class);
+    }
+
+    public function followers():HasMany
+    {
+        return $this->hasMany(Following::class, 'following_id');
+    }
+
+    public function isFollowingUser(User $user): bool
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    public function isFollowedByUser(User $user): bool
+    {
+        return $this->followers()->where('user_id', $user->id)->exists();
     }
 }

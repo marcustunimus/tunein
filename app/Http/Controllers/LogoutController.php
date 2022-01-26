@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class LogoutController extends Controller
 {
-    public function destroy(Factory $auth): RedirectResponse
+    public function destroy(): RedirectResponse
     {
-        $auth->guard()->logout();
+        auth()->logout();
 
         return redirect()->route('welcome');
     }

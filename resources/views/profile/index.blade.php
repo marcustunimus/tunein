@@ -45,7 +45,7 @@
                 @if (auth()->check())
                     @if ($user->id !== auth()->user()->id)
                         <div class="profile-follow-form">
-                            <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ count($userFollowed) ? 'Following' : 'Follow' }}</div>
+                            <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ auth()->user()->isFollowingUser($user) ? 'Following' : 'Follow' }}</div>
                         </div>
                     @endif
                 @endif
@@ -54,13 +54,13 @@
             <div class="profile-username">{{ '@' . $user->username }}</div>
 
             <div class="profile-followers-count-text">
-                <span id="profile-followers-count" class="link link-color">{{ $userFollowers->count() }} {{ $userFollowers->count() === 1 ? 'follower' : 'followers' }}</span>
+                <span id="profile-followers-count" class="link link-color">{{ $followersCount = $user->followers()->count() }} {{ \Illuminate\Support\Str::plural('follower', $likesCount) }}</span>
             </div>
 
             @if (auth()->check())
                 @if ($user->id !== auth()->user()->id)
                     <script>
-                        setFollowButtonFunctionality("{{ $user->username }}", {{ $userFollowers->count() }}, "{{ asset('') }}");
+                        setFollowButtonFunctionality("{{ $user->username }}", {{ $followersCount }}, "{{ asset('') }}");
                         setPreviewFollowersButtonFunctionality("{{ $user->username }}", "{{ asset('') }}", document.getElementById('preview'));
                     </script>
                 @else
@@ -114,16 +114,16 @@
                     loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
-                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $postLikes[$post->id]->count() }} {{ $postLikes[$post->id]->count() === 1 ? 'like' : 'likes' }}</x-post.interaction.info> 
+                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $likesCount = $post->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info> 
 
                 <x-post.interaction.tab>
-                    <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ in_array($post->id, $userLikes) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $comments[$post->id]->count() }}</x-post-interaction-button>
-                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ in_array($post->id, $userBookmarks) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ $post->isLikedByUser(auth()->user()) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $post->subPosts()->count() }}</x-post-interaction-button>
+                    <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ $post->isBookmarkedByUser(auth()->user()) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>
                 </x-post.interaction.tab>
 
                 <script>
-                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $postLikes[$post->id]->count() }}, "{{ asset('') }}", document.getElementById('preview'));
+                    setInteractionButtonsFunctionality({{ $post->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('preview'));
                 </script>
             </x-post.panel>
         @endforeach

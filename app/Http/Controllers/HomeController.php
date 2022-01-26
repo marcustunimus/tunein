@@ -11,11 +11,11 @@ use Illuminate\Contracts\Auth\Factory;
 
 class HomeController extends Controller
 {
-    public function index(Factory $auth)
+    public function index()
     {
         $search = request()->query('search');
 
-        $followingQuery = Following::query()->select('following_id')->where('user_id', '=', $auth->guard()->user()->id);
+        $followingQuery = Following::query()->select('following_id')->where('user_id', '=', auth()->user()->id);
 
         if ($search) {
             $followingQuery = $followingQuery->whereHas('target.posts', function ($query) use ($search) {
@@ -23,29 +23,14 @@ class HomeController extends Controller
             });
         }
 
-        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', $auth->guard()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->paginate(3)->withQueryString();
+        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', auth()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->paginate(3)->withQueryString();
 
         $files = PostController::getPostsFiles($posts);
-
-        $postLikes = PostController::getLikesOfPosts($posts);
-
-        $userLikes = PostController::getUserLikedPosts($postLikes);
-
-        $postBookmarks = PostController::getBookmarksOfPosts($posts);
-
-        $userBookmarks = PostController::getUserBookmarkedPosts($postBookmarks);
-
-        $postComments = PostController::getCommentsOfPosts($posts);
         
         return view('home.index', [
             'posts' => $posts,
-            'user' => $auth->guard()->user(),
+            'user' => auth()->user(),
             'files' => $files,
-            'postLikes' => $postLikes,
-            'userLikes' => $userLikes,
-            'postBookmarks' => $postBookmarks,
-            'userBookmarks' => $userBookmarks,
-            'comments' => $postComments,
         ]);
     }
 }

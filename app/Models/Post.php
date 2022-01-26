@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property-read int $id
@@ -27,8 +28,6 @@ class Post extends Model
         'id' => 'int',
         'user_id' => 'int',
     ];
-
-    // protected $with = ['author'];
 
     public function author(): BelongsTo
     {
@@ -63,5 +62,38 @@ class Post extends Model
     public function isBookmarkedByUser(User $user): bool
     {
         return $this->bookmarks()->where('user_id', $user->id)->exists();
+    }
+
+    public function remove(): bool|null
+    {
+        $this->deleteFiles();
+        $this->likes()->delete();
+        $this->bookmarks()->delete();
+        return $this->delete();
+    }
+
+    public function deleteFiles(): bool|null
+    {
+        foreach ($this->files as $file) {
+            $file->deleteFileInStorage();
+        }
+
+        return $this->files()->delete();
+    }
+
+    public function deleteFilesByNames(array $names): bool|null
+    {
+        foreach ($this->files as $file) {
+            if (in_array($file->file, $names, true)) {
+                $file->deleteFileInStorage();
+            }
+        }
+
+        return $this->files()->whereIn('file', $names)->delete();
+    }
+
+    public function saveFiles(array $files)
+    {
+        
     }
 }

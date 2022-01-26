@@ -40,8 +40,6 @@
     </script>
 </x-post.panel>
 
-{{-- <div class="post-comments-heading">Comments</div> --}}
-
 <x-post.comments-panel>
     @if (auth()->check())
         <x-post.create-comment profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.comment', $post->id) }}" postId="{{ $post->id }}" previewPrefix="second-" />

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -17,11 +18,9 @@ class PostFile extends Model
 
     protected $fillable = ['post_id', 'file'];
 
-    // protected $with = ['post'];
-
     public $timestamps = false;
 
-    public function post()
+    public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'post_id');
     }
@@ -44,5 +43,10 @@ class PostFile extends Model
     public function getFullPath(): string
     {
         return $this->getDirectoryPath() . '/' . $this->file;
+    }
+
+    public function deleteFileInStorage(): bool
+    {
+        return Storage::delete($this->getFullPath());
     }
 }

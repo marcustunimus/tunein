@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Following extends Model
 {
@@ -13,14 +14,12 @@ class Following extends Model
 
     protected $fillable = ['user_id', 'following_id'];
 
-    // protected $with = ['user', 'target'];
-
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function target()
+    public function target(): BelongsTo
     {
         return $this->belongsTo(User::class, 'following_id');
     }
