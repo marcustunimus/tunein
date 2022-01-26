@@ -24,7 +24,7 @@ class ProfileController extends Controller
         }
 
         $files = PostController::getPostsFiles($posts);
-        
+
         return view('profile.index', [
             'user' => $user,
             'posts' => $posts,
@@ -70,7 +70,7 @@ class ProfileController extends Controller
         if ($backgroundPictureRemove !== "on") {
             $profileBackgroundPicture = $this->validatePicture($request, 'uploadedBackgroundPictureFile');
         }
-        
+
         if ($profileBackgroundPicture != null) {
             $this->validateBackgroundPictureSize($profileBackgroundPicture['uploadedBackgroundPictureFile']->getSize());
         }
@@ -104,7 +104,7 @@ class ProfileController extends Controller
             'following_id' => $user->id
         ];
 
-        if (auth()->user()->isFollowingUser($user)) {
+        if (auth()->user()->isFollowing($user)) {
             auth()->user()->followers()->where('following_id', $user->id)->first()->delete();
 
             return json_encode("Unfollowed");
@@ -121,7 +121,7 @@ class ProfileController extends Controller
         return json_encode($userFollowersInStringFormat);
     }
 
-    
+
 
     public static function convertFollowersOfUserToStringFormat($userFollowers): string
     {

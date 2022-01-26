@@ -45,7 +45,7 @@
                 @if (auth()->check())
                     @if ($user->id !== auth()->user()->id)
                         <div class="profile-follow-form">
-                            <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ auth()->user()->isFollowingUser($user) ? 'Following' : 'Follow' }}</div>
+                            <div id="profile-{{ $user->username }}" class="profile-follow-button center link">{{ auth()->user()->isFollowing($user) ? 'Following' : 'Follow' }}</div>
                         </div>
                     @endif
                 @endif
@@ -107,14 +107,14 @@
                         @endif
                     @endif
                 </x-post.dropdown>
-                
+
                 <div class="post-body-text">{{ $post->body }}</div>
 
                 <script>
                     loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
-                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $likesCount = $post->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info> 
+                <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $likesCount = $post->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info>
 
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ $post->isLikedByUser(auth()->user()) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post-interaction-button>

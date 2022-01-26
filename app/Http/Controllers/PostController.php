@@ -32,7 +32,7 @@ class PostController extends Controller
 
         $files[$post->id] = implode('|', $postFiles);
 
-        $commentsFiles = $this::getPostsFiles($comments);
+        $commentsFiles = $this::getPostsFiles($comments->items());
 
         return view('post.index', [
             'post' => $post,
@@ -122,7 +122,7 @@ class PostController extends Controller
             $postComment->remove();
         }
 
-        $post->remove();
+        $post->delete();
 
         if (url()->previous() !== route('post.edit', $post->id)) {
             return redirect()->back()->with('message', 'The post has been deleted.');
@@ -296,7 +296,7 @@ class PostController extends Controller
                 ];
             }
 
-            $files[$post->id] = implode('|', $postFiles);
+            $files[$post->id] = json_encode($postFiles);
         }
 
         return $files;

@@ -25,8 +25,8 @@ class HomeController extends Controller
 
         $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', auth()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->paginate(3)->withQueryString();
 
-        $files = PostController::getPostsFiles($posts);
-        
+        $files = PostController::getPostsFiles($posts->items());
+
         return view('home.index', [
             'posts' => $posts,
             'user' => auth()->user(),

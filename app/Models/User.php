@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -81,12 +80,12 @@ class User extends Authenticatable
         return $this->hasMany(Following::class, 'following_id');
     }
 
-    public function isFollowingUser(User $user): bool
+    public function isFollowing(User $user): bool
     {
         return $this->following()->where('following_id', $user->id)->exists();
     }
 
-    public function isFollowedByUser(User $user): bool
+    public function isFollowedBy(User $user): bool
     {
         return $this->followers()->where('user_id', $user->id)->exists();
     }

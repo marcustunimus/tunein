@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @property-read int $id
@@ -28,6 +28,17 @@ class Post extends Model
         'id' => 'int',
         'user_id' => 'int',
     ];
+
+    protected static function booted(): void
+    {
+        Post::addGlobalScope(function (Builder $builder) {
+            return $builder->whereNull('comment_on_post');
+        });
+
+        static::deleting(function (Post $post) {
+            $post->onDeleting();
+        });
+    }
 
     public function author(): BelongsTo
     {
@@ -51,7 +62,7 @@ class Post extends Model
 
     public function subPosts(): HasMany
     {
-        return $this->hasMany(Post::class, 'comment_on_post');
+        return $this->hasMany(Post::class, 'comment_on_post')->withoutGlobalScopes();
     }
 
     public function isLikedByUser(User $user): bool
@@ -62,14 +73,6 @@ class Post extends Model
     public function isBookmarkedByUser(User $user): bool
     {
         return $this->bookmarks()->where('user_id', $user->id)->exists();
-    }
-
-    public function remove(): bool|null
-    {
-        $this->deleteFiles();
-        $this->likes()->delete();
-        $this->bookmarks()->delete();
-        return $this->delete();
     }
 
     public function deleteFiles(): bool|null
@@ -94,6 +97,13 @@ class Post extends Model
 
     public function saveFiles(array $files)
     {
-        
+
+    }
+
+    private function onDeleting(): void
+    {
+        $this->deleteFiles();
+        $this->likes()->delete();
+        $this->bookmarks()->delete();
     }
 }
