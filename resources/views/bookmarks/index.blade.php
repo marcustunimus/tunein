@@ -42,7 +42,7 @@
                 <div class="post-body-text">{{ $bookmark->body }}</div>
 
                 <script>
-                    loadPostFiles({{ $bookmark->id }}, "{{ $files[$bookmark->id] }}", "{{ asset('') }}", document.getElementById('preview'));
+                    loadPostFiles({{ $bookmark->id }}, @json($files[$bookmark->id]), "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
                 <x-post.interaction.info id="post-{{ $bookmark->id }}-info">{{ $likesCount = $bookmark->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info> 

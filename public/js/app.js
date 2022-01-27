@@ -224,44 +224,40 @@ function hidePreview(previewContainer) {
     }
 }
 
-function showPostFilesPreview(filesInStringFormat, path, previewContainer, postFilesContainer) {
-    if (filesInStringFormat === "") {
+function showPostFilesPreview(files, path, previewContainer, postFilesContainer) {
+    if (files === []) {
         return;
     }
 
-    postFilesInStringFormat = filesInStringFormat;
-
-    var files = filesInStringFormat.split("|");
-
-    postFilesLastIndex = files.length / 3 - 1;
+    postFilesLastIndex = files.length - 1;
 
     removedPostFiles = [];
 
     if (files.length !== 0) {
         for (let i = 0; i < files.length; i += 3) {
-            let filePreview = document.createElement("div"); filePreview.setAttribute("title", files[i]); filePreview.setAttribute("style", "z-index: 1;");
+            let filePreview = document.createElement("div"); filePreview.setAttribute("title", files[i]['name']); filePreview.setAttribute("style", "z-index: 1;");
             let fileShowcase = document.createElement("figure"); fileShowcase.setAttribute("class", "post-file-upload-image-thumbnail-container");
-            let fileCaption = document.createElement("figcaption"); fileCaption.innerText = files[i]; fileCaption.setAttribute("class", "post-file-upload-caption");
+            let fileCaption = document.createElement("figcaption"); fileCaption.innerText = files[i]['name']; fileCaption.setAttribute("class", "post-file-upload-caption");
             let imageContainer = document.createElement("img");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-thumbnail-preview-container block");
             let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-thumbnail-preview-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
 
             closeButtonContainer.onclick = function () {
-                removedPostFiles.push(files[i]);
+                removedPostFiles.push(files[i]['name']);
                 removedAttachment = true;
 
                 postFilesContainer.removeChild(filePreview);
             }
 
-            if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
+            if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "post-file-upload-video-thumbnail");
                 let playButton = document.createElement("div"); playButton.setAttribute("class", "play-movie-button"); playButton.style = "background-image: url(" + path + "/images/movie_white_24dp.svg);";
 
                 videoContainer.appendChild(playButton);
                 fileShowcase.appendChild(videoContainer); fileShowcase.appendChild(fileCaption);
             }
-            else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]); imageContainer.setAttribute("class", "post-file-upload-image-thumbnail");
+            else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
+                imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); imageContainer.setAttribute("class", "post-file-upload-image-thumbnail");
 
                 fileShowcase.appendChild(imageContainer); fileShowcase.appendChild(fileCaption);
             }
@@ -292,7 +288,7 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
             return;
         }
 
-        if (parseInt(files[i + 2]) <= 40 * 1024 * 1024) {
+        if (parseInt(files[i]['size']) <= 40 * 1024 * 1024) {
             previewContainer.innerHTML = "";
 
             previewContainer.style.zIndex = 100;
@@ -305,19 +301,19 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
             closeButtonContainer.appendChild(closeButton);
             previewContainer.appendChild(previewBackground);
 
-            if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
+            if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
                 let video = document.createElement("video"); video.setAttribute("controls", "");
                 video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
-                let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
+                let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); videoSource.setAttribute("type", files[i]['mime_type']);
 
                 video.appendChild(videoSource);
                 videoContainer.appendChild(video);
                 previewContainer.appendChild(videoContainer);
             }
-            else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
+            else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
                 let imageContainer = document.createElement("div"); imageContainer.setAttribute("class", "preview center"); imageContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
-                let image = document.createElement("img"); image.setAttribute("src", path + "storage/post_files/" + files[i]); image.setAttribute("class", "preview center");
+                let image = document.createElement("img"); image.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); image.setAttribute("class", "preview center");
 
                 imageContainer.appendChild(image);
                 previewContainer.appendChild(imageContainer);
@@ -338,270 +334,131 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
     }
 }
 
-function loadPostFiles(postId, filesInStringFormat, path, previewContainer) {
-    if (filesInStringFormat === "") {
+function loadPostFiles(postId, files, path, previewContainer) {
+    if (files.length === 0) {
         return;
     }
 
     let postContentContainer = document.getElementById("postContent" + postId);
     let postFilesContentContainer = document.createElement("div"); postFilesContentContainer.setAttribute("class", "post-files-container");
     let followingElementContainer = document.getElementById("post-" + postId + "-info-container");
-    let files = filesInStringFormat.split("|");
+    
+    switch (files.length) {
+        case 1: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", "post-files-content-one");
+                createPostFileElement(files[i], files.length, path, postFilePreview, "post-file-video-two-column", "post-file-image-two-column", false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+            }
 
-    if (files.length !== 0) {
-        switch (files.length / 3) {
-            case 1: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-one");
+            break;
+        };
+        case 2: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", "post-files-content-one-per-column");
+                createPostFileElement(files[i], files.length, path, postFilePreview, "post-file-video-two-column", "post-file-image-two-column", false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+            }
 
+            break;
+        };
+        case 3: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", i === 0 ? "post-files-content-one-per-column" : "post-files-content-two-per-row");
+                createPostFileElement(files[i], files.length, path, postFilePreview, i === 0 ? "post-file-video-two-column" : "post-file-video-one-column", i === 0 ? "post-file-image-two-column" : "post-file-image-one-column", false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+            }
 
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", "post-file-video-two-column");
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-                        let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                        let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
+            break;
+        };
+        case 4: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", "post-files-content-two-per-row");
+                createPostFileElement(files[i], files.length, path, postFilePreview, "post-file-video-one-column", "post-file-image-one-column", false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+            }
 
-                        playButtonContainer.appendChild(playButton);
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-                        postFilePreview.appendChild(playButtonContainer);
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-                        imageContainer.setAttribute("class", "post-file-image-two-column");
+            break;
+        };
+        case 5: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", i < 2 ? "post-files-content-two-per-row" : "post-files-content-three-per-row");
+                createPostFileElement(files[i], files.length, path, postFilePreview, "post-file-video-one-column", "post-file-image-one-column", false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+            }
 
-                        postFilePreview.appendChild(imageContainer);
-                    }
+            break;
+        };
+        default: {
+            for (let i = 0; i < files.length; i++) {
+                let postFilePreview = document.createElement("div");
+                postFilePreview.setAttribute("class", i < 2 ? "post-files-content-two-per-row" : "post-files-content-three-per-row");
+                createPostFileElement(files[i], files.length, path, postFilePreview, "post-file-video-one-column", "post-file-image-one-column", i === 4 ? true : false);
+                postFilesContentContainer.appendChild(postFilePreview);
+                postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+                loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
+                if (i === 4) { break; }
+            }
 
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+            break;
+        };
+    }
+}
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-                }
+function createPostFileElement(file, numberOfFiles, path, postFilePreview, videoContainerClass, imageContainerClass, lastElement) {
+    if (file['mime_type'] === 'video/mp4' || file['mime_type'] === 'video/webm') {
+        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", videoContainerClass);
+        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + file['name']); videoSource.setAttribute("type", file['mime_type']);
 
-                break;
-            };
-            case 2: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-one-per-column");
+        videoContainer.appendChild(videoSource);
+        postFilePreview.appendChild(videoContainer);
 
+        if (lastElement === true) {
+            videoContainer.style = "filter: blur(0.25rem);"
 
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", "post-file-video-two-column");
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-                        let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                        let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
+            let numberOfFilesMoreContainer = document.createElement("div"); numberOfFilesMoreContainer.setAttribute("class", "post-preview-centered-text-container");
+            let numberOfFilesMoreContent = document.createElement("span"); numberOfFilesMoreContent.innerText = "+" + (numberOfFiles - 4);
 
-                        playButtonContainer.appendChild(playButton);
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-                        postFilePreview.appendChild(playButtonContainer);
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-                        imageContainer.setAttribute("class", "post-file-image-two-column");
+            numberOfFilesMoreContainer.appendChild(numberOfFilesMoreContent);
+            postFilePreview.appendChild(numberOfFilesMoreContainer);
+        }
+        else {
+            let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
+            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
 
-                        postFilePreview.appendChild(imageContainer);
-                    }
+            playButtonContainer.appendChild(playButton);
+            postFilePreview.appendChild(playButtonContainer);
+        }
+    }
+    else if (file['mime_type'] === 'image/png' || file['mime_type'] === 'image/jpeg' || file['mime_type'] === 'image/jpg' || file['mime_type'] === 'image/gif') {
+        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "/storage/post_files/" + file['name']);
+        imageContainer.setAttribute("class", imageContainerClass);
 
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
+        postFilePreview.appendChild(imageContainer);
 
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-                }
+        if (lastElement === true) {
+            imageContainer.style = "filter: blur(0.25rem);"
 
-                break;
-            };
-            case 3: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview;
+            let numberOfFilesMoreContainer = document.createElement("div"); numberOfFilesMoreContainer.setAttribute("class", "post-preview-centered-text-container");
+            let numberOfFilesMoreContent = document.createElement("span"); numberOfFilesMoreContent.innerText = "+" + (numberOfFiles - 4);
 
-                    if (i === 0) {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-one-per-column");
-                    }
-                    else {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-two-per-row");
-                    }
-
-
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video");
-
-                        if (i === 0) {
-                            videoContainer.setAttribute("class", "post-file-video-two-column");
-                        }
-                        else {
-                            videoContainer.setAttribute("class", "post-file-video-one-column");
-                        }
-
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-                        let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                        let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
-
-                        playButtonContainer.appendChild(playButton);
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-                        postFilePreview.appendChild(playButtonContainer);
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-
-                        if (i === 0) {
-                            imageContainer.setAttribute("class", "post-file-image-two-column");
-                        }
-                        else {
-                            imageContainer.setAttribute("class", "post-file-image-one-column");
-                        }
-
-                        postFilePreview.appendChild(imageContainer);
-                    }
-
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
-
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-                }
-
-                break;
-            };
-            case 4: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview;
-
-                    postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-two-per-row");
-
-
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", "post-file-video-one-column");
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-                        let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                        let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
-
-                        playButtonContainer.appendChild(playButton);
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-                        postFilePreview.appendChild(playButtonContainer);
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-
-                        imageContainer.setAttribute("class", "post-file-image-one-column");
-
-                        postFilePreview.appendChild(imageContainer);
-                    }
-
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
-
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-                }
-
-                break;
-            };
-            case 5: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview;
-
-                    if (i === 0 || i === 1 * 3) {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-two-per-row");
-                    }
-                    else {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-three-per-row");
-                    }
-
-
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", "post-file-video-one-column");
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-                        let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                        let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
-
-                        playButtonContainer.appendChild(playButton);
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-                        postFilePreview.appendChild(playButtonContainer);
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-
-                        imageContainer.setAttribute("class", "post-file-image-one-column");
-
-                        postFilePreview.appendChild(imageContainer);
-                    }
-
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
-
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-                }
-
-                break;
-            };
-            default: {
-                for (let i = 0; i < files.length; i += 3) {
-                    let postFilePreview;
-
-                    if (i === 0 || i === 1 * 3) {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-two-per-row");
-                    }
-                    else {
-                        postFilePreview = document.createElement("div"); postFilePreview.setAttribute("class", "post-files-content-three-per-row");
-                    }
-
-
-                    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
-                        let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", "post-file-video-one-column");
-                        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
-
-                        videoContainer.appendChild(videoSource);
-                        postFilePreview.appendChild(videoContainer);
-
-                        if (i === 4 * 3) {
-                            videoContainer.style = "filter: blur(0.25rem);"
-
-                            let numberOfFilesMoreContainer = document.createElement("div"); numberOfFilesMoreContainer.setAttribute("class", "post-preview-centered-text-container");
-                            let numberOfFilesMoreContent = document.createElement("span"); numberOfFilesMoreContent.innerText = "+" + (files.length / 3 - 4);
-
-                            numberOfFilesMoreContainer.appendChild(numberOfFilesMoreContent);
-                            postFilePreview.appendChild(numberOfFilesMoreContainer);
-                        }
-                        else {
-                            let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-                            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
-
-                            playButtonContainer.appendChild(playButton);
-                            postFilePreview.appendChild(playButtonContainer);
-                        }
-                    }
-                    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-                        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]);
-                        imageContainer.setAttribute("class", "post-file-image-one-column");
-
-                        postFilePreview.appendChild(imageContainer);
-
-                        if (i === 4 * 3) {
-                            imageContainer.style = "filter: blur(0.25rem);"
-
-                            let numberOfFilesMoreContainer = document.createElement("div"); numberOfFilesMoreContainer.setAttribute("class", "post-preview-centered-text-container");
-                            let numberOfFilesMoreContent = document.createElement("span"); numberOfFilesMoreContent.innerText = "+" + (files.length / 3 - 4);
-
-                            numberOfFilesMoreContainer.appendChild(numberOfFilesMoreContent);
-                            postFilePreview.appendChild(numberOfFilesMoreContainer);
-                        }
-                    }
-
-                    postFilesContentContainer.appendChild(postFilePreview);
-                    postContentContainer.insertBefore(postFilesContentContainer, followingElementContainer);
-
-                    loadPreviewPostFileButton(files, i, postFilePreview, path, previewContainer);
-
-                    if (i === 4 * 3) {
-                        break;
-                    }
-                }
-
-                break;
-            };
+            numberOfFilesMoreContainer.appendChild(numberOfFilesMoreContent);
+            postFilePreview.appendChild(numberOfFilesMoreContainer);
         }
     }
 }
@@ -624,9 +481,9 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
     let previewContent = document.createElement("div"); previewContent.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;"; previewContent.setAttribute("class", "preview center");
     let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
     let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
-    let nextButtonContainer = document.createElement("div"); nextButtonContainer.setAttribute("class", i + 3 < files.length ? "next-button-container" : "next-button-container-disabled");
+    let nextButtonContainer = document.createElement("div"); nextButtonContainer.setAttribute("class", i + 1 < files.length ? "next-button-container" : "next-button-container-disabled");
     let nextButton = document.createElement("div"); nextButton.setAttribute("class", "next-button"); nextButton.style = "background-image: url(" + path + "/images/navigate_next_white_24dp.svg);";
-    let beforeButtonContainer = document.createElement("div"); beforeButtonContainer.setAttribute("class", i - 3 >= 0 ? "before-button-container" : "before-button-container-disabled");
+    let beforeButtonContainer = document.createElement("div"); beforeButtonContainer.setAttribute("class", i - 1 >= 0 ? "before-button-container" : "before-button-container-disabled");
     let beforeButton = document.createElement("div"); beforeButton.setAttribute("class", "before-button"); beforeButton.style = "background-image: url(" + path + "/images/navigate_before_white_24dp.svg);";
     let skipFunction = false;
 
@@ -646,10 +503,10 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
 
     previewContainer.appendChild(previewBackground);
 
-    if (files[i + 1] === 'video/mp4' || files[i + 1] === 'video/webm') {
+    if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
         let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", "");
         videoContainer.setAttribute(videoContainer.width > videoContainer.height ? "width" : "height", "100%"); videoContainer.setAttribute("class", "preview center noselect");
-        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "storage/post_files/" + files[i]); videoSource.setAttribute("type", files[i + 1]);
+        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); videoSource.setAttribute("type", files[i]['mime_type']);
 
         videoContainer.appendChild(videoSource);
 
@@ -660,8 +517,8 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
         previewContent.appendChild(videoContainer);
         previewContainer.appendChild(previewContent);
     }
-    else if (files[i + 1] === 'image/png' || files[i + 1] === 'image/jpeg' || files[i + 1] === 'image/jpg' || files[i + 1] === 'image/gif') {
-        let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", path + "storage/post_files/" + files[i]); imageContainer.setAttribute("class", "preview center noselect");
+    else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
+        let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); imageContainer.setAttribute("class", "preview center noselect");
 
         imageContainer.onclick = function () {
             skipFunction = true;
@@ -680,13 +537,13 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
 
     closeButtonContainer.onclick = function () { hidePreview(previewContainer); }
     nextButtonContainer.onclick = function () {
-        if (i + 3 < files.length) {
-            loadPreviewPostFile(files, i + 3, path, previewContainer);
+        if (i + 1 < files.length) {
+            loadPreviewPostFile(files, i + 1, path, previewContainer);
         }
     }
     beforeButtonContainer.onclick = function () {
-        if (i - 3 >= 0) {
-            loadPreviewPostFile(files, i - 3, path, previewContainer);
+        if (i - 1 >= 0) {
+            loadPreviewPostFile(files, i - 1, path, previewContainer);
         }
     }
 
@@ -1087,7 +944,7 @@ function viewCommentsWindow(path, postId) {
 
             eval(getAllFunctionsTextFromHtmlText(data[0]));
 
-            if (data[1] === commentsCount) {
+            if (data[1] === true) {
                 addLoadMoreCommentsButton(postId, path);
             }
         }).catch(function (error) {
@@ -1489,7 +1346,7 @@ function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, load
 
             eval(getAllFunctionsTextFromHtmlText(data[0]));
 
-            if (data[1] === commentsCount) {
+            if (data[1] === true) {
                 commentsElement.appendChild(loadMoreCommentsButtonContainer);
             }
         }).catch(function (error) {

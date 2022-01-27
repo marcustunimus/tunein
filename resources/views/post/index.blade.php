@@ -10,7 +10,7 @@
 
     <div class="main-container block">
         <div class="heading-text center">Post</div>
-            
+
         <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
             <x-post.dropdown containerClass="post-dropdown-container">
                 <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
@@ -19,7 +19,7 @@
                         <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
                         <x-post.dropdown-button href="{{ route('post.destroy', $post) }}" method="DELETE" id="delete{{ $post->id }}" elementPosition="last">Delete</x-post.dropdown-button>
                         <script>
-                            deleteFormConfirmationFunctionality(document.getElementById("delete{{ $post->id }}Form"), document.getElementById('preview'), "{{ asset('') }}");
+                            deleteFormConfirmationFunctionality(document.getElementById("delete{{ $post->id }}Form"), document.getElementById('second-preview'), "{{ asset('') }}");
                         </script>
                     @endif
                 @endif
@@ -28,9 +28,9 @@
             <div class="post-body-text">{{ $post->body }}</div>
         
             <script>
-                loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
+                loadPostFiles({{ $post->id }}, @json($files[$post->id]), "{{ asset('') }}", document.getElementById('second-preview'));
             </script>
-        
+
             <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
         
             <x-post.interaction.tab>
@@ -40,13 +40,13 @@
             </x-post.interaction.tab>
         
             <script>
-                setInteractionButtonsFunctionality({{ $post->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('preview'));
+                setInteractionButtonsFunctionality({{ $post->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('second-preview'));
             </script>
         </x-post.panel>
-        
+
         <x-post.comments-panel>
             @if (auth()->check())
-                <x-post.create-comment profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.comment', $post->id) }}" postId="{{ $post->id }}" />
+                <x-post.create-comment profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.comment', $post->id) }}" postId="{{ $post->id }}" previewPrefix="second-" />
             @endif
                 
             @if (! $comments->count())
@@ -62,7 +62,7 @@
                                 <x-post.dropdown-link href="{{ route('post.edit', $comment) }}">Edit</x-post.dropdown-link>
                                 <x-post.dropdown-button href="{{ route('post.destroy', $comment) }}" method="DELETE" id="delete{{ $comment->id }}" elementPosition="last">Delete</x-post.dropdown-button>
                                 <script>
-                                    deleteFormConfirmationFunctionality(document.getElementById("delete{{ $comment->id }}Form"), document.getElementById('preview'), "{{ asset('') }}");
+                                    deleteFormConfirmationFunctionality(document.getElementById("delete{{ $comment->id }}Form"), document.getElementById('second-preview'), "{{ asset('') }}");
                                 </script>
                             @endif
                         @endif
@@ -73,20 +73,24 @@
                     <div id="post-{{ $comment->id }}-info-container"></div>
                 
                     <script>
-                        loadPostFiles({{ $comment->id }}, "{{ $commentsFiles[$comment->id] }}", "{{ asset('') }}", document.getElementById('preview'));
+                        loadPostFiles({{ $comment->id }}, @json($commentsFiles[$comment->id]), "{{ asset('') }}", document.getElementById('second-preview'));
                     </script>
-        
+
                     <x-post.comment-interaction.panel>
                         <x-post.comment-interaction.button id="post-{{ $comment->id }}-like" icon="{{ $comment->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.comment-interaction.button>
                         <span id="post-{{ $comment->id }}-like-count" class="comment-interaction-text">{{ ($likesCount = $comment->likes()->count()) }}</span>
                     </x-post.comment-interaction.panel>
                 
                     <script>
-                        setCommentInteractionButtonsFunctionality({{ $comment->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('preview'));
+                        setCommentInteractionButtonsFunctionality({{ $comment->id }}, {{ $likesCount }}, "{{ asset('') }}", document.getElementById('second-preview'));
                     </script>
                 </x-post.comment-panel>
             @endforeach
         </x-post.comments-panel>
+
+        <script>
+            addLoadMoreCommentsButton({{ $post->id }}, "{{ asset('') }}");
+        </script>
     </div>
 
     <div class="right-sidebar-container block">

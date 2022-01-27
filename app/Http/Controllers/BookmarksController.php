@@ -23,7 +23,7 @@ class BookmarksController extends Controller
 
         $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(3)->withQueryString();
 
-        $files = PostController::getPostsFiles($posts);
+        $files = PostController::getPostsFiles($posts->items());
         
         return view('bookmarks.index', [
             'bookmarks' => $posts,

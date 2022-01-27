@@ -24,7 +24,7 @@
     <div class="post-body-text">{{ $post->body }}</div>
 
     <script>
-        loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('second-preview'));
+        loadPostFiles({{ $post->id }}, @json($files[$post->id]), "{{ asset('') }}", document.getElementById('second-preview'));
     </script>
 
     <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
@@ -69,7 +69,7 @@
             <div id="post-{{ $comment->id }}-info-container"></div>
 
             <script>
-                loadPostFiles({{ $comment->id }}, "{{ $commentsFiles[$comment->id] }}", "{{ asset('') }}", document.getElementById('second-preview'));
+                loadPostFiles({{ $comment->id }}, @json($commentsFiles[$comment->id]), "{{ asset('') }}", document.getElementById('second-preview'));
             </script>
 
             <x-post.comment-interaction.panel>

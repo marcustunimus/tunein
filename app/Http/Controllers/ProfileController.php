@@ -23,8 +23,8 @@ class ProfileController extends Controller
             $posts = $user->posts()->where('comment_on_post', '=', null)->latest()->paginate(3)->withQueryString();
         }
 
-        $files = PostController::getPostsFiles($posts);
-
+        $files = PostController::getPostsFiles($posts->items());
+        
         return view('profile.index', [
             'user' => $user,
             'posts' => $posts,

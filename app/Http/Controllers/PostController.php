@@ -17,25 +17,15 @@ class PostController extends Controller
 {
     public function index(Post $post)
     {
-        $comments = $post->subPosts()->latest()->paginate(3)->withQueryString();
+        $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $files = [];
-        $postFiles = [];
-
-        foreach ($post->files as $postFile) {
-            array_push($postFiles,
-                $postFile->file,
-                Storage::mimeType('public/post_files/' . $postFile->file),
-                Storage::size('public/post_files/' . $postFile->file)
-            );
-        }
-
-        $files[$post->id] = implode('|', $postFiles);
+        $files = $this->getPostsFiles([$post]);
 
         $commentsFiles = $this::getPostsFiles($comments->items());
 
         return view('post.index', [
             'post' => $post,
+            'comments' => $comments,
             'user' => auth()->user(),
             'files' => $files,
             'commentsFiles' => $commentsFiles,
@@ -142,13 +132,8 @@ class PostController extends Controller
             'post_id' => $post->id
         ];
 
-        $likedPost = Like::query()->where([
-            ['user_id', '=', $likeAttributes['user_id']],
-            ['post_id', '=', $likeAttributes['post_id']]
-        ])->get()->first();
-
-        if ($likedPost) {
-            $likedPost->delete();
+        if ($post->isLikedByUser(auth()->user())) {
+            $post->likes()->where('user_id', auth()->user()->id)->first()->delete();
 
             return json_encode("Unliked");
         }
@@ -173,7 +158,7 @@ class PostController extends Controller
             'post_id' => $post->id
         ];
 
-        if ($post->isBookmarkedByUser(auth()->user()->id)) {
+        if ($post->isBookmarkedByUser(auth()->user())) {
             $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
 
             return json_encode("Unbookmarked");
@@ -188,21 +173,9 @@ class PostController extends Controller
     {
         $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $files = [];
+        $files = $this->getPostsFiles([$post]);
 
-        $postFiles = [];
-
-        foreach ($post->files as $postFile) {
-            array_push($postFiles,
-                $postFile->file,
-                Storage::mimeType('public/post_files/' . $postFile->file),
-                Storage::size('public/post_files/' . $postFile->file)
-            );
-        }
-
-        $files[$post->id] = implode('|', $postFiles);
-
-        $commentsFiles = $this::getPostsFiles($comments);
+        $commentsFiles = $this::getPostsFiles($comments->items());
 
         $commentPageHtml = view('post.view', [
             'post' => $post,
@@ -219,7 +192,7 @@ class PostController extends Controller
     {
         $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $commentsFiles = $this::getPostsFiles($comments);
+        $commentsFiles = $this::getPostsFiles($comments->items());
 
         $commentsPageHtml = view('post.comments', [
             'user' => auth()->user(),
@@ -290,13 +263,14 @@ class PostController extends Controller
 
             foreach ($post->files as $postFile) {
                 $postFiles[] = [
-                    'path' => $postFile->file,
+                    'name' => $postFile->file,
+                    'path' => $postFile->getFullPath(),
                     'mime_type' => $postFile->getMimeType(),
                     'size' => $postFile->getSize(),
                 ];
             }
 
-            $files[$post->id] = json_encode($postFiles);
+            $files[$post->id] = $postFiles;
         }
 
         return $files;

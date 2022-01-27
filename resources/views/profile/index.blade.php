@@ -54,7 +54,7 @@
             <div class="profile-username">{{ '@' . $user->username }}</div>
 
             <div class="profile-followers-count-text">
-                <span id="profile-followers-count" class="link link-color">{{ $followersCount = $user->followers()->count() }} {{ \Illuminate\Support\Str::plural('follower', $likesCount) }}</span>
+                <span id="profile-followers-count" class="link link-color">{{ $followersCount = $user->followers()->count() }} {{ \Illuminate\Support\Str::plural('follower', $followersCount) }}</span>
             </div>
 
             @if (auth()->check())
@@ -111,7 +111,7 @@
                 <div class="post-body-text">{{ $post->body }}</div>
 
                 <script>
-                    loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
+                    loadPostFiles({{ $post->id }}, @json($files[$post->id]), "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
                 <x-post.interaction.info id="post-{{ $post->id }}-info">{{ $likesCount = $post->likes()->count() }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info>

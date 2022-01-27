@@ -18,7 +18,7 @@
         <div id="post-{{ $comment->id }}-info-container"></div>
 
         <script>
-            loadPostFiles({{ $comment->id }}, "{{ $commentsFiles[$comment->id] }}", "{{ asset('') }}", document.getElementById('second-preview'));
+            loadPostFiles({{ $comment->id }}, @json($commentsFiles[$comment->id]), "{{ asset('') }}", document.getElementById('second-preview'));
         </script>
 
         <x-post.comment-interaction.panel>

@@ -42,7 +42,7 @@
                 <div class="post-body-text">{{ $post->body }}</div>
 
                 <script>
-                    loadPostFiles({{ $post->id }}, "{{ $files[$post->id] }}", "{{ asset('') }}", document.getElementById('preview'));
+                    loadPostFiles({{ $post->id }}, @json($files[$post->id]), "{{ asset('') }}", document.getElementById('preview'));
                 </script>
 
                 <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ \Illuminate\Support\Str::plural('like', $likesCount) }}</x-post.interaction.info>
