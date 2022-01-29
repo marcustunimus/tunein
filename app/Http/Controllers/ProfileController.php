@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\TransformsPostFiles;
 use App\Models\Following;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -12,6 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
+    use TransformsPostFiles;
+
     public function index(User $user)
     {
         $search = request()->query('search');
@@ -23,7 +26,7 @@ class ProfileController extends Controller
             $posts = $user->posts()->where('comment_on_post', '=', null)->latest()->paginate(3)->withQueryString();
         }
 
-        $files = PostController::getPostsFiles($posts->items());
+        $files = $this->getPostFilesForJs($posts->items());
         
         return view('profile.index', [
             'user' => $user,

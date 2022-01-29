@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\CalculatesSize;
+use App\Http\Controllers\Traits\TransformsPostFiles;
+use App\Http\Controllers\Traits\TransformsPostLikes;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Bookmark;
 use App\Models\PostFile;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -15,13 +16,17 @@ use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
+    use TransformsPostFiles;
+    use CalculatesSize;
+    use TransformsPostLikes;
+
     public function index(Post $post)
     {
         $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $files = $this->getPostsFiles([$post]);
+        $files = $this->getPostFilesForJs([$post]);
 
-        $commentsFiles = $this::getPostsFiles($comments->items());
+        $commentsFiles = $this->getPostFilesForJs($comments->items());
 
         return view('post.index', [
             'post' => $post,
@@ -69,15 +74,15 @@ class PostController extends Controller
         }
 
         if (isset($files['file'])) {
-            $this->validateMaxPostFilesSize($this->getAllUploadedFilesSize($files['file']));
+            $this->validateMaxPostFilesSize($this->calculateUploadedFilesSize($files['file']));
         }
 
-        Post::create($postAttributes);
+        $post = Post::create($postAttributes);
+
+        $post = $post->fresh();
 
         if (count($files)) {
-            $lasestPostId = Post::latest('id')->first()->id;
-
-            $this->createPostFiles($lasestPostId, $files);
+            $post->saveFiles($files['file']);
         }
 
         if ($postAttributes['comment_on_post'] != null) {
@@ -93,14 +98,14 @@ class PostController extends Controller
 
         $files = request('uploadedFiles') ? $this->validateFiles(new Request($this->filterUploadedFiles(request('uploadedFiles')))) : [];
 
-        $this->validateMaxPostFilesSize($this->getAllPostFilesSize($post, explode('/', request('removedPostFiles'))) + (isset($files['file']) ? $this->getAllUploadedFilesSize($files['file']) : 0));
+        $this->validateMaxPostFilesSize($this->calculatePostFilesSize($post, explode('/', request('removedPostFiles'))) + (isset($files['file']) ? $this->calculateUploadedFilesSize($files['file']) : 0));
 
         $post->update($postAttributes);
 
         $post->deleteFilesByNames(explode('/', request('removedPostFiles')));
 
         if (count($files)) {
-            $this->createPostFiles($post->id, $files);
+            $post->saveFiles($files['file']);
         }
 
         return redirect()->back()->with('message', 'The post has been edited.');
@@ -173,9 +178,9 @@ class PostController extends Controller
     {
         $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $files = $this->getPostsFiles([$post]);
+        $files = $this->getPostFilesForJs([$post]);
 
-        $commentsFiles = $this::getPostsFiles($comments->items());
+        $commentsFiles = $this->getPostFilesForJs($comments->items());
 
         $commentPageHtml = view('post.view', [
             'post' => $post,
@@ -192,7 +197,7 @@ class PostController extends Controller
     {
         $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
 
-        $commentsFiles = $this::getPostsFiles($comments->items());
+        $commentsFiles = $this->getPostFilesForJs($comments->items());
 
         $commentsPageHtml = view('post.comments', [
             'user' => auth()->user(),
@@ -206,76 +211,10 @@ class PostController extends Controller
 
     public function likesInfo(Post $post)
     {
-        $postLikesInStringFormat = $this::convertLikesOfPostsToStringFormats($post->likes);
-
-        return json_encode($postLikesInStringFormat);
+        return json_encode($this->getPostLikesForJs($post));
     }
 
-
-    public static function convertLikesOfPostsToStringFormats($postLikes): array
-    {
-        $postLikesInStringFormat = [];
-        $tempCount = 0;
-
-        foreach ($postLikes as $key => $postLike) {
-            $temp = "";
-
-            foreach ($postLike as $like) {
-                $tempCount++;
-                $temp .= implode('|', [$like->user->profile_picture, $like->user->username]) . ($tempCount !== $postLike->count() ? '|' : "");
-            }
-
-            $postLikesInStringFormat[$key] = $temp;
-        }
-
-        return $postLikesInStringFormat;
-    }
-
-    public static function convertBookmarksOfPostsToStringFormats($postBookmarks): array
-    {
-        $postBookmarksInStringFormat = [];
-        $tempCount = 0;
-
-        foreach ($postBookmarks as $key => $postBookmark) {
-            $temp = "";
-
-            foreach ($postBookmark as $bookmark) {
-                $tempCount++;
-                $temp .= implode('|', [$bookmark->user->id, $bookmark->user->username]) . ($tempCount !== $postBookmark->count() ? '|' : "");
-            }
-
-            $postBookmarksInStringFormat[$key] = $temp;
-        }
-
-        return $postBookmarksInStringFormat;
-    }
-
-    /**
-     * @param Collection|Post[] $posts
-     * @return array
-     */
-    public static function getPostsFiles(Collection|array $posts): array
-    {
-        $files = [];
-
-        foreach ($posts as $post) {
-            $postFiles = [];
-
-            foreach ($post->files as $postFile) {
-                $postFiles[] = [
-                    'name' => $postFile->file,
-                    'path' => $postFile->getFullPath(),
-                    'mime_type' => $postFile->getMimeType(),
-                    'size' => $postFile->getSize(),
-                ];
-            }
-
-            $files[$post->id] = $postFiles;
-        }
-
-        return $files;
-    }
-
+    
 
     protected function validatePostBody(?Post $post = null): array
     {
@@ -321,30 +260,6 @@ class PostController extends Controller
         return ['file' => $files];
     }
 
-    protected function getAllUploadedFilesSize(array $files): int
-    {
-        $size = 0;
-
-        foreach ($files as $file) {
-            $size += $file->getSize();
-        }
-
-        return $size;
-    }
-
-    protected function getAllPostFilesSize(Post $post, array $removedPostFiles): int
-    {
-        $size = 0;
-
-        foreach ($post->files as $postFile) {
-            if (!in_array($postFile->file, $removedPostFiles, true)) {
-                $size += $postFile->getSize();
-            }
-        }
-
-        return $size;
-    }
-
     protected function validateFiles(Request $request): array
     {
         $allowedImageExtensions = ['png', 'jpeg', 'gif'];
@@ -355,24 +270,5 @@ class PostController extends Controller
         ], [
             'file.*.mimes' => 'The files uploaded must be of one of the following types: ' . implode(',', array_merge($allowedImageExtensions, $allowedVideoExtensions))
         ]);
-    }
-
-    protected function createPostFiles(int $postID, array $files): void
-    {
-        foreach ($files as $allFiles) {
-            foreach ($allFiles as $file) {
-                $fileAttributes = [
-                    'post_id' => $postID,
-                    'file' => null,
-                ];
-
-                $postFile = PostFile::create($fileAttributes);
-
-                $filename = $postFile->id . '_' . Str::random(32) . '.' . $file->extension();
-                $postFile->file = $filename;
-                $postFile->save();
-                $postFile->file = $file->storeAs('post_files', $filename, 'public');
-            }
-        }
     }
 }

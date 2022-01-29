@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\TransformsPostFiles;
 use App\Models\Post;
-use App\Models\User;
 use App\Models\Following;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\Auth\Factory;
 
 class HomeController extends Controller
 {
+    use TransformsPostFiles;
+
     public function index()
     {
         $search = request()->query('search');
@@ -25,7 +24,7 @@ class HomeController extends Controller
 
         $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', auth()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->paginate(3)->withQueryString();
 
-        $files = PostController::getPostsFiles($posts->items());
+        $files = $this->getPostFilesForJs($posts->items());
         
         return view('home.index', [
             'posts' => $posts,

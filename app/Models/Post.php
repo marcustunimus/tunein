@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 /**
  * @property-read int $id
@@ -95,9 +96,37 @@ class Post extends Model
         return $this->files()->whereIn('file', $names)->delete();
     }
 
-    public function saveFiles(array $files)
+    public function saveFiles(array $files): void
     {
+        foreach ($files as $file) {
+            $fileAttributes = [
+                'post_id' => $this->id,
+                'file' => null,
+            ];
 
+            $postFile = PostFile::create($fileAttributes);
+
+            $filename = $postFile->id . '_' . Str::random(32) . '.' . $file->extension();
+            $postFile->file = $filename;
+            $postFile->save();
+            $postFile->file = $file->storeAs('post_files', $filename, 'public');
+        }
+    }
+
+    public function getFilesInfo(): array
+    {
+        $filesInfo = [];
+
+        foreach ($this->files as $file) {
+            $filesInfo[] = [
+                'name' => $file->file,
+                'path' => $file->getFullStoragePath(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+            ];
+        }
+
+        return $filesInfo;
     }
 
     private function onDeleting(): void

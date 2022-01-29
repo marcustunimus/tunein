@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\TransformsPostFiles;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Factory;
 
 class ExploreController extends Controller
 {
+    use TransformsPostFiles
+
     public function index(Factory $auth)
     {
         $search = request()->query('search');
@@ -19,7 +21,7 @@ class ExploreController extends Controller
             $posts = Post::query()->where('comment_on_post', '=', null)->orderByDesc('created_at')->paginate(3)->withQueryString();
         }
 
-        $files = PostController::getPostsFiles($posts->items());
+        $files = $this->getPostFilesForJs($posts->items());
 
         return view('explore.index', [
             'posts' => $posts,

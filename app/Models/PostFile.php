@@ -35,14 +35,29 @@ class PostFile extends Model
         return Storage::mimeType($this->getFullPath());
     }
 
+    public function getFolderName(): string
+    {
+        return 'post_files';
+    }
+
     public function getDirectoryPath(): string
     {
-        return 'public/post_files';
+        return 'public/' . $this->getFolderName();
     }
 
     public function getFullPath(): string
     {
         return $this->getDirectoryPath() . '/' . $this->file;
+    }
+
+    public function getStoragePath(): string
+    {
+        return 'storage/' . $this->getFolderName();
+    }
+
+    public function getFullStoragePath(): string
+    {
+        return $this->getStoragePath() . '/' . $this->file;
     }
 
     public function deleteFileInStorage(): bool

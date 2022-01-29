@@ -257,7 +257,7 @@ function showPostFilesPreview(files, path, previewContainer, postFilesContainer)
                 fileShowcase.appendChild(videoContainer); fileShowcase.appendChild(fileCaption);
             }
             else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
-                imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); imageContainer.setAttribute("class", "post-file-upload-image-thumbnail");
+                imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + files[i]['path']); imageContainer.setAttribute("class", "post-file-upload-image-thumbnail");
 
                 fileShowcase.appendChild(imageContainer); fileShowcase.appendChild(fileCaption);
             }
@@ -305,7 +305,7 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
                 let video = document.createElement("video"); video.setAttribute("controls", "");
                 video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
-                let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); videoSource.setAttribute("type", files[i]['mime_type']);
+                let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + files[i]['path']); videoSource.setAttribute("type", files[i]['mime_type']);
 
                 video.appendChild(videoSource);
                 videoContainer.appendChild(video);
@@ -313,7 +313,7 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
             }
             else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
                 let imageContainer = document.createElement("div"); imageContainer.setAttribute("class", "preview center"); imageContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
-                let image = document.createElement("img"); image.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); image.setAttribute("class", "preview center");
+                let image = document.createElement("img"); image.setAttribute("src", path + files[i]['path']); image.setAttribute("class", "preview center");
 
                 imageContainer.appendChild(image);
                 previewContainer.appendChild(imageContainer);
@@ -423,7 +423,7 @@ function loadPostFiles(postId, files, path, previewContainer) {
 function createPostFileElement(file, numberOfFiles, path, postFilePreview, videoContainerClass, imageContainerClass, lastElement) {
     if (file['mime_type'] === 'video/mp4' || file['mime_type'] === 'video/webm') {
         let videoContainer = document.createElement("video"); videoContainer.setAttribute("class", videoContainerClass);
-        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + file['name']); videoSource.setAttribute("type", file['mime_type']);
+        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + file['path']); videoSource.setAttribute("type", file['mime_type']);
 
         videoContainer.appendChild(videoSource);
         postFilePreview.appendChild(videoContainer);
@@ -446,7 +446,7 @@ function createPostFileElement(file, numberOfFiles, path, postFilePreview, video
         }
     }
     else if (file['mime_type'] === 'image/png' || file['mime_type'] === 'image/jpeg' || file['mime_type'] === 'image/jpg' || file['mime_type'] === 'image/gif') {
-        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + "/storage/post_files/" + file['name']);
+        let imageContainer = document.createElement("img"); imageContainer.id = "previewImage"; imageContainer.setAttribute("src", path + file['path']);
         imageContainer.setAttribute("class", imageContainerClass);
 
         postFilePreview.appendChild(imageContainer);
@@ -506,7 +506,7 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
     if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
         let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", "");
         videoContainer.setAttribute(videoContainer.width > videoContainer.height ? "width" : "height", "100%"); videoContainer.setAttribute("class", "preview center noselect");
-        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); videoSource.setAttribute("type", files[i]['mime_type']);
+        let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + files[i]['path']); videoSource.setAttribute("type", files[i]['mime_type']);
 
         videoContainer.appendChild(videoSource);
 
@@ -518,7 +518,7 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
         previewContainer.appendChild(previewContent);
     }
     else if (files[i]['mime_type'] === 'image/png' || files[i]['mime_type'] === 'image/jpeg' || files[i]['mime_type'] === 'image/jpg' || files[i]['mime_type'] === 'image/gif') {
-        let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", path + "/storage/post_files/" + files[i]['name']); imageContainer.setAttribute("class", "preview center noselect");
+        let imageContainer = document.createElement("img"); imageContainer.setAttribute("src", path + files[i]['path']); imageContainer.setAttribute("class", "preview center noselect");
 
         imageContainer.onclick = function () {
             skipFunction = true;
@@ -704,23 +704,20 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                usersLiked = data[postId].split("|");
-
                 let usersLikedContainer = document.createElement("div");
 
-                if (usersLiked.length > 1) {
-                    for (let i = 0; i < usersLiked.length; i += 2) {
-                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + usersLiked[i + 1]);
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/person_white_24dp.svg"));
-                        let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
+                for (let user of data) {
+                    let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                    let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
+                    let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); 
+                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != "" ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
+                    let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + user['username']); username.setAttribute("class", "post-profile-name"); username.innerText = user['username'];
 
-                        userProfileLink.appendChild(userProfilePicture);
-                        userContainer.appendChild(userProfileLink);
-                        userContainer.appendChild(username);
+                    userProfileLink.appendChild(userProfilePicture);
+                    userContainer.appendChild(userProfileLink);
+                    userContainer.appendChild(username);
 
-                        usersLikedContainer.appendChild(userContainer);
-                    }
+                    usersLikedContainer.appendChild(userContainer);
                 }
 
                 previewContent.appendChild(usersLikedContainer);
@@ -849,23 +846,20 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                usersLiked = data[postId].split("|");
-
                 let usersLikedContainer = document.createElement("div");
 
-                if (usersLiked.length > 1) {
-                    for (let i = 0; i < usersLiked.length; i += 2) {
-                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + usersLiked[i + 1]);
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (usersLiked[i] != "" ? "storage/profile_pictures/" + usersLiked[i] : "images/person_white_24dp.svg"));
-                        let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + usersLiked[i + 1]); username.setAttribute("class", "post-profile-name"); username.innerText = usersLiked[i + 1];
+                for (let user of data) {
+                    let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                    let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
+                    let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); 
+                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != "" ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
+                    let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + user['username']); username.setAttribute("class", "post-profile-name"); username.innerText = user['username'];
 
-                        userProfileLink.appendChild(userProfilePicture);
-                        userContainer.appendChild(userProfileLink);
-                        userContainer.appendChild(username);
+                    userProfileLink.appendChild(userProfilePicture);
+                    userContainer.appendChild(userProfileLink);
+                    userContainer.appendChild(username);
 
-                        usersLikedContainer.appendChild(userContainer);
-                    }
+                    usersLikedContainer.appendChild(userContainer);
                 }
 
                 previewContent.appendChild(usersLikedContainer);

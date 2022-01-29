@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\TransformsPostFiles;
 use App\Models\Post;
 use App\Models\Bookmark;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Factory;
 
 class BookmarksController extends Controller
 {
+    use TransformsPostFiles;
+
     public function index(Factory $auth)
     {
         $search = request()->query('search');
@@ -23,7 +25,7 @@ class BookmarksController extends Controller
 
         $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(3)->withQueryString();
 
-        $files = PostController::getPostsFiles($posts->items());
+        $files = $this->getPostFilesForJs($posts->items());
         
         return view('bookmarks.index', [
             'bookmarks' => $posts,
