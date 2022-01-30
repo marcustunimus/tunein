@@ -16,6 +16,9 @@ use Illuminate\Support\Str;
  *
  * @property-read User $author
  * @property-read EloquentCollection|PostFile[] $files
+ *
+ * @method static Builder|Post query()
+ * @method Builder|Post comments()
  */
 class Post extends Model
 {
@@ -39,6 +42,11 @@ class Post extends Model
         static::deleting(function (Post $post) {
             $post->onDeleting();
         });
+    }
+
+    protected function scopeComments(Builder $builder): Builder
+    {
+        return $builder->withoutGlobalScopes()->whereNotNull('comment_on_post');
     }
 
     public function author(): BelongsTo
