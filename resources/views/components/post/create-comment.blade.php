@@ -5,7 +5,7 @@
         @csrf
 
         <x-form.input containerClass="" class="" type="hidden" name="comment_on_post" id="comment_on_post" value="{{ $postId }}" />
-        <x-form.textarea name="body" type="text" class="post-comment-input-text scrollbar center" containerClass="post-comment-input-container" rows="1" required="true" placeholder="What's your opinion?" />
+        <x-form.textarea name="body{{ $postId }}" type="text" class="post-comment-input-text scrollbar center" containerClass="post-comment-input-container" rows="1" required="true" placeholder="What's your opinion?" />
         <div class="flex justify-between">
             <div class="inline-flex">
                 <x-form.file name="uploadedFiles{{ $postId }}" class="post-file-upload-image-thumbnail-container" containerClass="post-file-upload-container" multiple="true" accept=".png,.jpeg,.jpg,.gif,.mp4,.webm" postId="{{ $postId }}">

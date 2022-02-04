@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -88,5 +90,108 @@ class User extends Authenticatable
     public function isFollowedBy(User $user): bool
     {
         return $this->followers()->where('user_id', $user->id)->exists();
+    }
+
+    private function generateFileName($image): string
+    {
+        return $this->id.'_'.Str::random(32).'.'.$image->extension();
+    }
+
+    // The methods related to the profile picture of the user.
+
+    public function changeProfilePicture($image): bool
+    {
+        $profilePictureName = $this->generateFileName($image);
+
+        $image->storeAs($this->getProfilePicturesFolderName(), $profilePictureName, 'public');
+        
+        $this->deleteProfilePicture();
+
+        return $this->update([
+            'profile_picture' => $profilePictureName,
+        ]);
+    }
+
+    public function deleteProfilePicture(): bool
+    {
+        Storage::delete($this->getProfilePictureFullPath());
+
+        return $this->update([
+            'profile_picture' => null,
+        ]);
+    }
+
+    public function getProfilePicturesFolderName(): string
+    {
+        return 'profile_pictures';
+    }
+
+    public function getProfilePicturesDirectoryPath(): string
+    {
+        return 'public/' . $this->getProfilePicturesFolderName(); 
+    }
+
+    public function getProfilePictureFullPath(): string
+    {
+        return $this->getProfilePicturesDirectoryPath() . '/' . $this->profile_picture;
+    }
+
+    public function getProfilePictureStoragePath(): string
+    {
+        return 'storage/' . $this->getProfilePicturesFolderName();
+    }
+
+    public function getProfilePictureFullStoragePath(): string
+    {
+        return $this->getProfilePictureStoragePath() . '/' . $this->profile_picture;
+    }
+
+    // The methods related to the background picture of the user.
+
+    public function changeBackgroundPicture($image): bool
+    {
+        $backgroundPictureName = $this->generateFileName($image);
+
+        $image->storeAs($this->getBackgroundPicturesFolderName(), $backgroundPictureName, 'public');
+        
+        $this->deleteBackgroundPicture();
+
+        return $this->update([
+            'background_picture' => $backgroundPictureName,
+        ]);
+    }
+
+    public function deleteBackgroundPicture(): bool
+    {
+        Storage::delete($this->getBackgroundPictureFullPath());
+
+        return $this->update([
+            'background_picture' => null,
+        ]);
+    }
+
+    public function getBackgroundPicturesFolderName(): string
+    {
+        return 'profile_backgrounds';
+    }
+
+    public function getBackgroundPicturesDirectoryPath(): string
+    {
+        return 'public/' . $this->getBackgroundPicturesFolderName(); 
+    }
+
+    public function getBackgroundPictureFullPath(): string
+    {
+        return $this->getBackgroundPicturesDirectoryPath() . '/' . $this->background_picture;
+    }
+
+    public function getBackgroundPictureStoragePath(): string
+    {
+        return 'storage/' . $this->getBackgroundPicturesFolderName();
+    }
+
+    public function getBackgroundPictureFullStoragePath(): string
+    {
+        return $this->getBackgroundPictureStoragePath() . '/' . $this->background_picture;
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Post;
 use App\Models\Bookmark;
 use Illuminate\Contracts\Auth\Factory;
 
-class BookmarksController extends Controller
+class BookmarkController extends Controller
 {
     use TransformsPostFiles;
 
@@ -32,5 +32,36 @@ class BookmarksController extends Controller
             'user' => $auth->guard()->user(),
             'files' => $files,
         ]);
+    }
+
+    public function store(Post $post): string|false
+    {
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
+
+        if ($post->comment_on_post !== null) {
+            return json_encode("AttemptToBookmarkComment");
+        }
+
+        $bookmarkAttributes = [
+            'user_id' => auth()->user()->id,
+            'post_id' => $post->id
+        ];
+
+        if ($post->isBookmarkedByUser(auth()->user())) {
+            return $this->delete($post);
+        }
+
+        Bookmark::create($bookmarkAttributes);
+
+        return json_encode("Bookmarked");
+    }
+
+    public function delete(Post $post): string|false
+    {
+        $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
+
+        return json_encode("Unbookmarked");
     }
 }

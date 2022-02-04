@@ -1,6 +1,6 @@
 @props(['name', 'class', 'containerClass', 'placeholder', 'required' => false])
 
-<div class="{{ $containerClass }} block">
+<div class="{{ $containerClass }} block" id="{{ $name }}Container">
     <textarea 
         name="{{ $name }}"
         id="{{ $name }}"

@@ -114,10 +114,10 @@ class Post extends Model
 
             $postFile = PostFile::create($fileAttributes);
 
-            $filename = $postFile->id . '_' . Str::random(32) . '.' . $file->extension();
-            $postFile->file = $filename;
+            $fileName = $postFile->id . '_' . Str::random(32) . '.' . $file->extension();
+            $postFile->file = $fileName;
             $postFile->save();
-            $postFile->file = $file->storeAs('post_files', $filename, 'public');
+            $postFile->file = $file->storeAs($postFile->getFolderName(), $fileName, 'public');
         }
     }
 

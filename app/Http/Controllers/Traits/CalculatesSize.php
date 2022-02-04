@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 
 trait CalculatesSize
 {
-    protected function calculateUploadedFilesSize(UploadedFile|array $files): int
+    public function calculateUploadedFilesSize(UploadedFile|array $files): int
     {
         $size = 0;
 

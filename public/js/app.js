@@ -599,7 +599,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
     }
 
     if (postCommentButtonContainer.getAttribute("class") === "post-interaction-button") {
-        postCommentButtonContainer.onclick = function () { viewCommentsWindow(path, postId, false); }
+        postCommentButtonContainer.onclick = function () { viewCommentsWindow(path, postId); }
     }
 
     postBookmarkButtonContainer.onclick = function () {
@@ -880,12 +880,12 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
     }
 }
 
-function viewCommentsWindow(path, postId) {
+function viewCommentsWindow(path, postId, errorKey = "", errorValue = "", bodyText = "") {
     try {
-        fetch(path + 'posts/' + postId + '/viewComments', {
+        fetch(path + 'posts/' + postId + '/viewComments?errorKey=' + errorKey + '&errorValue=' + errorValue + '&bodyText=' + bodyText, {
             method: 'POST',
             headers: {
-                'url': path + 'posts/' + postId + '/viewComments',
+                'url': path + 'posts/' + postId + '/viewComments?errorKey=' + errorKey + '&errorValue=' + errorValue + '&bodyText=' + bodyText,
                 "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
             }
         }).then(function (response) {
@@ -941,12 +941,37 @@ function viewCommentsWindow(path, postId) {
             if (data[1] === true) {
                 addLoadMoreCommentsButton(postId, path);
             }
+
+            viewCommentsAddOldTextareaInput(data[2], data[3]);
+
+            viewCommentsErrorDisplay(data[4], [data[5]]);
         }).catch(function (error) {
             return console.log(error);
         });
     } catch (error) {
         return console.log(error);
     }
+}
+
+function viewCommentsAddOldTextareaInput(name, value) {
+    textareaElement = document.getElementById(name);
+
+    textareaElement.innerText = value;
+}
+
+function viewCommentsErrorDisplay(name, value) {
+    if (name == null || value == null) {
+        return;
+    }
+
+    container = document.getElementById(name);
+
+    errorElement = document.createElement("div"); errorElement.setAttribute("class", "error");
+    errorElement.innerText = value;
+
+    container.appendChild(errorElement);
+
+    container.style = "margin-bottom: 0px;";
 }
 
 function showProfilePicturePreview(name, path) {
@@ -1086,23 +1111,19 @@ function setPreviewFollowersButtonFunctionality(username, path, previewContainer
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                userFollowed = data.split("|");
-
                 let userFollowedContainer = document.createElement("div");
 
-                if (userFollowed.length > 1) {
-                    for (let i = 0; i < userFollowed.length; i += 2) {
-                        let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
-                        let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + userFollowed[i + 1]);
-                        let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (userFollowed[i] != "" ? "storage/profile_pictures/" + userFollowed[i] : "images/person_white_24dp.svg"));
-                        let usernameElement = document.createElement("a"); usernameElement.setAttribute("href", path + "profile/" + userFollowed[i + 1]); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = userFollowed[i + 1];
+                for (let user of data) {
+                    let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
+                    let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
+                    let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (user["profile_picture"] != "" ? user["profile_picture_path"] : "images/person_white_24dp.svg"));
+                    let usernameElement = document.createElement("a"); usernameElement.setAttribute("href", path + "profile/" + user["username"]); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = user["username"];
                     
-                        userProfileLink.appendChild(userProfilePicture);
-                        userContainer.appendChild(userProfileLink);
-                        userContainer.appendChild(usernameElement);
+                    userProfileLink.appendChild(userProfilePicture);
+                    userContainer.appendChild(userProfileLink);
+                    userContainer.appendChild(usernameElement);
                     
-                        userFollowedContainer.appendChild(userContainer);
-                    }
+                    userFollowedContainer.appendChild(userContainer);
                 }
 
                 previewContent.appendChild(userFollowedContainer);

@@ -68,7 +68,21 @@
 
     @if (session('postId'))
         <script>
-            viewCommentsWindow("{{ asset('') }}", {{ session('postId') }}, false);
+            viewCommentsWindow("{{ asset('') }}", {{ session('postId') }});
         </script>
+    @endif
+
+    @if ($errors->any())
+        @foreach ($errors->keys() as $key)
+            @if (str_contains($key, "uploadedFiles") && strlen(substr(str_replace("uploadedFiles", "", $key), 0, strlen(str_replace("uploadedFiles", "", $key)) - 2)) > 0)
+            <script>
+                viewCommentsWindow("{{ asset('') }}", {{ $postId = substr(str_replace("uploadedFiles", "", $key), 0, strlen(str_replace("uploadedFiles", "", $key)) - 2) }}, "uploadedFiles{{ $postId }}Container", "{{ $errors->first($key) }}", "{{ old('body' . $postId) }}");
+            </script>
+            @elseif (str_contains($key, "body") && strlen(substr(str_replace("body", "", $key), 0, strlen(str_replace("body", "", $key)))) > 0)
+            <script>
+                viewCommentsWindow("{{ asset('') }}", {{ $postId = substr(str_replace("body", "", $key), 0, strlen(str_replace("body", "", $key))) }}, "body{{ $postId }}Container", "{{ $errors->first($key) }}", "{{ old('body' . $postId) }}");
+            </script>
+            @endif
+        @endforeach
     @endif
 </x-metadata>
