@@ -26,19 +26,17 @@ class LikeController extends Controller
             'post_id' => $post->id
         ];
 
-        if ($post->isLikedByUser(auth()->user())) {
-            $post->likes()->where('user_id', auth()->user()->id)->first()->delete();
-
-            return json_encode("Unliked");
+        if (! $post->isLikedByUser(auth()->user())) {
+            Like::create($likeAttributes);
         }
-
-        Like::create($likeAttributes);
 
         return json_encode("Liked");
     }
 
     public function delete(Post $post): string|false
     {
+        // TODO: Add delete functionality.
+
         $post->likes()->where('user_id', auth()->user()->id)->first()->delete();
 
         return json_encode("Unliked");

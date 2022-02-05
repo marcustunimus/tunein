@@ -19,14 +19,14 @@ class BookmarkController extends Controller
 
         if ($search) {
             $bookmarksQuery = $bookmarksQuery->whereHas('post', function ($query) use ($search) {
-                    return $query->where('body', 'like', '%'.$search.'%');
-                });
+                return $query->where('body', 'like', '%' . $search . '%');
+            });
         }
 
         $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(3)->withQueryString();
 
         $files = $this->getPostFilesForJs($posts->items());
-        
+
         return view('bookmarks.index', [
             'bookmarks' => $posts,
             'user' => $auth->guard()->user(),
@@ -49,17 +49,17 @@ class BookmarkController extends Controller
             'post_id' => $post->id
         ];
 
-        if ($post->isBookmarkedByUser(auth()->user())) {
-            return $this->delete($post);
+        if (! $post->isBookmarkedByUser(auth()->user())) {
+            Bookmark::create($bookmarkAttributes);
         }
-
-        Bookmark::create($bookmarkAttributes);
 
         return json_encode("Bookmarked");
     }
 
     public function delete(Post $post): string|false
     {
+        // TODO: Add delete functionality.
+
         $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
 
         return json_encode("Unbookmarked");
