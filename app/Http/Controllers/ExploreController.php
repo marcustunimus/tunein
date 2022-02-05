@@ -8,7 +8,7 @@ use Illuminate\Contracts\Auth\Factory;
 
 class ExploreController extends Controller
 {
-    use TransformsPostFiles
+    use TransformsPostFiles;
 
     public function index(Factory $auth)
     {
