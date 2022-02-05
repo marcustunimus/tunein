@@ -22,7 +22,7 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! $auth->guard()->attempt($attributes)) {
+        if (! $auth->guard()->attempt($attributes, $request->input('remember') === "on" ? true : false)) {
             throw ValidationException::withMessages([
                 'email' => 'Your provided credentials could not be verified.'
             ]);

@@ -91,7 +91,7 @@ input.login-input-text:focus {
 
 .login-submit-container {
     --width: 30%;
-    --margin-top: 7.5%;
+    --margin-top: 5%;
 
     position: relative;
     margin: auto;
@@ -135,4 +135,15 @@ input.login-input-text:focus {
 
 .login-register-container {
     margin-bottom: 7.5%;
+}
+
+/* Login Checkbox Text */
+
+.login-checkbox {
+    height: 1rem;
+}
+
+.login-checkbox-text {
+    padding-left: 0.25rem;
+    font-size: 1rem;
 }
