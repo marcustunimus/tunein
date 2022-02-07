@@ -19,7 +19,7 @@
         <x-post.create profilePicture="{{ $user->profile_picture }}" username="{{ $user->username }}" route="{{ route('post.create') }}" />
 
         @if (! $posts->count())
-            <div class="no-posts-found-text">No posts yet.</div>
+            <div class="no-posts-found-text">There are no posts at the moment.</div>
         @endif
 
         @foreach ($posts as $post)

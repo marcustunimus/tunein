@@ -89,7 +89,7 @@ function showUploadedFiles(files, path, previewContainer, postFilesContainer, up
         let fileCaption = document.createElement("figcaption"); fileCaption.innerText = file.name; fileCaption.setAttribute("class", "post-file-upload-caption");
         let imageContainer = document.createElement("img");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-thumbnail-preview-container block");
-        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-thumbnail-preview-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-thumbnail-preview-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
 
         closeButtonContainer.onclick = function () {
             removedAttachment = true;
@@ -107,7 +107,7 @@ function showUploadedFiles(files, path, previewContainer, postFilesContainer, up
 
         if (file.type.match('video.mp4') || file.type.match('video.webm')) {
             let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "post-file-upload-video-thumbnail");
-            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-movie-button"); playButton.style = "background-image: url(" + path + "/images/movie_white_24dp.svg);";
+            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-movie-button"); playButton.style.backgroundImage = "url(\"" + path + "images/movie_white_24dp.svg\")";
 
             videoContainer.appendChild(playButton);
             fileShowcase.appendChild(videoContainer); fileShowcase.appendChild(fileCaption);
@@ -119,7 +119,7 @@ function showUploadedFiles(files, path, previewContainer, postFilesContainer, up
         }
         else {
             let fileContainer = document.createElement("div"); fileContainer.setAttribute("class", "post-file-upload-unknown-file-thumbnail");
-            let unknownFile = document.createElement("div"); unknownFile.setAttribute("class", "unknown-file"); unknownFile.style = "background-image: url(" + path + "/images/report_problem_white_24dp.svg);";
+            let unknownFile = document.createElement("div"); unknownFile.setAttribute("class", "unknown-file"); unknownFile.style.backgroundImage = "url(\"" + path + "images/report_problem_white_24dp.svg\")";
 
             fileContainer.appendChild(unknownFile);
             fileShowcase.appendChild(fileContainer); fileShowcase.appendChild(fileCaption);
@@ -161,7 +161,7 @@ function loadPreviewFromReaderButton(file, reader, filePreview, path, previewCon
 
             let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
 
             closeButtonContainer.appendChild(closeButton);
             previewContainer.appendChild(previewBackground);
@@ -240,7 +240,7 @@ function showPostFilesPreview(files, path, previewContainer, postFilesContainer)
             let fileCaption = document.createElement("figcaption"); fileCaption.innerText = files[i]['name']; fileCaption.setAttribute("class", "post-file-upload-caption");
             let imageContainer = document.createElement("img");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-thumbnail-preview-container block");
-            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-thumbnail-preview-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-thumbnail-preview-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
 
             closeButtonContainer.onclick = function () {
                 removedPostFiles.push(files[i]['name']);
@@ -251,7 +251,7 @@ function showPostFilesPreview(files, path, previewContainer, postFilesContainer)
 
             if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "post-file-upload-video-thumbnail");
-                let playButton = document.createElement("div"); playButton.setAttribute("class", "play-movie-button"); playButton.style = "background-image: url(" + path + "/images/movie_white_24dp.svg);";
+                let playButton = document.createElement("div"); playButton.setAttribute("class", "play-movie-button"); playButton.style.backgroundImage = "url(\"" + path + "images/movie_white_24dp.svg\")";
 
                 videoContainer.appendChild(playButton);
                 fileShowcase.appendChild(videoContainer); fileShowcase.appendChild(fileCaption);
@@ -263,7 +263,7 @@ function showPostFilesPreview(files, path, previewContainer, postFilesContainer)
             }
             else {
                 let fileContainer = document.createElement("div"); fileContainer.setAttribute("class", "post-file-upload-unknown-file-thumbnail");
-                let unknownFile = document.createElement("div"); unknownFile.setAttribute("class", "unknown-file"); unknownFile.style="background-image: url(" + path + "/images/report_problem_white_24dp.svg);";
+                let unknownFile = document.createElement("div"); unknownFile.setAttribute("class", "unknown-file"); unknownFile.style.backgroundImage = "url(\"" + path + "images/report_problem_white_24dp.svg\")";
 
                 fileContainer.appendChild(unknownFile);
                 fileShowcase.appendChild(fileContainer); fileShowcase.appendChild(fileCaption);
@@ -296,7 +296,7 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
 
             let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
 
             closeButtonContainer.appendChild(closeButton);
             previewContainer.appendChild(previewBackground);
@@ -439,7 +439,7 @@ function createPostFileElement(file, numberOfFiles, path, postFilePreview, video
         }
         else {
             let playButtonContainer = document.createElement("div"); playButtonContainer.setAttribute("class", "center post-file-video-container");
-            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style = "background-image: url(" + path + "/images/play_circle_white_24dp.svg);";
+            let playButton = document.createElement("div"); playButton.setAttribute("class", "play-button"); playButton.style.backgroundImage = "url(\"" + path + "images/play_circle_white_24dp.svg\")";
 
             playButtonContainer.appendChild(playButton);
             postFilePreview.appendChild(playButtonContainer);
@@ -480,11 +480,11 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
     let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
     let previewContent = document.createElement("div"); previewContent.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;"; previewContent.setAttribute("class", "preview center");
     let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-    let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+    let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
     let nextButtonContainer = document.createElement("div"); nextButtonContainer.setAttribute("class", i + 1 < files.length ? "next-button-container" : "next-button-container-disabled");
-    let nextButton = document.createElement("div"); nextButton.setAttribute("class", "next-button"); nextButton.style = "background-image: url(" + path + "/images/navigate_next_white_24dp.svg);";
+    let nextButton = document.createElement("div"); nextButton.setAttribute("class", "next-button"); nextButton.style.backgroundImage = "url(\"" + path + "images/navigate_next_white_24dp.svg\")";
     let beforeButtonContainer = document.createElement("div"); beforeButtonContainer.setAttribute("class", i - 1 >= 0 ? "before-button-container" : "before-button-container-disabled");
-    let beforeButton = document.createElement("div"); beforeButton.setAttribute("class", "before-button"); beforeButton.style = "background-image: url(" + path + "/images/navigate_before_white_24dp.svg);";
+    let beforeButton = document.createElement("div"); beforeButton.setAttribute("class", "before-button"); beforeButton.style.backgroundImage = "url(\"" + path + "images/navigate_before_white_24dp.svg\")";
     let skipFunction = false;
 
     closeButtonContainer.appendChild(closeButton);
@@ -560,30 +560,23 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
     let postInfoContainer = document.getElementById("post-" + postId + "-info");
 
     postLikeButtonContainer.onclick = function () {
-        if (postLikeButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
-            postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
-        }
-        else if (postLikeButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
-            postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
-        }
-
         try {
-            fetch(path + 'posts/' + postId + '/like', {
+            fetch(path + 'posts/' + postId + '/like' + (postLikeButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")" ? "/delete" : ""), {
                 method: 'POST',
                 headers: {
-                    'url': path + 'posts/' + postId + '/like',
+                    'url': path + 'posts/' + postId + '/like' + (postLikeButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")" ? "/delete" : ""),
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 if (data === "Liked") {
-                    postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
+                    postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_white_24dp.svg\")";
                     numberOfLikes += 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Unliked") {
-                    postLikeButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
+                    postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
                     numberOfLikes -= 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
@@ -591,10 +584,19 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                window.location.href = path + 'login';
+                // window.location.href = path + 'login';
+                console.log(error);
             });
+
+            if (postLikeButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/favorite_border_white_24dp.svg\")") {
+                postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_white_24dp.svg\")";
+            }
+            else if (postLikeButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")") {
+                postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
+            }
         } catch (error) {
-            window.location.href = path + 'login';
+            // window.location.href = path + 'login';
+            console.log(error);
         }
     }
 
@@ -603,28 +605,21 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
     }
 
     postBookmarkButtonContainer.onclick = function () {
-        if (postBookmarkButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);") {
-            postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
-        }
-        else if (postBookmarkButtonContainer.firstElementChild.style == "background-image: url(" + path + "/images/bookmark_white_24dp.svg);") {
-            postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
-        }
-
         try {
-            fetch(path + 'posts/' + postId + '/bookmark', {
+            fetch(path + 'posts/' + postId + '/bookmark' + (postBookmarkButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/bookmark_white_24dp.svg\")" ? "/delete" : "") + "", {
                 method: 'POST',
                 headers: {
-                    'url': path + 'posts/' + postId + '/bookmark',
+                    'url': path + 'posts/' + postId + '/bookmark' + (postBookmarkButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/bookmark_white_24dp.svg\")" ? "/delete" : "") + "",
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 if (data === "Bookmarked") {
-                    postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_white_24dp.svg);";
+                    postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_white_24dp.svg\")";
                 }
                 else if (data === "Unbookmarked") {
-                    postBookmarkButtonContainer.firstElementChild.style = "background-image: url(" + path + "/images/bookmark_border_white_24dp.svg);";
+                    postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_border_white_24dp.svg\")";
                 }
                 else if (data === "AttemptToBookmarkComment") {
                     console.log("You can not bookmark comments.");
@@ -633,10 +628,19 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                window.location.href = path + 'login';
+                // window.location.href = path + 'login';
+                console.log(error);
             });
+
+            if (postBookmarkButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/bookmark_border_white_24dp.svg\")") {
+                postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_white_24dp.svg\")";
+            }
+            else if (postBookmarkButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/bookmark_white_24dp.svg\")") {
+                postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_border_white_24dp.svg\")";
+            }
         } catch (error) {
-            window.location.href = path + 'login';
+            // window.location.href = path + 'login';
+            console.log(error);
         }
     }
 
@@ -655,7 +659,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         clearTimeout(autoHideFlashMessage);
 
         autoHideFlashMessage = setTimeout(function () {
-            flashMessageContainer.style = "display: none;";
+            flashMessageContainer.style.display = "none";
             flashMessageText.innerText = "";
         }, 10000);
     }
@@ -669,7 +673,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
         let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
         let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
         let skipFunction = false;
 
         let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Likes";
@@ -744,30 +748,23 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
     let postLikeCountElement = document.getElementById("post-" + postId + "-like-count");
 
     postLikeButtonContainer.onclick = function () {
-        if (postLikeButtonContainer.style == "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);") {
-            postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
-        }
-        else if (postLikeButtonContainer.style == "background-image: url(" + path + "/images/favorite_white_24dp.svg);") {
-            postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
-        }
-
         try {
-            fetch(path + 'posts/' + postId + '/like', {
+            fetch(path + 'posts/' + postId + '/like' + (postLikeButtonContainer.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")" ? "/delete" : ""), {
                 method: 'POST',
                 headers: {
-                    'url': path + 'posts/' + postId + '/like',
+                    'url': path + 'posts/' + postId + '/like' + (postLikeButtonContainer.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")" ? "/delete" : ""),
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 if (data === "Liked") {
-                    postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_white_24dp.svg);";
+                    postLikeButtonContainer.style.backgroundImage = "url(\"" + path + "images/favorite_white_24dp.svg\")";
                     numberOfLikes += 1;
                     postLikeCountElement.innerText = numberOfLikes;
                 }
                 else if (data === "Unliked") {
-                    postLikeButtonContainer.style = "background-image: url(" + path + "/images/favorite_border_white_24dp.svg);";
+                    postLikeButtonContainer.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
                     numberOfLikes -= 1;
                     postLikeCountElement.innerText = numberOfLikes;
                 }
@@ -775,10 +772,19 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                window.location.href = path + 'login';
+                // window.location.href = path + 'login';
+                console.log(error);
             });
+
+            if (postLikeButtonContainer.style.backgroundImage === "url(\"" + path + "images/favorite_border_white_24dp.svg\")") {
+                postLikeButtonContainer.style.backgroundImage = "url(\"" + path + "images/favorite_white_24dp.svg\")";
+            }
+            else if (postLikeButtonContainer.style.backgroundImage === "url(\"" + path + "images/favorite_white_24dp.svg\")") {
+                postLikeButtonContainer.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
+            }
         } catch (error) {
-            window.location.href = path + 'login';
+            // window.location.href = path + 'login';
+            console.log(error);
         }
     }
 
@@ -797,7 +803,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
         clearTimeout(autoHideFlashMessage);
 
         autoHideFlashMessage = setTimeout(function () {
-            flashMessageContainer.style = "display: none;";
+            flashMessageContainer.style.display = "none";
             flashMessageText.innerText = "";
         }, 10000);
     }
@@ -811,7 +817,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
         let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
         let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
         let skipFunction = false;
 
         let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Likes";
@@ -901,7 +907,7 @@ function viewCommentsWindow(path, postId, errorKey = "", errorValue = "", bodyTe
             let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
             let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-comments-preview-container scrollbar-preview");
             let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+            let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
             let skipFunction = false;
 
             closeButtonContainer.appendChild(closeButton);
@@ -971,7 +977,7 @@ function viewCommentsErrorDisplay(name, value) {
 
     container.appendChild(errorElement);
 
-    container.style = "margin-bottom: 0px;";
+    container.style.marginBottom = "0px";
 }
 
 function showProfilePicturePreview(name, path) {
@@ -988,7 +994,7 @@ function showProfilePicturePreview(name, path) {
                 profilePictureContainer.setAttribute("src", reader.result);
             }
             else {
-                profilePictureContainer.setAttribute("src", path + "/images/report_problem_white_24dp.svg");
+                profilePictureContainer.setAttribute("src", path + "images/report_problem_white_24dp.svg");
             }
         }
 
@@ -1009,7 +1015,7 @@ function showBackgroundPicturePreview(name, path) {
                 profileBackgroundPictureContainer.setAttribute("src", reader.result);
             }
             else {
-                profileBackgroundPictureContainer.setAttribute("src", path + "/images/report_problem_white_24dp.svg");
+                profileBackgroundPictureContainer.setAttribute("src", path + "images/report_problem_white_24dp.svg");
             }
         }
 
@@ -1022,18 +1028,18 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
     let followersInfoContainer = document.getElementById("profile-followers-count");
 
     profileFollowButton.onclick = function () {
-        if (profileFollowButton.innerText === "Following") {
-            profileFollowButton.innerText = "Follow";
-        }
-        else if (profileFollowButton.innerText === "Follow") {
-            profileFollowButton.innerText = "Following";
-        }
+        // if (profileFollowButton.innerText === "Following") {
+        //     profileFollowButton.innerText = "Follow";
+        // }
+        // else if (profileFollowButton.innerText === "Follow") {
+        //     profileFollowButton.innerText = "Following";
+        // }
 
         try {
-            fetch(path + 'profile/' + username + '/follow', {
+            fetch(path + 'profile/' + username + '/' + (profileFollowButton.innerText === "Following" ? "un" : "") + 'follow', {
                 method: 'POST',
                 headers: {
-                    'url': path + 'profile/' + username + '/follow',
+                    'url': path + 'profile/' + username + '/' + (profileFollowButton.innerText === "Following" ? "un" : "") + 'follow',
                     "X-CSRF-Token": document.head.querySelector("[name~=csrf-token][content]").content
                 }
             }).then(function (response) {
@@ -1056,10 +1062,14 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
                     console.log("You can't follow yourself. You can't be that sad to do it. Go outside and find some friends.");
                 }
             }).catch(function (error) {
-                window.location.href = path + 'login';
+                // window.location.href = path + 'login';
+                console.log(error);
             });
+
+            
         } catch (error) {
-            window.location.href = path + 'login';
+            // window.location.href = path + 'login';
+            console.log(error);
         }
     }
 }
@@ -1076,7 +1086,7 @@ function setPreviewFollowersButtonFunctionality(username, path, previewContainer
         let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
         let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview post-likes-preview-container scrollbar-preview");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
         let skipFunction = false;
 
         let previewContentHeading = document.createElement("div"); previewContentHeading.setAttribute("class", "post-likes-preview-heading center-text"); previewContentHeading.innerText = "Followers";
@@ -1150,7 +1160,7 @@ function setFlashMessageCloseButtonFunctionality() {
     let flashMessageCloseButton = document.getElementById("flash-message-close-button");
 
     autoHideFlashMessage = setTimeout(function () {
-        flashMessageContainer.style = "display: none;";
+        flashMessageContainer.style.display = "none";
         flashMessageText.innerText = "";
     }, 10000);
 
@@ -1161,7 +1171,7 @@ function setFlashMessageCloseButtonFunctionality() {
     flashMessageContainer.onchange = function () {
         clearTimeout(autoHideFlashMessage);
         autoHideFlashMessage = setTimeout(function () {
-            flashMessageContainer.style = "display: none;";
+            flashMessageContainer.style.display = "none";
             flashMessageText.innerText = "";
         }, 10000);
     }
@@ -1173,14 +1183,14 @@ function setFlashMessageCloseButtonFunctionality() {
     flashMessageContainer.onmouseleave = function () {
         clearTimeout(autoHideFlashMessage);
         autoHideFlashMessage = setTimeout(function () {
-            flashMessageContainer.style = "display: none;";
+            flashMessageContainer.style.display = "none";
             flashMessageText.innerText = "";
         }, 10000);
     }
 
     flashMessageCloseButton.onclick = function () {
         clearTimeout(autoHideFlashMessage);
-        flashMessageContainer.style = "display: none;";
+        flashMessageContainer.style.display = "none";
         flashMessageText.innerText = "";
     }
 }
@@ -1195,11 +1205,11 @@ function setRemoveProfilePictureButtonFunctionality(path) {
         if (profilePictureRemoveButton.checked) {
             previousPath = profilePicturePreview.src;
             profilePicturePreview.setAttribute("src", path + "images/person_white_24dp.svg");
-            uploadedProfilePictureFileButton.style = "visibility: hidden;";
+            uploadedProfilePictureFileButton.style.visibility = "hidden";
         }
         else {
             profilePicturePreview.setAttribute("src", previousPath);
-            uploadedProfilePictureFileButton.style = "visibility: visible;"
+            uploadedProfilePictureFileButton.style.visibility = "visible"
         }
     }
 }
@@ -1214,11 +1224,11 @@ function setRemoveBackgroundPictureButtonFunctionality(path) {
         if (backgroundPictureRemoveButton.checked) {
             previousPath = backgroundPicturePreview.src;
             backgroundPicturePreview.setAttribute("src", path + "images/background_default_image.jpg");
-            uploadedBackgroundPictureFileButton.style = "visibility: hidden;";
+            uploadedBackgroundPictureFileButton.style.visibility = "hidden";
         }
         else {
             backgroundPicturePreview.setAttribute("src", previousPath);
-            uploadedBackgroundPictureFileButton.style = "visibility: visible;"
+            uploadedBackgroundPictureFileButton.style.visibility = "visible"
         }
     }
 }
@@ -1278,7 +1288,7 @@ function deleteFormConfirmationFunctionality(form, previewContainer, path) {
         let previewBackground = document.createElement("div"); previewBackground.setAttribute("class", "preview-background block");
         let previewContent = document.createElement("div"); previewContent.setAttribute("class", "preview confirmation-container scrollbar-preview");
         let closeButtonContainer = document.createElement("div"); closeButtonContainer.setAttribute("class", "close-button-container");
-        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style = "background-image: url(" + path + "/images/close_white_24dp.svg);";
+        let closeButton = document.createElement("div"); closeButton.setAttribute("class", "close-button"); closeButton.style.backgroundImage = "url(\"" + path + "images/close_white_24dp.svg\")";
         let skipFunction = false;
 
         closeButtonContainer.appendChild(closeButton);

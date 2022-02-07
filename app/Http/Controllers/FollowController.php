@@ -39,9 +39,13 @@ class FollowController extends Controller
 
     public function destroy(User $user): string|false
     {
-        // TODO: Add delete functionality.
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
 
-        auth()->user()->followers()->where('following_id', $user->id)->first()->delete();
+        if (auth()->user()->isFollowing($user)) {
+            auth()->user()->following()->where('following_id', $user->id)->first()->delete();
+        }
 
         return json_encode("Unfollowed");
     }

@@ -21,7 +21,7 @@
         <div class="heading-text center">Explore</div>
 
         @if (! $posts->count())
-            <div class="no-posts-found-text">There are no posts currently.</div>
+            <div class="no-posts-found-text">There are no posts at the moment.</div>
         @endif
 
         @foreach ($posts as $post)

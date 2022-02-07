@@ -9,7 +9,7 @@
         <div class="flex justify-between">
             <div class="inline-flex">
                 <x-form.file name="uploadedFiles{{ $postId }}" class="post-file-upload-image-thumbnail-container" containerClass="post-file-upload-container" multiple="true" accept=".png,.jpeg,.jpg,.gif,.mp4,.webm" postId="{{ $postId }}">
-                    <div class="post-file-upload-image-thumbnail site-theme-color site-theme-color-hover center link">
+                    <div class="post-file-upload-image-thumbnail post-file-upload-image-thumbnail-border field-theme-color-hover center link">
                         <img src="{{ asset('/images/add_white_24dp.svg') }}" style="width: 2rem;">
                     </div>
                 </x-form.file>

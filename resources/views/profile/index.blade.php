@@ -84,12 +84,12 @@
         @if (! $posts->count())
             @if (auth()->check())
                 @if ($user->id === auth()->user()->id)
-                    <div class="no-posts-found-text">You have no posts currently.</div>
+                    <div class="no-posts-found-text">You have no posts at the moment.</div>
                 @else
-                    <div class="no-posts-found-text">This user has no posts currently.</div>
+                    <div class="no-posts-found-text">This user has no posts at the moment.</div>
                 @endif
             @else
-                <div class="no-posts-found-text">This user has no posts currently.</div>
+                <div class="no-posts-found-text">This user has no posts at the moment.</div>
             @endif
         @endif
 

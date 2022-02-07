@@ -56,11 +56,15 @@ class BookmarkController extends Controller
         return json_encode("Bookmarked");
     }
 
-    public function delete(Post $post): string|false
+    public function destroy(Post $post): string|false
     {
-        // TODO: Add delete functionality.
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
 
-        $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
+        if ($post->isBookmarkedByUser(auth()->user())) {
+            $post->bookmarks()->where('user_id', auth()->user()->id)->first()->delete();
+        }
 
         return json_encode("Unbookmarked");
     }

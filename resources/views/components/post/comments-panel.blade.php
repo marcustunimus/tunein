@@ -4,7 +4,7 @@
     </div>
     
     <div class="post-container block">
-        <div class="post-content block" id="comments">
+        <div class="post-content block" style="padding-left: 0rem; padding-right: 0rem;" id="comments">
             {{ $slot }}
         </div>
     </div>

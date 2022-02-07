@@ -10,12 +10,12 @@ class LikeController extends Controller
 {
     use TransformsPostLikes;
 
-    public function index(Post $post)
+    public function index(Post $anyPost)
     {
-        return json_encode($this->getPostLikesForJs($post));
+        return json_encode($this->getPostLikesForJs($anyPost));
     }
 
-    public function store(Post $post): string|false
+    public function store(Post $anyPost): string|false
     {
         if (auth()->user() == null) {
             return json_encode("Login");
@@ -23,21 +23,25 @@ class LikeController extends Controller
 
         $likeAttributes = [
             'user_id' => auth()->user()->id,
-            'post_id' => $post->id
+            'post_id' => $anyPost->id
         ];
 
-        if (! $post->isLikedByUser(auth()->user())) {
+        if (! $anyPost->isLikedByUser(auth()->user())) {
             Like::create($likeAttributes);
         }
 
         return json_encode("Liked");
     }
 
-    public function delete(Post $post): string|false
+    public function destroy(Post $anyPost): string|false
     {
-        // TODO: Add delete functionality.
+        if (auth()->user() == null) {
+            return json_encode("Login");
+        }
 
-        $post->likes()->where('user_id', auth()->user()->id)->first()->delete();
+        if ($anyPost->isLikedByUser(auth()->user())) {
+            $anyPost->likes()->where('user_id', auth()->user()->id)->first()->delete();
+        }
 
         return json_encode("Unliked");
     }

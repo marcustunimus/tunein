@@ -380,6 +380,10 @@ img {
     background-color: var(--site-theme-color-1-hover);
 }
 
+.field-theme-color-hover:hover {
+    background-color: var(--field-color);
+}
+
 .confirmation-container {
     --width: 25rem;
     --height: 17.5rem;

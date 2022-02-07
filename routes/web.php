@@ -28,7 +28,7 @@ use App\Http\Controllers\SettingsController;
 
 Route::get('/posts/{post}', [PostController::class, 'index'])->where('post', '^[0-9]+$')->name('view.post');
 
-Route::post('/posts/{post}/likesInfo', [LikeController::class, 'index'])->where('post', '^[0-9]+$')->name('post.likesInfo');
+Route::post('/posts/{anyPost}/likesInfo', [LikeController::class, 'index'])->where('post', '^[0-9]+$')->name('post.likesInfo');
 
 Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->whereAlphaNumeric('user')->name('profile');
 
@@ -57,6 +57,8 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::post('/profile/{user:username}/follow', [FollowController::class, 'store'])->whereAlphaNumeric('user')->name('profile.follow');
 
+    Route::post('/profile/{user:username}/unfollow', [FollowController::class, 'destroy'])->whereAlphaNumeric('user')->name('profile.unfollow');
+
     Route::post('/posts/create', [PostController::class, 'store'])->name('post.create');
 
     Route::group(['middleware' => ['checkUser']], function () {
@@ -68,11 +70,15 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
         Route::post('/profile/{user:username}/settings', [SettingsController::class, 'store'])->whereAlphaNumeric('user')->name('profile.settings.store');
     });
 
-    Route::post('/posts/{post}/like', [LikeController::class, 'store'])->where('post', '^[0-9]+$')->name('post.like');
+    Route::post('/posts/{anyPost}/like', [LikeController::class, 'store'])->where('post', '^[0-9]+$')->name('post.like');
+
+    Route::post('/posts/{anyPost}/like/delete', [LikeController::class, 'destroy'])->where('post', '^[0-9]+$')->name('post.like.delete');
 
     Route::post('/posts/{post}/comment', [PostController::class, 'store'])->where('post', '^[0-9]+$')->name('post.comment');
 
     Route::post('/posts/{post}/bookmark', [BookmarkController::class, 'store'])->where('post', '^[0-9]+$')->name('post.bookmark');
+
+    Route::post('/posts/{post}/bookmark/delete', [BookmarkController::class, 'destroy'])->where('post', '^[0-9]+$')->name('post.bookmark.delete');
 
     Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
 });

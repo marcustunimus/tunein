@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,12 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        parent::boot();
+
+        Route::bind('anyPost', function($id) {
+            return Post::withoutGlobalScopes()->findOrFail($id);
+        });
+
         $this->configureRateLimiting();
 
         $this->routes(function () {

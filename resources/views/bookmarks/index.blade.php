@@ -17,7 +17,7 @@
         <div class="heading-text center">Bookmarks</div>
 
         @if (! $bookmarks->count())
-            <div class="no-posts-found-text">You have no bookmarks currently.</div>
+            <div class="no-posts-found-text">You have no bookmarks at the moment.</div>
         @endif
 
         @foreach ($bookmarks as $bookmark)

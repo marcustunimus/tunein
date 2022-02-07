@@ -50,7 +50,7 @@
             @endif
                 
             @if (! $comments->count())
-                <div class="no-posts-found-text">There are no comments currently.</div>
+                <div class="no-posts-found-text">There are no comments.</div>
             @endif
                 
             @foreach ($comments as $comment)
