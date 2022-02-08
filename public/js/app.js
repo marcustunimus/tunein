@@ -584,8 +584,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                // window.location.href = path + 'login';
-                console.log(error);
+                window.location.href = path + 'login';
             });
 
             if (postLikeButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/favorite_border_white_24dp.svg\")") {
@@ -595,8 +594,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                 postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
             }
         } catch (error) {
-            // window.location.href = path + 'login';
-            console.log(error);
+            window.location.href = path + 'login';
         }
     }
 
@@ -628,8 +626,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                // window.location.href = path + 'login';
-                console.log(error);
+                window.location.href = path + 'login';
             });
 
             if (postBookmarkButtonContainer.firstElementChild.style.backgroundImage === "url(\"" + path + "images/bookmark_border_white_24dp.svg\")") {
@@ -639,8 +636,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                 postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_border_white_24dp.svg\")";
             }
         } catch (error) {
-            // window.location.href = path + 'login';
-            console.log(error);
+            window.location.href = path + 'login';
         }
     }
 
@@ -772,8 +768,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
                     window.location.href = path + 'login';
                 }
             }).catch(function (error) {
-                // window.location.href = path + 'login';
-                console.log(error);
+                window.location.href = path + 'login';
             });
 
             if (postLikeButtonContainer.style.backgroundImage === "url(\"" + path + "images/favorite_border_white_24dp.svg\")") {
@@ -783,8 +778,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
                 postLikeButtonContainer.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
             }
         } catch (error) {
-            // window.location.href = path + 'login';
-            console.log(error);
+            window.location.href = path + 'login';
         }
     }
 
@@ -1028,13 +1022,6 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
     let followersInfoContainer = document.getElementById("profile-followers-count");
 
     profileFollowButton.onclick = function () {
-        // if (profileFollowButton.innerText === "Following") {
-        //     profileFollowButton.innerText = "Follow";
-        // }
-        // else if (profileFollowButton.innerText === "Follow") {
-        //     profileFollowButton.innerText = "Following";
-        // }
-
         try {
             fetch(path + 'profile/' + username + '/' + (profileFollowButton.innerText === "Following" ? "un" : "") + 'follow', {
                 method: 'POST',
@@ -1062,14 +1049,17 @@ function setFollowButtonFunctionality(username, numberOfFollowers, path) {
                     console.log("You can't follow yourself. You can't be that sad to do it. Go outside and find some friends.");
                 }
             }).catch(function (error) {
-                // window.location.href = path + 'login';
-                console.log(error);
+                window.location.href = path + 'login';
             });
 
-            
+            if (profileFollowButton.innerText === "Following") {
+                profileFollowButton.innerText = "Follow";
+            }
+            else if (profileFollowButton.innerText === "Follow") {
+                profileFollowButton.innerText = "Following";
+            }
         } catch (error) {
-            // window.location.href = path + 'login';
-            console.log(error);
+            window.location.href = path + 'login';
         }
     }
 }
@@ -1333,7 +1323,7 @@ function deleteFormConfirmationFunctionality(form, previewContainer, path) {
 function addLoadMoreCommentsButton(postId, path) {
     let commentsElement = document.getElementById("comments");
     let loadMoreCommentsButtonContainer = document.createElement("div"); loadMoreCommentsButtonContainer.setAttribute("class", "center mt-4");
-    let loadMoreCommentsButton = document.createElement("div"); loadMoreCommentsButton.setAttribute("class", "post-comment-load-more-button text-center"); loadMoreCommentsButton.innerText = "Load More...";
+    let loadMoreCommentsButton = document.createElement("button"); loadMoreCommentsButton.setAttribute("class", "post-comment-load-more-button text-center"); loadMoreCommentsButton.innerText = "Load More...";
 
     loadMoreCommentsIndex += 1;
 
@@ -1349,7 +1339,8 @@ function addLoadMoreCommentsButton(postId, path) {
 function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, loadMoreCommentsButtonContainer) {
     loadMoreCommentsIndex += 1;
 
-    commentsElement.removeChild(loadMoreCommentsButtonContainer);
+    loadMoreCommentsButtonContainer.firstChild.disabled = true;
+    // commentsElement.removeChild(loadMoreCommentsButtonContainer);
 
     try {
         fetch(path + 'posts/' + postId + '/viewMoreComments?page=' + loadMoreCommentsIndex, {
@@ -1371,13 +1362,16 @@ function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, load
 
             eval(getAllFunctionsTextFromHtmlText(data[0]));
 
+            commentsElement.removeChild(loadMoreCommentsButtonContainer);
+            loadMoreCommentsButtonContainer.firstChild.disabled = false;
+
             if (data[1] === true) {
                 commentsElement.appendChild(loadMoreCommentsButtonContainer);
             }
         }).catch(function (error) {
             loadMoreCommentsIndex -= 1;
 
-            commentsElement.appendChild(loadMoreCommentsButtonContainer);
+            loadMoreCommentsButtonContainer.firstChild.disabled = false;
 
             console.log(error);
         });
