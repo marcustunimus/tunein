@@ -14,15 +14,26 @@ class HomeController extends Controller
     {
         $search = request()->query('search');
 
-        $followingQuery = Following::query()->select('following_id')->where('user_id', '=', auth()->user()->id);
+        $followings = Following::query()->select('following_id')->where('user_id', '=', auth()->user()->id);
 
         if ($search) {
-            $followingQuery = $followingQuery->whereHas('target.posts', function ($query) use ($search) {
-                return $query->where('body', 'like', '%'.$search.'%');
-            });
+            $posts = Post::query()
+                ->whereIn('user_id', $followings)
+                ->where('body', 'like', '%'.$search.'%')
+                ->orWhere('user_id', auth()->user()->id)
+                ->where('body', 'like', '%'.$search.'%')
+                ->orderByDesc('created_at')
+                ->paginate(3)
+                ->withQueryString();
         }
-
-        $posts = Post::query()->where('comment_on_post', '=', null)->whereIn('user_id', $followingQuery)->orWhere([['user_id', '=', auth()->user()->id], ['comment_on_post', '=', null]])->orderByDesc('created_at')->paginate(3)->withQueryString();
+        else {
+            $posts = Post::query()
+                ->whereIn('user_id', $followings)
+                ->orWhere('user_id', auth()->user()->id)
+                ->orderByDesc('created_at')
+                ->paginate(3)
+                ->withQueryString();
+        }
 
         $files = $this->getPostFilesForJs($posts->items());
         

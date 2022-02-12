@@ -133,7 +133,7 @@
 
     <div class="right-sidebar-container block">
         <div class="right-sidebar-content scrollbar block">
-            <x-sidebar.search-bar href="/profile">Search...</x-sidebar.search-bar>
+            <x-sidebar.search-bar href="{{ route('profile', $user) }}">Search...</x-sidebar.search-bar>
         </div>
     </div>
 

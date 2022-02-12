@@ -168,7 +168,7 @@ function loadPreviewFromReaderButton(file, reader, filePreview, path, previewCon
 
             if (file.type.match('video.mp4') || file.type.match('video.webm')) {
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
-                let video = document.createElement("video"); video.setAttribute("controls", "");
+                let video = document.createElement("video"); video.setAttribute("controls", ""); video.setAttribute("autoplay", "");
                 video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
                 let videoSource = document.createElement("source"); videoSource.setAttribute("src", reader.result); videoSource.setAttribute("type", file.type);
 
@@ -303,7 +303,7 @@ function loadPreviewUploadedPostFileButton(files, i, filePreview, path, previewC
 
             if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
                 let videoContainer = document.createElement("div"); videoContainer.setAttribute("class", "preview center"); videoContainer.style = "min-width: 40%; max-width: 40%; min-height: 75%; max-height: 75%;";
-                let video = document.createElement("video"); video.setAttribute("controls", "");
+                let video = document.createElement("video"); video.setAttribute("controls", ""); video.setAttribute("autoplay", "");
                 video.setAttribute(video.width > video.height ? "width" : "height", "100%"); video.setAttribute("class", "preview center");
                 let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + files[i]['path']); videoSource.setAttribute("type", files[i]['mime_type']);
 
@@ -504,7 +504,7 @@ function loadPreviewPostFile(files, i, path, previewContainer) {
     previewContainer.appendChild(previewBackground);
 
     if (files[i]['mime_type'] === 'video/mp4' || files[i]['mime_type'] === 'video/webm') {
-        let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", "");
+        let videoContainer = document.createElement("video"); videoContainer.setAttribute("controls", ""); videoContainer.setAttribute("autoplay", "");
         videoContainer.setAttribute(videoContainer.width > videoContainer.height ? "width" : "height", "100%"); videoContainer.setAttribute("class", "preview center noselect");
         let videoSource = document.createElement("source"); videoSource.setAttribute("src", path + files[i]['path']); videoSource.setAttribute("type", files[i]['mime_type']);
 
@@ -1340,7 +1340,6 @@ function loadMoreCommentsButtonFunctionality(postId, path, commentsElement, load
     loadMoreCommentsIndex += 1;
 
     loadMoreCommentsButtonContainer.firstChild.disabled = true;
-    // commentsElement.removeChild(loadMoreCommentsButtonContainer);
 
     try {
         fetch(path + 'posts/' + postId + '/viewMoreComments?page=' + loadMoreCommentsIndex, {
