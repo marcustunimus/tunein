@@ -1082,7 +1082,7 @@ input[type=file].post-file-upload {
 
 .comment-body-text {
     --top: -1.5rem;
-    --padding: 1.15rem;
+    --padding: 1.4rem;
     --margin: 1rem;
 
     position: relative;
@@ -1098,7 +1098,7 @@ input[type=file].post-file-upload {
 .comment-dropdown-container {
     --top: -2rem;
     --left: calc(100% - 1em);
-    --width: 1.75rem;
+    --width: 2.25rem;
     
     position: relative;
     display: inline-block;
@@ -1122,7 +1122,7 @@ input[type=file].post-file-upload {
 
 .comment-interaction-container {
     --top: 0.5rem;
-    --padding: 1rem;
+    --padding: 1.25rem;
 
     position: relative;
     top: var(--top);

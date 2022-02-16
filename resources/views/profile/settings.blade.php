@@ -12,7 +12,7 @@
         <div class="heading-text center">Settings</div>
 
         @if ($errors->any())
-            <div class="error center-text profile-settings-error-container">The form could not be submitted! There were errors with the validation.</div>
+            <div class="error center-text profile-settings-error-container">Oops. Some of the provided information is invalid.</div>
         @endif
 
         <form method="POST" action="{{ route('profile.settings.store', auth()->user()->username) }}" enctype="multipart/form-data">

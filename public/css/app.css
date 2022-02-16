@@ -385,7 +385,7 @@ img {
 }
 
 .confirmation-container {
-    --width: 25rem;
+    --width: 50rem;
     --height: 17.5rem;
     --border-radius: 2.5rem;
 
@@ -393,15 +393,15 @@ img {
     max-width: var(--width); 
     min-height: var(--height); 
     max-height: var(--height);
+    padding: 2rem 4rem;
     background-color: var(--background-color);
     border: 2px solid var(--site-theme-color-1);
     border-radius: var(--border-radius);
-    overflow-y: auto;
     box-shadow: 1rem 1rem 1rem #00000099;
 }
 
 .confirmation-text {
-    --margin: 10%;
+    --margin: 3rem;
 
     margin-top: var(--margin);
     margin-bottom: var(--margin);
@@ -410,9 +410,7 @@ img {
 }
 
 .confirmation-buttons-container {
-    --margin-top: 12.5%;
-
-    margin-top: var(--margin-top);
+    
 }
 
 .confirmation-button {

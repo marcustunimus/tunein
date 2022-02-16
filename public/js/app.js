@@ -710,7 +710,7 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
                     let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
                     let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); 
-                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != "" ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
+                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != null ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
                     let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + user['username']); username.setAttribute("class", "post-profile-name"); username.innerText = user['username'];
 
                     userProfileLink.appendChild(userProfilePicture);
@@ -852,7 +852,7 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
                     let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
                     let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
                     let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); 
-                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != "" ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
+                    userProfilePicture.setAttribute("src", path + "" + (user['profile_picture'] != null ? "storage/profile_pictures/" + user['profile_picture'] : "images/person_white_24dp.svg"));
                     let username = document.createElement("a"); username.setAttribute("href", path + "profile/" + user['username']); username.setAttribute("class", "post-profile-name"); username.innerText = user['username'];
 
                     userProfileLink.appendChild(userProfilePicture);
@@ -1116,7 +1116,7 @@ function setPreviewFollowersButtonFunctionality(username, path, previewContainer
                 for (let user of data) {
                     let userContainer = document.createElement("div"); userContainer.setAttribute("class", "post-likes-profile-container");
                     let userProfileLink = document.createElement("a"); userProfileLink.setAttribute("href", path + "profile/" + user['username']);
-                    let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (user["profile_picture"] != "" ? user["profile_picture_path"] : "images/person_white_24dp.svg"));
+                    let userProfilePicture = document.createElement("img"); userProfilePicture.setAttribute("class", "post-profile-picture"); userProfilePicture.setAttribute("src", path + "" + (user["profile_picture"] != null ? user["profile_picture_path"] : "images/person_white_24dp.svg"));
                     let usernameElement = document.createElement("a"); usernameElement.setAttribute("href", path + "profile/" + user["username"]); usernameElement.setAttribute("class", "post-profile-name"); usernameElement.innerText = user["username"];
                     
                     userProfileLink.appendChild(userProfilePicture);
