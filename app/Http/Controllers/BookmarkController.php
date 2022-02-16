@@ -23,7 +23,7 @@ class BookmarkController extends Controller
             });
         }
 
-        $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(3)->withQueryString();
+        $posts = Post::query()->whereIn('id', $bookmarksQuery)->latest()->paginate(10)->withQueryString();
 
         $files = $this->getPostFilesForJs($posts->items());
 

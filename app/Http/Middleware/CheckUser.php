@@ -16,7 +16,7 @@ class CheckUser
      */
     public function handle(Request $request, Closure $next)
     {
-        $post = $request->route('post');
+        $post = $request->route('anyPost');
 
         if (! $post) {
             $user = $request->route('user');

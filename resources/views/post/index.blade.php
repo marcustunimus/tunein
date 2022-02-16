@@ -13,7 +13,7 @@
 
         <x-post.panel profilePictureURL="{{ $post->author->profile_picture }}" profileName="{{ $post->author->username }}" contentId="postContent{{ $post->id }}" timePassed="{{ $post->created_at->diffForHumans() }}">
             <x-post.dropdown containerClass="post-dropdown-container">
-                <x-post.dropdown-link id="post-{{ $post->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
+                <x-post.dropdown-link id="post-{{ $post->id }}-link">Copy Link</x-post.dropdown-link>
                 @if ($user != null)
                     @if ($post->author->id === $user->id)
                         <x-post.dropdown-link href="{{ route('post.edit', $post) }}">Edit</x-post.dropdown-link>
@@ -31,12 +31,12 @@
                 loadPostFiles({{ $post->id }}, @json($files[$post->id]), "{{ asset('') }}", document.getElementById('second-preview'));
             </script>
 
-            <x-post.interaction.info id="post-{{ $post->id }}-info">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
+            <x-post.interaction.info id="post-{{ $post->id }}-info" title="View Likes">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
         
             <x-post.interaction.tab>
-                <x-post.interaction.button id="post-{{ $post->id }}-like" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
-                <x-post.interaction.button id="post-{{ $post->id }}-comment" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}" buttonClassAddition="-disabled">{{ $post->subPosts()->count() }}</x-post.interaction.button>
-                <x-post.interaction.button id="post-{{ $post->id }}-bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                <x-post.interaction.button id="post-{{ $post->id }}-like" title="Like" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                <x-post.interaction.button id="post-{{ $post->id }}-comment" title="View Comments" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}" buttonClassAddition="-disabled">{{ $post->subPosts()->count() }}</x-post.interaction.button>
+                <x-post.interaction.button id="post-{{ $post->id }}-bookmark" title="Bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
             </x-post.interaction.tab>
         
             <script>
@@ -56,7 +56,7 @@
             @foreach ($comments as $comment)
                 <x-post.comment-panel profilePictureURL="{{ $comment->author->profile_picture }}" profileName="{{ $comment->author->username }}" contentId="postContent{{ $comment->id }}" timePassed="{{ $comment->created_at->diffForHumans() }}">
                     <x-post.dropdown containerClass="comment-dropdown-container">
-                        <x-post.dropdown-link id="post-{{ $comment->id }}-link" href="{{ route('home') }}">Copy Link</x-post.dropdown-link>
+                        <x-post.dropdown-link id="post-{{ $comment->id }}-link">Copy Link</x-post.dropdown-link>
                         @if ($user != null)
                             @if ($comment->author->id === auth()->user()->id)
                                 <x-post.dropdown-link href="{{ route('post.edit', $comment) }}">Edit</x-post.dropdown-link>
@@ -77,7 +77,7 @@
                     </script>
 
                     <x-post.comment-interaction.panel>
-                        <x-post.comment-interaction.button id="post-{{ $comment->id }}-like" icon="{{ $comment->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.comment-interaction.button>
+                        <x-post.comment-interaction.button id="post-{{ $comment->id }}-like" title="Like" icon="{{ $comment->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.comment-interaction.button>
                         <span id="post-{{ $comment->id }}-like-count" class="comment-interaction-text">{{ ($likesCount = $comment->likes()->count()) }}</span>
                     </x-post.comment-interaction.panel>
                 
@@ -88,9 +88,11 @@
             @endforeach
         </x-post.comments-panel>
 
-        <script>
-            addLoadMoreCommentsButton({{ $post->id }}, "{{ asset('') }}");
-        </script>
+        @if ($comments->count() > 10)
+            <script>
+                addLoadMoreCommentsButton({{ $post->id }}, "{{ asset('') }}");
+            </script>
+        @endif
     </div>
 
     <div class="right-sidebar-container block">

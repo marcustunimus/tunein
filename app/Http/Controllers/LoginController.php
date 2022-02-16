@@ -18,13 +18,15 @@ class LoginController extends Controller
     public function attempt(Request $request, Factory $auth, Store $session): RedirectResponse
     {
         $attributes = $request->validate([
-            'email' => ['required', 'string', 'email'],
+            'username' => ['required', 'string'],
+            // 'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
         if (! $auth->guard()->attempt($attributes, $request->input('remember') === "on" ? true : false)) {
             throw ValidationException::withMessages([
-                'email' => 'Your provided credentials could not be verified.'
+                'username' => 'Your provided credentials could not be verified.'
+                // 'email' => 'Your provided credentials could not be verified.'
             ]);
         }
         

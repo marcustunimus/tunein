@@ -14,10 +14,10 @@ class ProfileController extends Controller
         $search = request()->query('search');
 
         if ($search) {
-            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->latest()->paginate(3)->withQueryString();
+            $posts = $user->posts()->where('body', 'like', '%'.$search.'%')->latest()->paginate(10)->withQueryString();
         }
         else {
-            $posts = $user->posts()->latest()->paginate(3)->withQueryString();
+            $posts = $user->posts()->latest()->paginate(10)->withQueryString();
         }
 
         $files = $this->getPostFilesForJs($posts->items());

@@ -1,3 +1,3 @@
-@props(['id', 'icon'])
+@props(['id', 'icon', 'title' => ''])
 
-<div id="{{ $id }}" class="comment-interaction-icon" style="{{ $icon }}"></div>
+<div id="{{ $id }}" title="{{ $title }}" class="comment-interaction-icon" style="{{ $icon }}"></div>

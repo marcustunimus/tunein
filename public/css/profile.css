@@ -151,6 +151,17 @@
     margin-top: calc(100px + 0.75rem);
 }
 
+.profile-settings-error-container {
+    --width: 75%;
+
+    background-color: var(--error-color);
+    color: var(--letter-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    width: var(--width);
+    margin: auto;
+}
+
 .profile-remove-picture-checkbox {
     height: 0.8rem;
 }

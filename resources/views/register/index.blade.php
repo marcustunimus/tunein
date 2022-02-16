@@ -10,7 +10,7 @@
 
                         <x-form.input name="name" type="text" class="register-input-text center" containerClass="register-input-container">Name</x-form.input>
                         <x-form.input name="username" type="text" class="register-input-text center" containerClass="register-input-container">Username</x-form.input>
-                        <x-form.input name="email" type="email" class="register-input-text center" containerClass="register-input-container">Email</x-form.input>
+                        {{-- <x-form.input name="email" type="email" class="register-input-text center" containerClass="register-input-container">Email</x-form.input> --}}
                         <x-form.input name="password" type="password" class="register-input-text center" containerClass="register-input-container">Password</x-form.input>
                         <x-form.input name="password_confirmation" type="password" class="register-input-text center" containerClass="register-input-container">Repeat Password</x-form.input>
 

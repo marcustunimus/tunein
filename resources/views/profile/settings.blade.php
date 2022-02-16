@@ -9,11 +9,11 @@
     </div>
 
     <div class="main-container block">
-        @if ($errors->any())
-            <div class="error center-text">The form could not be submitted! There were errors with the validation.</div>
-        @endif
-
         <div class="heading-text center">Settings</div>
+
+        @if ($errors->any())
+            <div class="error center-text profile-settings-error-container">The form could not be submitted! There were errors with the validation.</div>
+        @endif
 
         <form method="POST" action="{{ route('profile.settings.store', auth()->user()->username) }}" enctype="multipart/form-data">
             @csrf
@@ -21,7 +21,7 @@
             <div class="profile-settings-section-text center">Change Profile Details</div>
             <x-form.input name="name" type="text" class="register-input-text center" containerClass="register-input-container" value="{{ $user->name }}" title="Name">Name</x-form.input>
             <x-form.input name="username" type="text" class="register-input-text center" containerClass="register-input-container" value="{{ $user->username }}" title="Username">Username</x-form.input>
-            <x-form.input name="email" type="email" class="register-input-text center" containerClass="register-input-container" value="{{ $user->email }}" title="Email">Email</x-form.input>
+            {{-- <x-form.input name="email" type="email" class="register-input-text center" containerClass="register-input-container" value="{{ $user->email }}" title="Email">Email</x-form.input> --}}
             <div class="profile-settings-gender-container">
                 <span>Gender:</span>
                 <x-form.radio name="gender" id="male-radio-button" class="" containerClass="" value="Male" checked="{{ $user->gender === 'Male' ? 'checked' : '' }}">Male</x-form.radio>

@@ -1,7 +1,7 @@
 @props(['profilePictureURL', 'profileName', 'contentId' => '', 'timePassed' => ''])
 
 <div class="post-comment">
-    <div class="post-comment-padding">
+    <div class="post-comment-padding ml-1">
         <x-post.profile url="{{ $profilePictureURL }}" timePassed="{{ $timePassed }}">{{ $profileName }}</x-post.profile>
     </div>
         

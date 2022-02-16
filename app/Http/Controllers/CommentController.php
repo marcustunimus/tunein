@@ -12,7 +12,7 @@ class CommentController extends Controller
 
     public function index(Post $post, Request $request): string|false
     {
-        $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
+        $comments = $post->subPosts()->orderBy('created_at')->paginate(10)->withQueryString();
 
         $files = $this->getPostFilesForJs([$post]);
 
@@ -31,7 +31,7 @@ class CommentController extends Controller
 
     public function getMore(Post $post): string|false
     {
-        $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
+        $comments = $post->subPosts()->orderBy('created_at')->paginate(10)->withQueryString();
 
         $commentsFiles = $this->getPostFilesForJs($comments->items());
 

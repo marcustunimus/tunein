@@ -15,8 +15,8 @@
                 </x-form.file>
             </div>
 
-            <div class="grid content-end">
-                <div class="create-post-submit-container block">
+            <div class="grid content-start pt-2">
+                <div class="create-post-submit-container block pl-2">
                     <x-form.submit class="create-post-button center link" id="submitCommentPostForm{{ $postId }}">Comment</x-form.submit>
                 </div>
             </div>

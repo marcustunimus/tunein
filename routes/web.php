@@ -28,7 +28,7 @@ use App\Http\Controllers\SettingsController;
 
 Route::get('/posts/{post}', [PostController::class, 'index'])->where('post', '^[0-9]+$')->name('view.post');
 
-Route::post('/posts/{anyPost}/likesInfo', [LikeController::class, 'index'])->where('post', '^[0-9]+$')->name('post.likesInfo');
+Route::post('/posts/{anyPost}/likesInfo', [LikeController::class, 'index'])->where('anyPost', '^[0-9]+$')->name('post.likesInfo');
 
 Route::get('/profile/{user:username}', [ProfileController::class, 'index'])->whereAlphaNumeric('user')->name('profile');
 
@@ -62,17 +62,17 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
     Route::post('/posts/create', [PostController::class, 'store'])->name('post.create');
 
     Route::group(['middleware' => ['checkUser']], function () {
-        Route::get('/post/{post}/edit', [PostController::class, 'edit'])->where('post', '^[0-9]+$')->name('post.edit');
-        Route::patch('/post/{post}', [PostController::class, 'update'])->where('post', '^[0-9]+$')->name('post.update');
-        Route::delete('/post/{post}', [PostController::class, 'destroy'])->where('post', '^[0-9]+$')->name('post.destroy');
+        Route::get('/post/{anyPost}/edit', [PostController::class, 'edit'])->where('anyPost', '^[0-9]+$')->name('post.edit');
+        Route::patch('/post/{anyPost}', [PostController::class, 'update'])->where('anyPost', '^[0-9]+$')->name('post.update');
+        Route::delete('/post/{anyPost}', [PostController::class, 'destroy'])->where('anyPost', '^[0-9]+$')->name('post.destroy');
 
         Route::get('/profile/{user:username}/settings', [SettingsController::class, 'index'])->whereAlphaNumeric('user')->name('profile.settings');
         Route::post('/profile/{user:username}/settings', [SettingsController::class, 'store'])->whereAlphaNumeric('user')->name('profile.settings.store');
     });
 
-    Route::post('/posts/{anyPost}/like', [LikeController::class, 'store'])->where('post', '^[0-9]+$')->name('post.like');
+    Route::post('/posts/{anyPost}/like', [LikeController::class, 'store'])->where('anyPost', '^[0-9]+$')->name('post.like');
 
-    Route::post('/posts/{anyPost}/like/delete', [LikeController::class, 'destroy'])->where('post', '^[0-9]+$')->name('post.like.delete');
+    Route::post('/posts/{anyPost}/like/delete', [LikeController::class, 'destroy'])->where('anyPost', '^[0-9]+$')->name('post.like.delete');
 
     Route::post('/posts/{post}/comment', [PostController::class, 'store'])->where('post', '^[0-9]+$')->name('post.comment');
 

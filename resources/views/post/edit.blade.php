@@ -4,13 +4,13 @@
 
     <div class="left-sidebar-container block">
         <div class="left-sidebar-content scrollbar block">
-            <x-sidebar.link-button href="{{ route('home') }}">Back to Home</x-sidebar.link-button>
+            <x-sidebar.link-button href="{{ route('home') }}">Home</x-sidebar.link-button>
         </div>
     </div>
 
     <div class="edit-post-page">
         <div class="edit-post-container">
-            <div class="edit-post-heading-text center">Edit Post</div>
+            <div class="edit-post-heading-text center">Edit {{ $post->comment_on_post === null ? 'Post' : 'Comment' }}</div>
         
             <form id="editPostForm" method="POST" action="{{ route('post.update', $post) }}" enctype="multipart/form-data">
                 @csrf

@@ -316,7 +316,7 @@ input.post-input-text:focus {
     --border-radius: 15px;
     --font-size: 1rem;
     --font-weight: bold;
-    --padding-top-bottom: 0.5rem;
+    --padding-top-bottom: 0.85rem;
     --padding-left-right: 1.5rem;
     
     width: 100%;
@@ -490,11 +490,9 @@ input.post-input-text:focus {
 }
 
 .post-comment-padding {
-    --padding: 25px;
+    --padding: 2rem;
 
-    padding: 0px 25px;
-    margin-left: calc((25px + 25px / 3) / 2);
-    /* margin-right: calc((25px + 25px / 3) / 2); */
+    padding: 0px var(--padding);
 }
 
 .post-comment-container {
@@ -710,7 +708,7 @@ textarea.post-comment-input-text:focus {
 /* Creating a Post File Upload */
 
 .post-file-upload-container {
-    --margin: 5%;
+    --margin: 0.5rem;
 
 	position: relative;
     margin-top: var(--margin);
@@ -1084,7 +1082,7 @@ input[type=file].post-file-upload {
 
 .comment-body-text {
     --top: -1.5rem;
-    --padding: 0.5rem;
+    --padding: 1.15rem;
     --margin: 1rem;
 
     position: relative;
@@ -1124,7 +1122,7 @@ input[type=file].post-file-upload {
 
 .comment-interaction-container {
     --top: 0.5rem;
-    --padding: 0.75rem;
+    --padding: 1rem;
 
     position: relative;
     top: var(--top);

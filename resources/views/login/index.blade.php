@@ -8,7 +8,8 @@
                     <form method="POST" action="{{ route('login.attempt') }}">
                         @csrf
 
-                        <x-form.input name="email" type="email" class="login-input-text center" containerClass="login-input-container">Email</x-form.input>
+                        <x-form.input name="username" type="text" class="login-input-text center" containerClass="login-input-container">Username</x-form.input>
+                        {{-- <x-form.input name="email" type="email" class="login-input-text center" containerClass="login-input-container">Email</x-form.input> --}}
                         <x-form.input name="password" type="password" class="login-input-text center" containerClass="login-input-container">Password</x-form.input>
                         <x-form.checkbox name="remember" id="remember" class="login-checkbox-text" containerClass="center mt-4" inputClass="login-checkbox">Remember me</x-form.checkbox>
 

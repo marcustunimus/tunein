@@ -23,7 +23,7 @@ class HomeController extends Controller
                 ->orWhere('user_id', auth()->user()->id)
                 ->where('body', 'like', '%'.$search.'%')
                 ->orderByDesc('created_at')
-                ->paginate(3)
+                ->paginate(10)
                 ->withQueryString();
         }
         else {
@@ -31,7 +31,7 @@ class HomeController extends Controller
                 ->whereIn('user_id', $followings)
                 ->orWhere('user_id', auth()->user()->id)
                 ->orderByDesc('created_at')
-                ->paginate(3)
+                ->paginate(10)
                 ->withQueryString();
         }
 

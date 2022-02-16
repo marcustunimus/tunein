@@ -20,7 +20,7 @@ class PostController extends Controller
 
     public function index(Post $post)
     {
-        $comments = $post->subPosts()->orderBy('created_at')->paginate(3)->withQueryString();
+        $comments = $post->subPosts()->orderBy('created_at')->paginate(10)->withQueryString();
 
         $files = $this->getPostFilesForJs([$post]);
 
@@ -35,11 +35,11 @@ class PostController extends Controller
         ]);
     }
 
-    public function edit(Post $post)
+    public function edit(Post $anyPost)
     {
         return view('post.edit', [
-            'post' => $post,
-            'files' => $this->getPostFilesForJs([$post]),
+            'post' => $anyPost,
+            'files' => $this->getPostFilesForJs([$anyPost]),
         ]);
     }
 
@@ -75,7 +75,7 @@ class PostController extends Controller
         }
     }
 
-    public function update(Post $post, Request $request)
+    public function update(Post $anyPost, Request $request)
     {
         $postAttributes = [
             'user_id' => auth()->user()->id,
@@ -87,29 +87,30 @@ class PostController extends Controller
         $files = $this->getPostFiles($request, $name);
 
         if (count($files)) {
-            $this->validateMaxPostFilesSize($this->calculatePostFilesSize($post, explode('/', $request->input('removedPostFiles'))) + $this->calculateUploadedFilesSize($files[$name]));
+            $this->validateMaxPostFilesSize($this->calculatePostFilesSize($anyPost, explode('/', $request->input('removedPostFiles'))) + $this->calculateUploadedFilesSize($files[$name]));
         }
 
-        $post->update($postAttributes);
+        $anyPost->update($postAttributes);
 
-        $post->deleteFilesByNames(explode('/', $request->input('removedPostFiles')));
+        $anyPost->deleteFilesByNames(explode('/', $request->input('removedPostFiles')));
 
         if (count($files)) {
-            $post->saveFiles($files[$name]);
+            $anyPost->saveFiles($files[$name]);
         }
 
-        return redirect()->back()->with('message', 'The post has been edited.');
+        return redirect()->route('view.post', $anyPost->comment_on_post === null ? $anyPost->id : Post::query()->where('id', $anyPost->comment_on_post)->first()->id)
+                ->with('message', 'The ' . ($anyPost->comment_on_post === null ? 'post' : 'comment') . ' has been edited.');
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $anyPost)
     {
-        foreach ($post->subPosts as $postComment) {
+        foreach ($anyPost->subPosts as $postComment) {
             $postComment->delete();
         }
 
-        $post->delete();
+        $anyPost->delete();
 
-        if (url()->previous() !== route('post.edit', $post->id)) {
+        if (url()->previous() !== route('post.edit', $anyPost->id)) {
             return redirect()->back()->with('message', 'The post has been deleted.');
         } else {
             return redirect()->route('home')->with('message', 'The post has been deleted.');
