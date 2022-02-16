@@ -111,9 +111,9 @@ class PostController extends Controller
         $anyPost->delete();
 
         if (url()->previous() !== route('post.edit', $anyPost->id)) {
-            return redirect()->back()->with('message', 'The post has been deleted.');
+            return redirect()->back()->with('message', 'The ' . ($anyPost->comment_on_post === null ? 'post' : 'comment') . ' has been deleted.');
         } else {
-            return redirect()->route('home')->with('message', 'The post has been deleted.');
+            return redirect()->route('home')->with('message', 'The ' . ($anyPost->comment_on_post === null ? 'post' : 'comment') . ' has been deleted.');
         }
     }
 }

@@ -43,7 +43,7 @@
 
     <div class="right-sidebar-container block">
         <div class="right-sidebar-content scrollbar block">
-            <x-sidebar.form-button href="{{ route('post.destroy', $post) }}" method="DELETE" id="delete{{ $post->id }}">Delete</x-sidebar.form-button>
+            <x-sidebar.form-button href="{{ route('post.destroy', $post) }}" method="DELETE" id="delete{{ $post->id }}" postType="{{ $post->comment_on_post === null ? 'post' : 'comment' }}">Delete</x-sidebar.form-button>
             <script>
                 deleteFormConfirmationFunctionality(document.getElementById("delete{{ $post->id }}Form"), document.getElementById('preview'), "{{ asset('') }}");
             </script>

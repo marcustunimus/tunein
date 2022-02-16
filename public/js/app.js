@@ -1301,7 +1301,7 @@ function deleteFormConfirmationFunctionality(form, previewContainer, path) {
 
         previewContainer.appendChild(closeButtonContainer);
 
-        let confirmationTextContainer = document.createElement("div"); confirmationTextContainer.setAttribute("class", "confirmation-text text-center"); confirmationTextContainer.innerText = "Do you want to delete this post?";
+        let confirmationTextContainer = document.createElement("div"); confirmationTextContainer.setAttribute("class", "confirmation-text text-center"); confirmationTextContainer.innerText = "Do you want to delete this " + form.elements["postType"].value + "?";
         let confirmationButtonsContainer = document.createElement("div"); confirmationButtonsContainer.setAttribute("class", "confirmation-buttons-container");
         let confirmationDeclineButton = document.createElement("div"); confirmationDeclineButton.setAttribute("class", "confirmation-button text-center"); confirmationDeclineButton.innerText = "No";
         let confirmationAcceptButton = document.createElement("div"); confirmationAcceptButton.setAttribute("class", "confirmation-button text-center"); confirmationAcceptButton.innerText = "Yes";
