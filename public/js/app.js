@@ -724,6 +724,11 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
                     usersLikedContainer.appendChild(userContainer);
                 }
 
+                if (! usersLikedContainer.hasChildNodes()) {
+                    let textContainer = document.createElement("div"); textContainer.setAttribute("class", "center-text post-likes-none-text"); textContainer.innerText = "No Likes.";
+                    usersLikedContainer.appendChild(textContainer);
+                }
+
                 previewContent.appendChild(usersLikedContainer);
 
                 previewContent.onclick = function() {
@@ -864,6 +869,11 @@ function setCommentInteractionButtonsFunctionality(postId, numberOfLikes, path, 
                     userContainer.appendChild(username);
 
                     usersLikedContainer.appendChild(userContainer);
+                }
+
+                if (! usersLikedContainer.hasChildNodes()) {
+                    let textContainer = document.createElement("div"); textContainer.setAttribute("class", "center-text post-likes-none-text"); textContainer.innerText = "No Likes.";
+                    usersLikedContainer.appendChild(textContainer);
                 }
 
                 previewContent.appendChild(usersLikedContainer);
@@ -1128,6 +1138,11 @@ function setPreviewFollowersButtonFunctionality(username, path, previewContainer
                     userContainer.appendChild(usernameElement);
                     
                     userFollowedContainer.appendChild(userContainer);
+                }
+
+                if (! userFollowedContainer.hasChildNodes()) {
+                    let textContainer = document.createElement("div"); textContainer.setAttribute("class", "center-text post-likes-none-text"); textContainer.innerText = "No Followers.";
+                    userFollowedContainer.appendChild(textContainer);
                 }
 
                 previewContent.appendChild(userFollowedContainer);

@@ -214,6 +214,10 @@
     z-index: 1;
 }
 
+.post-likes-none-text {
+    font-size: 1.25rem;
+}
+
 /* Post Input */
 
 .post-input-container {
