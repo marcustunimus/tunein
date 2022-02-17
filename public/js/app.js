@@ -572,11 +572,13 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
             }).then(function (data) {
                 if (data === "Liked") {
                     postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_white_24dp.svg\")";
+                    postLikeButtonContainer.setAttribute("title", "Unlike");
                     numberOfLikes += 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
                 else if (data === "Unliked") {
                     postLikeButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/favorite_border_white_24dp.svg\")";
+                    postLikeButtonContainer.setAttribute("title", "Like");
                     numberOfLikes -= 1;
                     postInfoContainer.innerText = numberOfLikes + " " + (numberOfLikes === 1 ? "like" : "likes");
                 }
@@ -615,9 +617,11 @@ function setInteractionButtonsFunctionality(postId, numberOfLikes, path, preview
             }).then(function (data) {
                 if (data === "Bookmarked") {
                     postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_white_24dp.svg\")";
+                    postBookmarkButtonContainer.setAttribute("title", "Remove Bookmark");
                 }
                 else if (data === "Unbookmarked") {
                     postBookmarkButtonContainer.firstElementChild.style.backgroundImage = "url(\"" + path + "images/bookmark_border_white_24dp.svg\")";
+                    postBookmarkButtonContainer.setAttribute("title", "Bookmark");
                 }
                 else if (data === "AttemptToBookmarkComment") {
                     console.log("You can not bookmark comments.");

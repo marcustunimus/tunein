@@ -34,9 +34,9 @@
             <x-post.interaction.info id="post-{{ $post->id }}-info" title="View Likes">{{ ($likesCount = $post->likes()->count()) }} {{ $likesCount === 1 ? 'like' : 'likes' }}</x-post.interaction.info>
         
             <x-post.interaction.tab>
-                <x-post.interaction.button id="post-{{ $post->id }}-like" title="Like" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                <x-post.interaction.button id="post-{{ $post->id }}-like" title="{{ $post->isLikedByUser($user) ? 'Unlike' : 'Like' }}" icon="{{ $post->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
                 <x-post.interaction.button id="post-{{ $post->id }}-comment" title="View Comments" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}" buttonClassAddition="-disabled">{{ $post->subPosts()->count() }}</x-post.interaction.button>
-                <x-post.interaction.button id="post-{{ $post->id }}-bookmark" title="Bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                <x-post.interaction.button id="post-{{ $post->id }}-bookmark" title="{{ $post->isBookmarkedByUser($user) ? 'Remove ' : '' }}Bookmark" icon="{{ $post->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
             </x-post.interaction.tab>
         
             <script>
