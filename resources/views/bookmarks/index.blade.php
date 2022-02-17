@@ -46,7 +46,7 @@
                 <x-post.interaction.tab>
                     <x-post.interaction.button id="post-{{ $bookmark->id }}-like" title="{{ $bookmark->isLikedByUser($user) ? 'Unlike' : 'Like' }}" icon="{{ $bookmark->isLikedByUser($user) ? 'background-image: url(' . asset('/images/favorite_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/favorite_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
                     <x-post.interaction.button id="post-{{ $bookmark->id }}-comment" title="View Comments" icon="{{ 'background-image: url(' . asset('/images/comment_white_24dp.svg') . ');' }}">{{ $bookmark->subPosts()->count() }}</x-post.interaction.button>
-                    <x-post.interaction.button id="post-{{ $bookmark->id }}-bookmark" title="{{ $bookmark->isBookmarkedByUser($user) ? 'Remove ' : '' }}Bookmark" icon="{{ $bookmark->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
+                    <x-post.interaction.button id="post-{{ $bookmark->id }}-bookmark" title="{{ $bookmark->isBookmarkedByUser($user) ? 'Remove from Bookmarks' : 'Add to Bookmarks' }}" icon="{{ $bookmark->isBookmarkedByUser($user) ? 'background-image: url(' . asset('/images/bookmark_white_24dp.svg') . ');' : 'background-image: url(' . asset('/images/bookmark_border_white_24dp.svg') . ');' }}"></x-post.interaction.button>
                 </x-post.interaction.tab>
 
                 <script>
