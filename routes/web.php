@@ -38,7 +38,7 @@ Route::post('/posts/{post}/viewComments', [CommentController::class, 'index'])->
 
 Route::post('/posts/{post}/viewMoreComments', [CommentController::class, 'getMore'])->where('post', '^[0-9]+$')->name('view.post.more.comments');
 
-Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
+Route::middleware(['prevent-back-history', 'guest'])->group(function () {
     Route::get('/', [GuestController::class, 'index'])->name('welcome');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('register');
@@ -48,7 +48,7 @@ Route::group(['middleware' => ['prevent-back-history', 'guest']], function () {
     Route::post('/login', [LoginController::class, 'attempt'])->name('login.attempt');
 });
 
-Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
+Route::middleware('prevent-back-history')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks');
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['prevent-back-history', 'auth']], function () {
 
     Route::post('/posts/create', [PostController::class, 'store'])->name('post.create');
 
-    Route::group(['middleware' => ['checkUser']], function () {
+    Route::middleware('checkUser')->group(function () {
         Route::get('/post/{anyPost}/edit', [PostController::class, 'edit'])->where('anyPost', '^[0-9]+$')->name('post.edit');
         Route::patch('/post/{anyPost}', [PostController::class, 'update'])->where('anyPost', '^[0-9]+$')->name('post.update');
         Route::delete('/post/{anyPost}', [PostController::class, 'destroy'])->where('anyPost', '^[0-9]+$')->name('post.destroy');

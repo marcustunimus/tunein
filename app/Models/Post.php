@@ -28,10 +28,18 @@ class Post extends Model
 
     protected $fillable = ['user_id', 'body', 'comment_on_post'];
 
-    protected $casts = [
-        'id' => 'int',
-        'user_id' => 'int',
-    ];
+    /**
+     * @inheritDoc
+     *
+     * @return string[]
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'int',
+            'user_id' => 'int',
+        ];
+    }
 
     protected static function booted(): void
     {

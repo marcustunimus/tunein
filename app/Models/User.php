@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     protected $guarded = ['id'];
 
@@ -41,14 +40,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+        ];
+    }
 
     public function setPasswordAttribute(string $password): static
     {
@@ -104,7 +101,7 @@ class User extends Authenticatable
         $profilePictureName = $this->generateFileName($image);
 
         $image->storeAs($this->getProfilePicturesFolderName(), $profilePictureName, 'public');
-        
+
         $this->deleteProfilePicture();
 
         return $this->update([
@@ -128,7 +125,7 @@ class User extends Authenticatable
 
     public function getProfilePicturesDirectoryPath(): string
     {
-        return 'public/' . $this->getProfilePicturesFolderName(); 
+        return 'public/' . $this->getProfilePicturesFolderName();
     }
 
     public function getProfilePictureFullPath(): string
@@ -153,7 +150,7 @@ class User extends Authenticatable
         $backgroundPictureName = $this->generateFileName($image);
 
         $image->storeAs($this->getBackgroundPicturesFolderName(), $backgroundPictureName, 'public');
-        
+
         $this->deleteBackgroundPicture();
 
         return $this->update([
@@ -177,7 +174,7 @@ class User extends Authenticatable
 
     public function getBackgroundPicturesDirectoryPath(): string
     {
-        return 'public/' . $this->getBackgroundPicturesFolderName(); 
+        return 'public/' . $this->getBackgroundPicturesFolderName();
     }
 
     public function getBackgroundPictureFullPath(): string
